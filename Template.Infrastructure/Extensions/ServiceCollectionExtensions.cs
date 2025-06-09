@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Template.Domain.Entities;
+using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
+using Template.Infrastructure.Repositories;
 
 namespace Template.Infrastructure.Extensions;
 
@@ -20,5 +22,12 @@ public static class ServiceCollectionExtensions
 			.AddTokenProvider<DataProtectorTokenProvider<User>>("TemplateTokenProvidor")
 			.AddEntityFrameworkStores<TemplateDbContext>()
 			.AddDefaultTokenProviders();
+
+
+		services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+		// we use typeof because the interface and the class are generic
+		// and without it we would have to specify the type(IGenericRepository<Kit>, GenericType<Kit>)
+
+		services.AddScoped<IKitRepository, KitRepository>();
 	}
 }
