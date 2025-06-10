@@ -11,6 +11,7 @@ namespace Template.Domain.Entities
 	{
 		public float Longtitude { get; set; }
 		public float Lattitude { get; set; }
+		public string? ProfileImagePath { get; set; }
 		public DateTime CreatedAt { get; set; } = DateTime.Now;
 		public DateTime? UpdatedAt { get; set; }
 	}

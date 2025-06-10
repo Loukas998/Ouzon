@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ public class RegisterUserCommand :IRequest<IEnumerable<IdentityError>>
     public string? PhoneNumber { get; set; }
     public float Longtitude { get; set; }
     public float Latitude { get; set; }
+    public string Role { get; set; }
+    //public IFormFile? ProfilePicture { get; set; }
 }
 
 public class LoginUserCommand : IRequest<AuthResponse?>

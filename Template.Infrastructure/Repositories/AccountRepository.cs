@@ -61,6 +61,15 @@ public class AccountRepository(UserManager<User> userManager,
     {
         if (await userManager.FindByEmailAsync(user.Email) != null)
         {
+            var list = new List<IdentityError>
+            {
+                new()
+                {
+                    Code = "User already exists",
+                    Description = "User with the same email already exists"
+                }
+            };
+            return list;
             //throw new UserAlreadyExistsException(user.Email);
         }
 
@@ -131,56 +140,56 @@ public class AccountRepository(UserManager<User> userManager,
     //    return;
     //}
 
-    //public async Task<string> SaveUserProfileAsync(IFormFile userImage)
-    //{
-    //    if (userImage == null)
-    //        return null;
+    public async Task<string> SaveUserProfileAsync(IFormFile userImage)
+    {
+        if (userImage == null)
+            return null;
 
-    //    var contentPath = hostEnvironment.ContentRootPath;
-    //    var specialPath = "Images/Users";
-    //    var path = Path.Combine(contentPath, specialPath);
-    //    if (!Directory.Exists(path))
-    //    {
-    //        Directory.CreateDirectory(path);
-    //    }
-    //    var extension = Path.GetExtension(userImage.FileName);
-    //    var imageName = $"{Guid.NewGuid().ToString()}{extension}";
-    //    var fullName = Path.Combine(path, imageName);
-    //    var returnName = Path.Combine(specialPath, imageName);
-    //    using var stream = new FileStream(fullName, FileMode.Create);
-    //    await userImage.CopyToAsync(stream);
-    //    return returnName;
-    //}
-    //public bool DeleteImage(string imageName)
-    //{
-    //    if (imageName == null)
-    //    {
-    //        return false;
-    //    }
-    //    if (!File.Exists(imageName))
-    //    {
-    //        return false;
-    //    }
-    //    File.Delete(imageName);
-    //    return true;
-    //}
-    //public async Task<bool> UpdateUserImage(string userId, IFormFile newImage)
-    //{
-    //    if (userId == null || newImage == null)
-    //    {
-    //        return false;
-    //    }
-    //    var user = await userManager.FindByIdAsync(userId);
-    //    if (user.ProfileImagePath != null)
-    //    {
-    //        var success = DeleteImage(user.ProfileImagePath);
-    //    }
-    //    var newImagePath = await SaveUserProfileAsync(newImage);
-    //    user.ProfileImagePath = newImagePath;
-    //    await userManager.UpdateAsync(user);
-    //    await dbcontext.SaveChangesAsync();
-    //    return true;
-    //}
+        var contentPath = hostEnvironment.ContentRootPath;
+        var specialPath = "Images/Users";
+        var path = Path.Combine(contentPath, specialPath);
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+        var extension = Path.GetExtension(userImage.FileName);
+        var imageName = $"{Guid.NewGuid().ToString()}{extension}";
+        var fullName = Path.Combine(path, imageName);
+        var returnName = Path.Combine(specialPath, imageName);
+        using var stream = new FileStream(fullName, FileMode.Create);
+        await userImage.CopyToAsync(stream);
+        return returnName;
+    }
+    public bool DeleteImage(string imageName)
+    {
+        if (imageName == null)
+        {
+            return false;
+        }
+        if (!File.Exists(imageName))
+        {
+            return false;
+        }
+        File.Delete(imageName);
+        return true;
+    }
+    public async Task<bool> UpdateUserImage(string userId, IFormFile newImage)
+    {
+        if (userId == null || newImage == null)
+        {
+            return false;
+        }
+        var user = await userManager.FindByIdAsync(userId);
+        if (user.ProfileImagePath != null)
+        {
+            var success = DeleteImage(user.ProfileImagePath);
+        }
+        var newImagePath = await SaveUserProfileAsync(newImage);
+        user.ProfileImagePath = newImagePath;
+        await userManager.UpdateAsync(user);
+        await dbcontext.SaveChangesAsync();
+        return true;
+    }
     //public async Task<bool> Verify(string verficationToken)
     //{
     //    var user = await dbcontext.Users.FirstOrDefaultAsync(u => u.VerificationToken == verficationToken);

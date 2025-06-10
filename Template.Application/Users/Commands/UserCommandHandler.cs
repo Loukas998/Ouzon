@@ -20,7 +20,7 @@ public class RegisterUserCommandHandler(IMapper mapper,
     {
         var user = mapper.Map<User>(request);
         user.UserName = request.UserName;
-        var errors = await accountRepository.Register(user, request.Password,"User");
+        var errors = await accountRepository.Register(user, request.Password,request.Role);
         return errors;
     }
 }
@@ -35,7 +35,7 @@ public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
-            throw new NotFoundException(nameof(User), request.Email);
+           // throw new NotFoundException(nameof(User), request.Email);
         }
 
         bool isValidCredentials = await userManager.CheckPasswordAsync(user, request.Password);

@@ -16,7 +16,7 @@ namespace Template.Infrastructure.Repositories;
 
 public class TokenRepository(IConfiguration configuration, UserManager<User> userManager) : ITokenRepository
 {
-    private readonly string _loginProvidor = "TripPlannerTokenProvidor";
+    private readonly string _loginProvidor = "TemplateTokenProvidor";
     private readonly string _refreshToken = "RefreshToken";
     private User? _user;
     private readonly int _expiresInMinutes = Convert.ToInt32(configuration["JwtSettings:DurationInMinutes"]);
