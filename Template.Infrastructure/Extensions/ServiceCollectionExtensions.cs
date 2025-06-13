@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
 	public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 	{
 		var connectionString = configuration.GetConnectionString("TemplateDb");
-		services.AddDbContext<TemplateDbContext>(options => options.UseSqlServer(connectionString));
+		services.AddDbContext<TemplateDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=OuzonDb;Trusted_Connection=True;"));
 
 		//this for identity and jwt when needed
 		services.AddIdentityCore<User>()
@@ -29,5 +29,6 @@ public static class ServiceCollectionExtensions
 		// and without it we would have to specify the type(IGenericRepository<Kit>, GenericType<Kit>)
 
 		services.AddScoped<IKitRepository, KitRepository>();
+		services.AddScoped<IImplantRepository, ImplantRepository>();
 	}
 }

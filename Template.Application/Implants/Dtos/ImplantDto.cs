@@ -1,6 +1,6 @@
-﻿namespace Template.Domain.Entities.Materials;
+﻿namespace Template.Application.Implants.Dtos;
 
-public class Implant
+public class ImplantDto
 {
 	public int Id { get; set; }
 	public float Radius { get; set; }
