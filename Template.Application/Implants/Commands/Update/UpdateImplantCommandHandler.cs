@@ -22,6 +22,6 @@ public class UpdateImplantCommandHandler(ILogger<UpdateImplantCommandHandler> lo
 		}
 
 		mapper.Map(request, implant);
-		await implantRepository.SaveChangesAsync();
+		await implantRepository.UpdateAsync(implant);
 	}
 }

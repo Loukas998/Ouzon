@@ -33,7 +33,17 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 	{
 		return await dbContext.Set<T>().ToListAsync();
 	}
-
+	public async Task<IEnumerable<T>> GetPagedResponseAsync(int pageNumber,int pageSize)
+	{
+		return await dbContext.Set<T>().Skip((pageNumber-1) * pageSize)
+			.Take(pageSize)
+			.ToListAsync();
+	}
+	public async Task UpdateAsync(T entity)
+	{
+		dbContext.Update(entity);
+		await SaveChangesAsync();
+	}
 	public async Task SaveChangesAsync()
 	{
 		await dbContext.SaveChangesAsync();

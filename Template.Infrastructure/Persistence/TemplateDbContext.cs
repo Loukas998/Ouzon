@@ -12,6 +12,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
 	internal DbSet<Kit> Kits { get; set; }
 	internal DbSet<Implant> Implants { get; set; }
+	internal DbSet<Tool> Tools { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -24,5 +25,10 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			.HasMany(k => k.Implants)
 			.WithOne()
 			.HasForeignKey(i => i.KitId);
+
+		modelBuilder.Entity<Tool>()
+			.HasOne(t => t.Kit)
+			.WithMany()
+			.HasForeignKey(t => t.KitId);
 	}
 }
