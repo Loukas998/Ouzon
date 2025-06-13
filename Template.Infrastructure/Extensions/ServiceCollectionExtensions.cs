@@ -28,8 +28,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
 		services.AddScoped<IRolesSeeder, RolesSeeder>();
-    }
-
 
 		services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 		// we use typeof because the interface and the class are generic
