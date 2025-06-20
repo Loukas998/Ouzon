@@ -39,7 +39,16 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 		modelBuilder.Entity<Procedure>()
 			.HasOne(p => p.Assistant)
 			.WithMany()
-			.HasForeignKey(p => p.AssistantId);
+			.HasForeignKey(p => p.AssistantId)
+			.OnDelete(DeleteBehavior.NoAction);
+
+
+		modelBuilder.Entity<Procedure>()
+		.HasOne(p => p.Doctor)
+		.WithMany()
+		.HasForeignKey(p => p.DoctorId)
+		.OnDelete(DeleteBehavior.NoAction);
+
 		modelBuilder.Entity<Procedure>()
 			.HasMany(x => x.KitsInProcedure)
 			.WithOne()

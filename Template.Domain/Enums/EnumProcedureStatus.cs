@@ -8,8 +8,8 @@ namespace Template.Domain.Enums
 {
     public enum EnumProcedureStatus
     {
-
         IN_PROGRESS = 2,
         DONE = 3,
+        DECLINED = 4,
     }
 }
