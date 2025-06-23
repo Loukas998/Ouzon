@@ -13,4 +13,6 @@ public class Kit
 	public string? ImagePath { get; set; }
 
 	public List<Implant>? Implants { get; set; }
+
+	public List<Tool> Tools { get; set; }
 }

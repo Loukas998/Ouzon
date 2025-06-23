@@ -11,5 +11,6 @@ namespace Template.Domain.Entities.ProcedureRelatedEntities
         public int Id { get; set; }
         public int ToolId { get; set; }
         public int ProcedureId { get; set; }
+        public Procedure Procedure { get; set; }
     }
 }

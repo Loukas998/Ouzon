@@ -17,6 +17,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 	internal DbSet<Procedure> Procedures { get; set; }
 	internal DbSet<ProcedureKit> ProcedureKits { get; set; }
 	internal DbSet<ProcedureTool> ProcedureTools { get; set; }
+	internal DbSet<Category> Categories{ get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -27,35 +28,46 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 		// Kit has many Implants
 		modelBuilder.Entity<Kit>()
 			.HasMany(k => k.Implants)
-			.WithOne()
+			.WithOne(imp=>imp.Kit)
 			.HasForeignKey(i => i.KitId);
 
 		modelBuilder.Entity<Tool>()
 			.HasOne(t => t.Kit)
-			.WithMany()
+			.WithMany(k=>k.Tools)
 			.HasForeignKey(t => t.KitId);
 
 
-		modelBuilder.Entity<Procedure>()
+
+        modelBuilder.Entity<Category>()
+	.HasMany(c => c.Tools)
+	.WithOne(t => t.Category)
+	.HasForeignKey(t => t.CategoryId);
+
+		modelBuilder.Entity<Category>()
+	  .HasMany(c => c.Procedures)
+	  .WithOne(t => t.Category)
+	  .HasForeignKey(t => t.CategoryId);
+
+        modelBuilder.Entity<Procedure>()
 			.HasOne(p => p.Assistant)
-			.WithMany()
+			.WithMany(ass=>ass.InProcedure)
 			.HasForeignKey(p => p.AssistantId)
 			.OnDelete(DeleteBehavior.NoAction);
 
 
 		modelBuilder.Entity<Procedure>()
 		.HasOne(p => p.Doctor)
-		.WithMany()
+		.WithMany(doc=>doc.ProcedureFrom)
 		.HasForeignKey(p => p.DoctorId)
 		.OnDelete(DeleteBehavior.NoAction);
 
 		modelBuilder.Entity<Procedure>()
 			.HasMany(x => x.KitsInProcedure)
-			.WithOne()
-			.HasForeignKey(x => x.ProcedureId);
+			.WithOne(kp => kp.Procedure)
+			.HasForeignKey(kp => kp.ProcedureId);
 			modelBuilder.Entity<Procedure>()
 			.HasMany(x => x.ToolsInProcedure)
-			.WithOne()
-			.HasForeignKey(x => x.ProcedureId);
+			.WithOne(tp=>tp.Procedure)
+			.HasForeignKey(tp=> tp.ProcedureId);
 	}
 }

@@ -174,7 +174,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Implant", b =>
@@ -213,7 +213,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("KitId");
 
-                    b.ToTable("Implants");
+                    b.ToTable("Implants", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Kit", b =>
@@ -232,7 +232,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Kits");
+                    b.ToTable("Kits", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Tool", b =>
@@ -271,7 +271,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("KitId");
 
-                    b.ToTable("Tools");
+                    b.ToTable("Tools", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
@@ -307,7 +307,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Procedures");
+                    b.ToTable("Procedures", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureKit", b =>
@@ -328,7 +328,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("ProcedureKits");
+                    b.ToTable("ProcedureKits", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureTool", b =>
@@ -349,7 +349,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("ProcedureTools");
+                    b.ToTable("ProcedureTools", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>

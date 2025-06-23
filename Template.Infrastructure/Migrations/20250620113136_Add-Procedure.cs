@@ -34,7 +34,7 @@ namespace Template.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Procedures_Category_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });

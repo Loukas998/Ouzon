@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
         //----------------------------------------------------------------------------------------------------------------
         //services and repositories 
 		services.AddScoped<IRolesSeeder, RolesSeeder>();
+		services.AddScoped<ICategorySeeder, CategorySeeder>();
 
 		services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         // we use typeof because the interface and the class are generic
@@ -35,5 +36,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IKitRepository, KitRepository>();
 		services.AddScoped<IImplantRepository, ImplantRepository>();
 		services.AddScoped<IToolRepository, ToolRepository>();
+		services.AddScoped<IProcedureRepository, ProcedureRepository>();
 	}
 }
