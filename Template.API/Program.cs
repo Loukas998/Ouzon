@@ -52,7 +52,7 @@ app.UseStaticFiles(new StaticFileOptions
            Path.Combine(builder.Environment.ContentRootPath, "Images")),
     RequestPath = "/Images"
 });
-app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
+//app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
 app.UseCors("AllowAll");
 

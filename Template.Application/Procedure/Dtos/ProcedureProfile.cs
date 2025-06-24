@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Kits.Dtos;
 using Template.Application.Procedure.Commands.Create;
+using Template.Application.Procedure.Commands.Update;
 using Template.Application.Tools.Dtos;
 using Template.Domain.Entities.Materials;
 using Template.Domain.Entities.ProcedureRelatedEntities;
@@ -21,5 +22,6 @@ public class ProcedureProfile:Profile
             .ForMember(dest => dest.Tools, opt => opt.MapFrom(src => src.ToolsInProcedure.Select(tp => tp.Tool)))
             .ForMember(dest => dest.Kits, opt => opt.MapFrom(src => src.KitsInProcedure.Select(kp => kp.Kit)))
             .ReverseMap();
+        CreateMap<UpdateProcedureCommand, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
     }
 }
