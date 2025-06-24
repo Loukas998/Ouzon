@@ -16,8 +16,8 @@ public class Procedure
     public int CategoryId { get; set; }
     public EnumProcedureStatus Status { get; set; }
     public DateTime Date { get; set; }
-    public List<ProcedureKit> KitsInProcedure { get; set; }
-    public List<ProcedureTool> ToolsInProcedure { get; set; }
+    public List<ProcedureKit>? KitsInProcedure { get; set; } = [];
+    public List<ProcedureTool>? ToolsInProcedure { get; set; } = [];
     public User Doctor { get; set; }
     public User Assistant { get; set; }
     public Category Category { get; set; }

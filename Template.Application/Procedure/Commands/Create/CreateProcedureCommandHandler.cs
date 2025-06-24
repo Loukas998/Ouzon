@@ -36,30 +36,39 @@ namespace Template.Application.Procedure.Commands.Create
             {
                 var procedure = mapper.Map<Domain.Entities.ProcedureRelatedEntities.Procedure>(request);
                 procedure.DoctorId = userContext.GetCurrentUser().Id;
-                foreach (var toolId in request.ToolsIds)
+                if (request.ToolsIds != null)
                 {
-                    var tool = await toolRepository.FindByIdAsync(toolId);
-                    if (tool == null)
+                    foreach (var toolId in request.ToolsIds)
                     {
-                        throw new Exception("tool not found");
+                        var tool = await toolRepository.FindByIdAsync(toolId);
+                        if (tool == null)
+                        {
+                            throw new Exception("tool not found");
+                        }
+                        var proTool = new ProcedureTool()
+                        {
+                            ToolId = tool.Id,
+                            Procedure = procedure,
+                        };
+                        procedure.ToolsInProcedure.Add(proTool);
                     }
-                    procedure.ToolsInProcedure.Add(new ProcedureTool()
-                    {
-                        ToolId = tool.Id
-                    });
                 }
-                foreach (var kitId in request.KitIds)
+                if (request.KitIds != null)
                 {
-                    var tool = await kitRepository.FindByIdAsync(kitId);
-                    if (tool == null)
+                    foreach (var kitId in request.KitIds)
                     {
-                        throw new Exception();
+                        var tool = await kitRepository.FindByIdAsync(kitId);
+                        if (tool == null)
+                        {
+                            throw new Exception();
+                        }
+                        procedure.KitsInProcedure.Add(new ProcedureKit()
+                        {
+                            KitId = tool.Id
+                        });
                     }
-                    procedure.KitsInProcedure.Add(new ProcedureKit()
-                    {
-                        KitId = tool.Id
-                    });
                 }
+
                 var procedureId = await procedureRepository.AddAsync(procedure);
                 return procedureId.Id;
             }

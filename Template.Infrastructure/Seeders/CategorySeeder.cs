@@ -15,7 +15,7 @@ public class CategorySeeder(TemplateDbContext dbContext) : ICategorySeeder
     {
         if (await dbContext.Database.CanConnectAsync())
         {
-            if (!dbContext.Roles.Any())
+            if (!dbContext.Categories.Any())
             {
                 var categories = GetCategories();
                 dbContext.Categories.AddRange(categories);
@@ -28,13 +28,11 @@ public class CategorySeeder(TemplateDbContext dbContext) : ICategorySeeder
         List<Category> list = [
        new Category()
         {
-            Id = 1,
             Name = "Surgery",
 
         },
         new Category()
         {
-            Id = 2,
             Name = "Recovery",
 
         }
