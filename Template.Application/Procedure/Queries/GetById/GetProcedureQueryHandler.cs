@@ -17,7 +17,7 @@ namespace Template.Application.Procedure.Queries.GetById
         {
             try
             {
-                var procedure = await procedureRepository.FindByIdAsync(request.Id);
+                var procedure = await procedureRepository.GetWithToolsAndKitsAsync(request.Id);
                 if (procedure == null)
                 {
                     throw new Exception();

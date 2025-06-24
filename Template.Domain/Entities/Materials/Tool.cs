@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Template.Domain.Entities.ProcedureRelatedEntities;
 
 namespace Template.Domain.Entities.Materials;
 
@@ -21,5 +23,7 @@ public class Tool
 
     public Kit? Kit { get; set; }
     public Category? Category { get; set; }
+    [JsonIgnore]
+    public List<ProcedureTool>? ProceduresWithTool { get; set; }
 
 }

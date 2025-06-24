@@ -9,7 +9,7 @@ namespace Template.Domain.Repositories
 {
     public interface IProcedureRepository : IGenericRepository<Procedure>
     {
-        //Task<List<int>> AddKitsToProcedure(int procedureId, List<int> kitsIds);
-        //Task<List<int>> AddToolsToProcedure(int procedureId, List<int> toolIds);
+
+        Task<Procedure> GetWithToolsAndKitsAsync(int id);
     }
 }

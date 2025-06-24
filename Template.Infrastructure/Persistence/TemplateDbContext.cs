@@ -31,10 +31,24 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			.WithOne(imp=>imp.Kit)
 			.HasForeignKey(i => i.KitId);
 
-		modelBuilder.Entity<Tool>()
+        modelBuilder.Entity<Kit>()
+            .HasMany(t => t.ProceduresWithKit)
+            .WithOne(tp => tp.Kit)
+            .HasForeignKey(tp => tp.KitId);
+
+
+
+        modelBuilder.Entity<Tool>()
 			.HasOne(t => t.Kit)
 			.WithMany(k=>k.Tools)
 			.HasForeignKey(t => t.KitId);
+
+
+
+		modelBuilder.Entity<Tool>()
+			.HasMany(t => t.ProceduresWithTool)
+			.WithOne(tp => tp.Tool)
+			.HasForeignKey(tp => tp.ToolId);
 
 
 
@@ -65,9 +79,14 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			.HasMany(x => x.KitsInProcedure)
 			.WithOne(kp => kp.Procedure)
 			.HasForeignKey(kp => kp.ProcedureId);
+
+
 			modelBuilder.Entity<Procedure>()
 			.HasMany(x => x.ToolsInProcedure)
 			.WithOne(tp=>tp.Procedure)
 			.HasForeignKey(tp=> tp.ProcedureId);
+
+
+
 	}
 }
