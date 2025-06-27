@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    partial class TemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620113136_Add-Procedure")]
+    partial class AddProcedure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,7 +177,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Implant", b =>
@@ -292,10 +295,6 @@ namespace Template.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DoctorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -304,8 +303,6 @@ namespace Template.Infrastructure.Migrations
                     b.HasIndex("AssistantId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("DoctorId");
 
                     b.ToTable("Procedures");
                 });
@@ -325,8 +322,6 @@ namespace Template.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("KitId");
 
                     b.HasIndex("ProcedureId");
 
@@ -351,40 +346,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.HasIndex("ToolId");
-
                     b.ToTable("ProcedureTools");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Schedule.Holiday", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("From")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("To")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Holidays");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
@@ -529,23 +491,21 @@ namespace Template.Infrastructure.Migrations
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Implant", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.Materials.Kit", "Kit")
+                    b.HasOne("Template.Domain.Entities.Materials.Kit", null)
                         .WithMany("Implants")
                         .HasForeignKey("KitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Kit");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Tool", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Materials.Category", "Category")
-                        .WithMany("Tools")
+                        .WithMany()
                         .HasForeignKey("CategoryId");
 
                     b.HasOne("Template.Domain.Entities.Materials.Kit", "Kit")
-                        .WithMany("Tools")
+                        .WithMany()
                         .HasForeignKey("KitId");
 
                     b.Navigation("Category");
@@ -556,80 +516,36 @@ namespace Template.Infrastructure.Migrations
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
                 {
                     b.HasOne("Template.Domain.Entities.User", "Assistant")
-                        .WithMany("InProcedure")
+                        .WithMany()
                         .HasForeignKey("AssistantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Template.Domain.Entities.Materials.Category", "Category")
-                        .WithMany("Procedures")
-                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Template.Domain.Entities.User", "Doctor")
-                        .WithMany("ProcedureFrom")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.HasOne("Template.Domain.Entities.Materials.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Assistant");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureKit", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.Materials.Kit", "Kit")
-                        .WithMany("ProceduresWithKit")
-                        .HasForeignKey("KitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", "Procedure")
+                    b.HasOne("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", null)
                         .WithMany("KitsInProcedure")
                         .HasForeignKey("ProcedureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Kit");
-
-                    b.Navigation("Procedure");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureTool", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", "Procedure")
+                    b.HasOne("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", null)
                         .WithMany("ToolsInProcedure")
                         .HasForeignKey("ProcedureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Template.Domain.Entities.Materials.Tool", "Tool")
-                        .WithMany("ProceduresWithTool")
-                        .HasForeignKey("ToolId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Procedure");
-
-                    b.Navigation("Tool");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Materials.Category", b =>
-                {
-                    b.Navigation("Procedures");
-
-                    b.Navigation("Tools");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Schedule.Holiday", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.User", null)
-                        .WithMany("Holidays")
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -637,15 +553,6 @@ namespace Template.Infrastructure.Migrations
             modelBuilder.Entity("Template.Domain.Entities.Materials.Kit", b =>
                 {
                     b.Navigation("Implants");
-
-                    b.Navigation("ProceduresWithKit");
-
-                    b.Navigation("Tools");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Materials.Tool", b =>
-                {
-                    b.Navigation("ProceduresWithTool");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
@@ -653,18 +560,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("KitsInProcedure");
 
                     b.Navigation("ToolsInProcedure");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.User", b =>
-                {
-                    b.Navigation("InProcedure");
-
-                    b.Navigation("ProcedureFrom");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Holidays");
                 });
 #pragma warning restore 612, 618
         }

@@ -11,7 +11,7 @@ namespace Template.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -25,7 +25,7 @@ namespace Template.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Category_Category_ParentCategoryId",
                         column: x => x.ParentCategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Id");
                 });
 
@@ -89,7 +89,7 @@ namespace Template.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Tools_Category_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Tools_Kits_KitId",

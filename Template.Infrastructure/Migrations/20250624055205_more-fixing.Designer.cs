@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    partial class TemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250624055205_more-fixing")]
+    partial class morefixing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -356,37 +359,6 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("ProcedureTools");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Schedule.Holiday", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("From")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("To")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Holidays");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -625,15 +597,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Tools");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Schedule.Holiday", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.User", null)
-                        .WithMany("Holidays")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.Materials.Kit", b =>
                 {
                     b.Navigation("Implants");
@@ -660,11 +623,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("InProcedure");
 
                     b.Navigation("ProcedureFrom");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Holidays");
                 });
 #pragma warning restore 612, 618
         }

@@ -33,6 +33,8 @@ var scope = app.Services.CreateScope(); //for seeders
 										// example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
 var rolesSeeder = scope.ServiceProvider.GetRequiredService<IRolesSeeder>();
 await rolesSeeder.Seed();
+var categoriesSeeder = scope.ServiceProvider.GetRequiredService<ICategorySeeder>();
+await categoriesSeeder.Seed();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -50,7 +52,7 @@ app.UseStaticFiles(new StaticFileOptions
            Path.Combine(builder.Environment.ContentRootPath, "Images")),
     RequestPath = "/Images"
 });
-app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
+//app.MapGroup("api/identity").WithTags("Identity").MapIdentityApi<User>();
 
 app.UseCors("AllowAll");
 

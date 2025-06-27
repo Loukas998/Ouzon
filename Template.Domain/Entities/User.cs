@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Domain.Entities.Schedule;
+using Template.Domain.Entities.ProcedureRelatedEntities;
 
 namespace Template.Domain.Entities
 {
@@ -16,5 +17,8 @@ namespace Template.Domain.Entities
 		public DateTime CreatedAt { get; set; } = DateTime.Now;
 		public DateTime? UpdatedAt { get; set; }
 		public List<Holiday> Holidays { get; set; } = [];
+
+		public List<Procedure> InProcedure { get; set; }
+		public List<Procedure> ProcedureFrom { get; set; }
 	}
 }

@@ -13,4 +13,6 @@ public class Implant
 
 
 	public int KitId { get; set; }
+
+	public Kit Kit { get; set; }
 }
