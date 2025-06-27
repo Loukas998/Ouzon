@@ -11,8 +11,9 @@ namespace Template.Domain.Entities
 {
 	public class User : IdentityUser
 	{
+		public string? Address { get; set; }
 		public float Longtitude { get; set; }
-		public float Lattitude { get; set; }
+		public float Latitude { get; set; }
 		public string? ProfileImagePath { get; set; }
 		public DateTime CreatedAt { get; set; } = DateTime.Now;
 		public DateTime? UpdatedAt { get; set; }

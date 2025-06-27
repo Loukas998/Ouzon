@@ -14,6 +14,7 @@ public class UserProfile:Profile
     public UserProfile()
     {
         CreateMap<RegisterUserCommand, User>();
+       
     }
     
 }

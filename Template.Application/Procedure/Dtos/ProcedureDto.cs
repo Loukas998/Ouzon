@@ -18,7 +18,7 @@ public  class ProcedureDto
     public int CategoryId { get; set; }
     public EnumProcedureStatus Status { get; set; } = EnumProcedureStatus.REQUEST_SENT;
     public DateTime Date { get; set; }
-    public List<ToolDto>? Tools { get; set; } = [];
-    public List<KitDto>? Kits{ get; set; } = [];
+    public IEnumerable<ToolDto>? Tools { get; set; } = [];
+    public IEnumerable<KitDto>? Kits{ get; set; } = [];
     
 }

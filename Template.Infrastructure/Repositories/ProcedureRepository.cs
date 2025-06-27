@@ -26,7 +26,14 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
     {
         var procedure = await dbContext.Procedures
             .Include(pro => pro.ToolsInProcedure)
-            .ThenInclude(tp => tp.Tool)
+                .ThenInclude(tp => tp.Tool)
+            .Include(pro => pro.KitsInProcedure)
+                .ThenInclude(tp => tp.Kit)
+                    .ThenInclude(kit=>kit.Implants)
+             .Include(pro => pro.KitsInProcedure)
+                 .ThenInclude(tp => tp.Kit)
+                 .ThenInclude(kit => kit.Tools)
+
             .FirstOrDefaultAsync(pro => pro.Id == id);
         return procedure;
     }

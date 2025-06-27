@@ -25,5 +25,10 @@ public class UserController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(request);
         return Ok(result);
     }
+    [HttpGet(Name ="GetUsersByRole")]
+    public async Task<ActionResult> GetUsersByRole([FromQuery]string role)
+    {
+
+    }
 }
 

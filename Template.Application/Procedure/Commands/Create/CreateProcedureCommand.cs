@@ -9,7 +9,7 @@ namespace Template.Application.Procedure.Commands.Create;
 
 public class CreateProcedureCommand :IRequest<int>
 {
-    public string? AssistantId { get; set; }
+    public bool HasAssistant { get; set; }
     public DateTime Date { get; set; }
     public int CategoryId { get; set; }
     public List<int>? ToolsIds { get; set; }

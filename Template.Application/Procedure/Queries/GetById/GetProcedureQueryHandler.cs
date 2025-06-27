@@ -11,9 +11,9 @@ using Template.Domain.Repositories;
 
 namespace Template.Application.Procedure.Queries.GetById
 {
-    public class GetProcedureQueryHandler(IProcedureRepository procedureRepository, ILogger<GetProcedureQueryHandler> logger,IMapper mapper) : IRequestHandler<GetProcedureQuery, ProcedureDto>
+    public class GetProcedureQueryHandler(IProcedureRepository procedureRepository, ILogger<GetProcedureQueryHandler> logger,IMapper mapper) : IRequestHandler<GetProcedureQuery, ProcedureDetailedDto>
     {
-        public async Task<ProcedureDto> Handle(GetProcedureQuery request, CancellationToken cancellationToken)
+        public async Task<ProcedureDetailedDto> Handle(GetProcedureQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -23,7 +23,19 @@ namespace Template.Application.Procedure.Queries.GetById
                     throw new Exception();
                 }
                 var result = mapper.Map<ProcedureDto>(procedure);
-                return result;
+                var detailedResult = new ProcedureDetailedDto()
+                {
+                    Id = result.Id,
+                    AssistantId = result.AssistantId,
+                    DoctorId = result.DoctorId,
+                    CategoryId = result.CategoryId,
+                    Date = result.Date,
+                    KitsWithImplants = result.Kits.Where(kit => kit.Implants.Any()),
+                    KitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any()),
+                    ToolsNotInKit = result.Tools.Where(tool => tool.KitId == null),
+                    Status = result.Status,
+                };
+                return detailedResult;
             }
             catch(Exception ex) 
             {

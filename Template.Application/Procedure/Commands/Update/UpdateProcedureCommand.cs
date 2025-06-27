@@ -11,8 +11,8 @@ namespace Template.Application.Procedure.Commands.Update;
 public class UpdateProcedureCommand :IRequest
 {
     public int Id { get; set; }
-    public DateTime Date { get; set; }
-    public string AssistantId { get; set; }
-    public int CategoryId { get; set; }
-    public EnumProcedureStatus Status { get; set; }
+    public DateTime? Date { get; set; }
+    public string? AssistantId { get; set; }
+    public int? CategoryId { get; set; }
+    public EnumProcedureStatus? Status { get; set; }
 }
