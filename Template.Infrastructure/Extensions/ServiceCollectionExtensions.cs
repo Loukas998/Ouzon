@@ -35,5 +35,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IKitRepository, KitRepository>();
 		services.AddScoped<IImplantRepository, ImplantRepository>();
 		services.AddScoped<IToolRepository, ToolRepository>();
+		services.AddScoped<IHolidayRepository, HolidayRepository>();
 	}
 }

@@ -19,7 +19,7 @@ public class BaseResponse
     }
 
 }
-public class BaseResponse<T>:BaseResponse
+public class BaseResponse<T> : BaseResponse
 {
     public T? Data { get; set; }
     public BaseResponse Success(T data)

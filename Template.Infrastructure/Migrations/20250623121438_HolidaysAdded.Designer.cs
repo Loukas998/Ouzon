@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    partial class TemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250623121438_HolidaysAdded")]
+    partial class HolidaysAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -294,13 +297,7 @@ namespace Template.Infrastructure.Migrations
                     b.Property<DateTime?>("To")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Holidays");
                 });
@@ -469,23 +466,9 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Kit");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Schedule.Holiday", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.User", null)
-                        .WithMany("Holidays")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.Materials.Kit", b =>
                 {
                     b.Navigation("Implants");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Holidays");
                 });
 #pragma warning restore 612, 618
         }
