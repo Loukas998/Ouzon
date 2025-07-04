@@ -8,8 +8,11 @@ public class KitsProfile : Profile
 {
 	public KitsProfile()
 	{
-		CreateMap<Kit, KitDto>();
+		CreateMap<Kit, KitDto>()
+			.ForMember(dest => dest.Implants, opt => opt.MapFrom(src => src.Implants)).ReverseMap();
 
-		CreateMap<CreateKitCommand, Kit>();
+
+
+        CreateMap<CreateKitCommand, Kit>();
 	}
 }

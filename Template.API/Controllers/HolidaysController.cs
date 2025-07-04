@@ -12,6 +12,8 @@ using Template.Application.Implants.Queries.GetAll;
 
 namespace Template.API.Controllers;
 
+[ApiController]
+[Route("api/[controller]/[action]")]
 public class HolidaysController(IMediator mediator) : ControllerBase
 {
     [HttpPost]

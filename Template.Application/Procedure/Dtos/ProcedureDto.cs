@@ -14,6 +14,7 @@ public  class ProcedureDto
 {
     public int Id { get; set; }
     public string DoctorId { get; set; }
+    public bool HasAssistant { get; set; }
     public string? AssistantId { get; set; }
     public int CategoryId { get; set; }
     public EnumProcedureStatus Status { get; set; } = EnumProcedureStatus.REQUEST_SENT;

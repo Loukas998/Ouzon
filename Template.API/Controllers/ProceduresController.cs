@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Procedure.Commands.Create;
 using Template.Application.Procedure.Commands.Update;
+using Template.Application.Procedure.Dtos;
 using Template.Application.Procedure.Queries.GetAll;
 using Template.Application.Procedure.Queries.GetById;
 using Template.Application.Procedure.Queries.GetPaged;
@@ -19,13 +20,13 @@ public class ProceduresController (IMediator mediator):ControllerBase
         return CreatedAtAction(nameof(GetProcedure), new { id }, null);
     }
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetProcedure([FromRoute]int id)
+    public async Task<ActionResult<ProcedureDto>> GetProcedure([FromRoute]int id)
     {
         var result = await mediator.Send(new GetProcedureQuery(id));
         return Ok(result);
     }
     [HttpGet(Name = "GetAllProcedures")]
-    public async Task<IActionResult> GetAllProcedures()
+    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures()
     {
         var result = await mediator.Send(new GetAllProceduresQuery());
         if (!result.Any())
@@ -35,9 +36,9 @@ public class ProceduresController (IMediator mediator):ControllerBase
         return Ok(result);
     }
     [HttpGet(Name = "GetProceduresPaged")]
-    public async Task<IActionResult> GetProceduresPaged([FromQuery]int pageSize,int pageNum)
+    public async Task<ActionResult<IEnumerable<ProcedureDto>>>GetProceduresPaged([FromQuery]int pageSize,int pageNum,string?DoctorId,string?AssistantId)
     {
-        var result = await mediator.Send(new GetProceduresPagedQuery(pageSize,pageNum));
+        var result = await mediator.Send(new GetProceduresPagedQuery(pageSize,pageNum,DoctorId,AssistantId));
         if (!result.Any())
         {
             return NoContent();
@@ -50,4 +51,5 @@ public class ProceduresController (IMediator mediator):ControllerBase
         await mediator.Send(request);
         return NoContent();
     }
+    
 }
