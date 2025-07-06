@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Template.Domain.Entities;
 using Template.Domain.Entities.AuthEntities;
+using Template.Domain.Entities.Notifications;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Users.Commands;
@@ -26,7 +27,7 @@ public class RegisterUserCommandHandler(IMapper mapper,
 }
 public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
         ITokenRepository tokenRepository,
-        UserManager<User> userManager) : IRequestHandler<LoginUserCommand, AuthResponse?>
+        UserManager<User> userManager, IDeviceRepository deviceRepository) : IRequestHandler<LoginUserCommand, AuthResponse?>
 {
     public async Task<AuthResponse?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
@@ -41,6 +42,23 @@ public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
         bool isValidCredentials = await userManager.CheckPasswordAsync(user, request.Password);
         if (isValidCredentials)
         {
+            var existingDevice = await deviceRepository.SearchAsync(request.DeviceToken, null, null, null, null);
+            if (existingDevice != null)
+            {
+                existingDevice[0].LastLoggedInAt = DateTime.UtcNow;
+                await deviceRepository.SaveChangesAsync();
+            } else {
+
+                var device = new Device()
+                {
+                    LastLoggedInAt = DateTime.UtcNow,
+                    DeviceToken = request.DeviceToken,
+                    UserId = user.Id,
+                    OptIn = true
+                };
+                await deviceRepository.AddAsync(device);
+            }
+
             var token = await tokenRepository.GenerateToken(user.Id);
             return token;
         }

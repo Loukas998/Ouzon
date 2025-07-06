@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Template.Domain.Entities.Schedule;
 using Template.Domain.Entities.ProcedureRelatedEntities;
+using Template.Domain.Entities.Notifications;
 
 namespace Template.Domain.Entities
 {
@@ -20,5 +21,6 @@ namespace Template.Domain.Entities
 
 		public List<Procedure> InProcedure { get; set; }
 		public List<Procedure> ProcedureFrom { get; set; }
+		public List<Device> Devices { get; set; } = [];
 	}
 }

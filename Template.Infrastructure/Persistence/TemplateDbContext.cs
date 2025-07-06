@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Template.Domain.Entities;
 using Template.Domain.Entities.Materials;
+using Template.Domain.Entities.Notifications;
 using Template.Domain.Entities.ProcedureRelatedEntities;
 using Template.Domain.Entities.Schedule;
+using Template.Infrastructure.Migrations;
 
 namespace Template.Infrastructure.Persistence;
 
@@ -20,6 +22,8 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 	internal DbSet<ProcedureTool> ProcedureTools { get; set; }
 	internal DbSet<Category> Categories{ get; set; }
 	internal DbSet<Holiday> Holidays { get; set; }
+	internal DbSet<Notification> Notifications { get; set; }
+	internal DbSet<Device> Devices { get; set; } 
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -55,14 +59,14 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
 
         modelBuilder.Entity<Category>()
-	.HasMany(c => c.Tools)
-	.WithOne(t => t.Category)
-	.HasForeignKey(t => t.CategoryId);
+			.HasMany(c => c.Tools)
+			.WithOne(t => t.Category)
+			.HasForeignKey(t => t.CategoryId);
 
 		modelBuilder.Entity<Category>()
-	  .HasMany(c => c.Procedures)
-	  .WithOne(t => t.Category)
-	  .HasForeignKey(t => t.CategoryId);
+			  .HasMany(c => c.Procedures)
+			  .WithOne(t => t.Category)
+			  .HasForeignKey(t => t.CategoryId);
 
         modelBuilder.Entity<Procedure>()
 			.HasOne(p => p.Assistant)
@@ -72,10 +76,10 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
 
 		modelBuilder.Entity<Procedure>()
-		.HasOne(p => p.Doctor)
-		.WithMany(doc=>doc.ProcedureFrom)
-		.HasForeignKey(p => p.DoctorId)
-		.OnDelete(DeleteBehavior.NoAction);
+			.HasOne(p => p.Doctor)
+			.WithMany(doc=>doc.ProcedureFrom)
+			.HasForeignKey(p => p.DoctorId)
+			.OnDelete(DeleteBehavior.NoAction);
 
 		modelBuilder.Entity<Procedure>()
 			.HasMany(x => x.KitsInProcedure)
@@ -83,17 +87,28 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			.HasForeignKey(kp => kp.ProcedureId);
 
 
-			modelBuilder.Entity<Procedure>()
+		modelBuilder.Entity<Procedure>()
 			.HasMany(x => x.ToolsInProcedure)
 			.WithOne(tp=>tp.Procedure)
 			.HasForeignKey(tp=> tp.ProcedureId);
-
-
-
 
 		modelBuilder.Entity<User>()
 			.HasMany(u => u.Holidays)
 			.WithOne()
 			.HasForeignKey(h => h.UserId);
+
+		modelBuilder.Entity<User>()
+			.HasMany(u => u.Devices)
+			.WithOne()
+			.HasForeignKey(d => d.UserId);
+
+		modelBuilder.Entity<Device>()
+			.HasMany(d => d.Notifications)
+			.WithOne()
+			.HasForeignKey(n => n.DeviceId);
+
+		modelBuilder.Entity<Device>()
+			.HasIndex(d => d.DeviceToken)
+			.IsUnique();
 	}
 }
