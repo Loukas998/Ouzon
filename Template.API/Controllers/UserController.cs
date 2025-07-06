@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Template.Application.Tokens.Commands;
 using Template.Application.Users;
 using Template.Application.Users.Commands;
+using Template.Application.Users.Queries;
 
 namespace Template.API.Controllers;
 
@@ -45,7 +46,13 @@ public class UserController(IMediator mediator,IUserContext userContext) : Contr
     [Authorize]
     public async Task<ActionResult<CurrentUser>> GetCurrentUser()
     {
-        return Ok(userContext.GetCurrentUser());
+        var query = new GetCurrentUserQuery();
+        var result = await mediator.Send(query);
+        if (!result.SuccessStatus)
+        {
+            return BadRequest(result.Errors);
+        }
+        return Ok(result.Data);
     }
     //[HttpGet(Name ="GetUsersByRole")]
     ////public async Task<ActionResult> GetUsersByRole([FromQuery]string role)
