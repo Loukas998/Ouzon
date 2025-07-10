@@ -7,6 +7,7 @@ using Template.Domain.Entities.Notifications;
 using Template.Domain.Entities.ProcedureRelatedEntities;
 using Template.Domain.Entities.Schedule;
 using Template.Infrastructure.Migrations;
+using Template.Domain.Entities.Users;
 
 namespace Template.Infrastructure.Persistence;
 
@@ -24,6 +25,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 	internal DbSet<Holiday> Holidays { get; set; }
 	internal DbSet<Notification> Notifications { get; set; }
 	internal DbSet<Device> Devices { get; set; } 
+	internal DbSet<Clinic> Clinics { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -31,6 +33,12 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
 		//relationships between the tables
 
+		//user has one or more clinics
+
+		modelBuilder.Entity<User>()
+			.HasOne(u => u.Clinic)
+			.WithOne(c => c.User)
+			.HasForeignKey<Clinic>(c => c.UserId);
 		// Kit has many Implants
 		modelBuilder.Entity<Kit>()
 			.HasMany(k => k.Implants)

@@ -21,26 +21,29 @@ public class RegisterUserCommandHandler(IMapper mapper,
     {
         var user = mapper.Map<User>(request);
         user.UserName = request.UserName;
+        user.Clinic = new Domain.Entities.Users.Clinic()
+        {
+            Address = request.Address,
+            Longtitude = request.Longtitude,
+            Latitude =request.Latitude,
+            Name = request.ClinicName,
+
+        };
         var errors = await accountRepository.Register(user, request.Password,request.Role);
         return errors;
     }
 }
 public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
         ITokenRepository tokenRepository,
+        IAccountRepository accountRepository,
+        UserManager<User> userManager) : IRequestHandler<LoginUserCommand, AuthResponse?>
         UserManager<User> userManager, IDeviceRepository deviceRepository) : IRequestHandler<LoginUserCommand, AuthResponse?>
 {
     public async Task<AuthResponse?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("looking for user with email: {Email}", request.Email);
-
-        var user = await userManager.FindByEmailAsync(request.Email);
-        if (user == null)
-        {
-           // throw new NotFoundException(nameof(User), request.Email);
-        }
-
-        bool isValidCredentials = await userManager.CheckPasswordAsync(user, request.Password);
-        if (isValidCredentials)
+       var tokenResponse = await accountRepository.LoginUser(request.Email, request.Password);
+        if(tokenResponse != null)
         {
             var existingDevice = await deviceRepository.SearchAsync(request.DeviceToken, null, null, null, null);
             if (existingDevice != null)
@@ -61,8 +64,8 @@ public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
 
             var token = await tokenRepository.GenerateToken(user.Id);
             return token;
+            return tokenResponse;
         }
-
         return null;
     }
 }

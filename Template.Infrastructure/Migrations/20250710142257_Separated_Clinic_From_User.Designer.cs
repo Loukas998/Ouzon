@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    partial class TemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710142257_Separated_Clinic_From_User")]
+    partial class Separated_Clinic_From_User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,60 +275,6 @@ namespace Template.Infrastructure.Migrations
                     b.HasIndex("KitId");
 
                     b.ToTable("Tools");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Device", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DeviceToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastLoggedInAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool?>("OptIn")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Devices");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DeviceId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Read")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
@@ -636,22 +585,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Kit");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Device", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.User", null)
-                        .WithMany("Devices")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Notification", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.Notifications.Device", null)
-                        .WithMany("Notifications")
-                        .HasForeignKey("DeviceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
                 {
                     b.HasOne("Template.Domain.Entities.User", "Assistant")
@@ -743,13 +676,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Tools");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Materials.Category", b =>
-                {
-                    b.Navigation("Procedures");
-
-                    b.Navigation("Tools");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.Materials.Kit", b =>
                 {
                     b.Navigation("Implants");
@@ -764,11 +690,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("ProceduresWithTool");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Device", b =>
-                {
-                    b.Navigation("Notifications");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
                 {
                     b.Navigation("KitsInProcedure");
@@ -778,12 +699,9 @@ namespace Template.Infrastructure.Migrations
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Devices");
-
-                    b.Navigation("Holidays");
-
                     b.Navigation("Clinic");
 
+                    b.Navigation("Holidays");
 
                     b.Navigation("InProcedure");
 

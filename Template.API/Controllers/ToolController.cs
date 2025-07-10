@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Template.Application.Tools.Commands.Create;
 using Template.Application.Tools.Commands.Delete;
 using Template.Application.Tools.Commands.Update;
+using Template.Application.Tools.Dtos;
 using Template.Application.Tools.Queries;
 using Template.Application.Tools.Queries.GetAll;
 using Template.Application.Tools.Queries.GetById;
@@ -21,7 +22,7 @@ namespace Template.API.Controllers
         }
 
         [HttpGet("{Id}")]
-        public async Task<ActionResult> GetToolById([FromRoute]int Id)
+        public async Task<ActionResult<ToolDto>> GetToolById([FromRoute]int Id)
         {
             return Ok(await mediator.Send(new GetToolByIdQuery(Id)));
         }
@@ -39,7 +40,7 @@ namespace Template.API.Controllers
             return NoContent();
         }
         [HttpGet]
-        public async Task<ActionResult> GetAllTools()
+        public async Task<ActionResult<IEnumerable<ToolDto>>> GetAllTools()
         {
             var tools = await mediator.Send(new GetAllToolsQuery());
             if (!tools.Any())

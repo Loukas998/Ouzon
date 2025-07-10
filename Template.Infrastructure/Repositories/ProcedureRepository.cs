@@ -26,9 +26,32 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
     {
         var procedure = await dbContext.Procedures
             .Include(pro => pro.ToolsInProcedure)
-            .ThenInclude(tp => tp.Tool)
+                .ThenInclude(tp => tp.Tool)
+            .Include(pro => pro.KitsInProcedure)
+                .ThenInclude(tp => tp.Kit)
+                    .ThenInclude(kit=>kit.Implants)
+             .Include(pro => pro.KitsInProcedure)
+                 .ThenInclude(tp => tp.Kit)
+                 .ThenInclude(kit => kit.Tools)
+
             .FirstOrDefaultAsync(pro => pro.Id == id);
         return procedure;
+    }
+   public async Task<List<Procedure>> GetFilteredProcedures(int pageSize, int pageNum, string? DoctorId, string? AssistantId)
+    {
+        var query = dbContext.Procedures.AsQueryable();
+        if (!string.IsNullOrEmpty(DoctorId))
+        {
+            query = query.Where(p => p.DoctorId == DoctorId);
+        }
+        if (!string.IsNullOrEmpty(AssistantId))
+        {
+            query = query.Where(p => p.AssistantId == AssistantId);
+        }
+        var procedures = await query.Skip((pageNum - 1) * pageSize)
+            .Take(pageSize)
+           .ToListAsync();
+        return procedures;
     }
 
 }

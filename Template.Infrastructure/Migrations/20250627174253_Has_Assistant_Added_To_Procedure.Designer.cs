@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    partial class TemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250627174253_Has_Assistant_Added_To_Procedure")]
+    partial class Has_Assistant_Added_To_Procedure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,60 +277,6 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("Tools");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Device", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DeviceToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastLoggedInAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool?>("OptIn")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Devices");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DeviceId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Read")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
                 {
                     b.Property<int>("Id")
@@ -451,6 +400,9 @@ namespace Template.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -465,11 +417,17 @@ namespace Template.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<float>("Latitude")
+                        .HasColumnType("real");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<float>("Longtitude")
+                        .HasColumnType("real");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -515,39 +473,6 @@ namespace Template.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Users.Clinic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Latitude")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Longtitude")
-                        .HasColumnType("real");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Clinics");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -636,22 +561,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Kit");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Device", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.User", null)
-                        .WithMany("Devices")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Notification", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.Notifications.Device", null)
-                        .WithMany("Notifications")
-                        .HasForeignKey("DeviceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
                 {
                     b.HasOne("Template.Domain.Entities.User", "Assistant")
@@ -725,24 +634,6 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Users.Clinic", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.User", "User")
-                        .WithOne("Clinic")
-                        .HasForeignKey("Template.Domain.Entities.Users.Clinic", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Template.Domain.Entities.Materials.Category", b =>
-                {
-                    b.Navigation("Procedures");
-
-                    b.Navigation("Tools");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.Materials.Category", b =>
                 {
                     b.Navigation("Procedures");
@@ -764,11 +655,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("ProceduresWithTool");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Notifications.Device", b =>
-                {
-                    b.Navigation("Notifications");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
                 {
                     b.Navigation("KitsInProcedure");
@@ -778,12 +664,7 @@ namespace Template.Infrastructure.Migrations
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Devices");
-
                     b.Navigation("Holidays");
-
-                    b.Navigation("Clinic");
-
 
                     b.Navigation("InProcedure");
 

@@ -11,5 +11,6 @@ namespace Template.Domain.Repositories
     {
 
         Task<Procedure> GetWithToolsAndKitsAsync(int id);
+        Task<List<Procedure>> GetFilteredProcedures(int pageSize, int pageNum, string? DoctorId, string? AssistantId);
     }
 }

@@ -8,7 +8,7 @@ using Template.Application.Procedure.Dtos;
 
 namespace Template.Application.Procedure.Queries.GetById
 {
-   public class GetProcedureQuery :IRequest<ProcedureDto>
+   public class GetProcedureQuery :IRequest<ProcedureDetailedDto>
     {
         public int Id { get; set; }
         public GetProcedureQuery(int id)
