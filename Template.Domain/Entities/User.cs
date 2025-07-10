@@ -21,8 +21,6 @@ namespace Template.Domain.Entities
 		public Clinic? Clinic { get; set; }
 		public List<Procedure>? InProcedure { get; set; } = [];
 		public List<Procedure>? ProcedureFrom { get; set; } = [];
-		public List<Procedure> InProcedure { get; set; }
-		public List<Procedure> ProcedureFrom { get; set; }
 		public List<Device> Devices { get; set; } = [];
 	}
 }
