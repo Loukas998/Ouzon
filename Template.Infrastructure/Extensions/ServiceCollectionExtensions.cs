@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
         // we use typeof because the interface and the class are generic
         // and without it we would have to specify the type(IGenericRepository<Kit>, GenericType<Kit>)
         services.AddScoped<ITokenRepository, TokenRepository>();
+		services.AddScoped<IDeviceRepository, DeviceRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IKitRepository, KitRepository>();
 		services.AddScoped<IImplantRepository, ImplantRepository>();
