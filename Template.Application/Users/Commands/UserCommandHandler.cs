@@ -36,34 +36,14 @@ public class RegisterUserCommandHandler(IMapper mapper,
 public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
         ITokenRepository tokenRepository,
         IAccountRepository accountRepository,
-        UserManager<User> userManager) : IRequestHandler<LoginUserCommand, AuthResponse?>
         UserManager<User> userManager, IDeviceRepository deviceRepository) : IRequestHandler<LoginUserCommand, AuthResponse?>
 {
     public async Task<AuthResponse?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("looking for user with email: {Email}", request.Email);
-       var tokenResponse = await accountRepository.LoginUser(request.Email, request.Password);
+       var tokenResponse = await accountRepository.LoginUser(request.Email, request.Password,request.DeviceToken);
         if(tokenResponse != null)
         {
-            var existingDevice = await deviceRepository.SearchAsync(request.DeviceToken, null, null, null, null);
-            if (existingDevice != null)
-            {
-                existingDevice[0].LastLoggedInAt = DateTime.UtcNow;
-                await deviceRepository.SaveChangesAsync();
-            } else {
-
-                var device = new Device()
-                {
-                    LastLoggedInAt = DateTime.UtcNow,
-                    DeviceToken = request.DeviceToken,
-                    UserId = user.Id,
-                    OptIn = true
-                };
-                await deviceRepository.AddAsync(device);
-            }
-
-            var token = await tokenRepository.GenerateToken(user.Id);
-            return token;
             return tokenResponse;
         }
         return null;

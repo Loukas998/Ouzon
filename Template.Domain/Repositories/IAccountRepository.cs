@@ -13,7 +13,7 @@ public interface IAccountRepository
 {
     Task<bool> CheckPassword(string userId, string password);
     Task<User> GetUserAsync(string id);
-    Task<AuthResponse>? LoginUser(string email, string password);
+    Task<AuthResponse>? LoginUser(string email, string password,string deviceToken);
     Task<int> NewUsersAfterMonth(int month, string roleId, int year);
     Task<int> NumberOfUsersInRole(string roleId);
     Task<IEnumerable<IdentityError>> Register(User owner, string password, string role);

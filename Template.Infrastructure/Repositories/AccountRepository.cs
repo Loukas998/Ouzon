@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Template.Domain.Entities;
 using Template.Domain.Entities.AuthEntities;
+using Template.Domain.Entities.Notifications;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -19,7 +21,8 @@ namespace Template.Infrastructure.Repositories;
 public class AccountRepository(UserManager<User> userManager,
         TemplateDbContext dbcontext,
         ITokenRepository tokenRepository,
-        IHostEnvironment hostEnvironment
+        IHostEnvironment hostEnvironment,
+        IDeviceRepository deviceRepository
         ) : IAccountRepository
 {
     public async Task<User> GetUserAsync(string id)
@@ -206,9 +209,10 @@ public class AccountRepository(UserManager<User> userManager,
         await dbcontext.SaveChangesAsync();
         return true;
     }
-    public async Task<AuthResponse>?LoginUser(string email,string password)
+    public async Task<AuthResponse>?LoginUser(string email,string password,string deviceToken)
     {
         var user = await userManager.FindByEmailAsync(email);
+
         if (user == null)
         {
             return null;
@@ -217,6 +221,24 @@ public class AccountRepository(UserManager<User> userManager,
         bool isValidCredentials = await userManager.CheckPasswordAsync(user, password);
         if (isValidCredentials)
         {
+            var existingDevice = await deviceRepository.SearchAsync(deviceToken, null, null, null, null);
+            if (existingDevice != null)
+            {
+                existingDevice[0].LastLoggedInAt = DateTime.UtcNow;
+                await deviceRepository.SaveChangesAsync();
+            }
+            else
+            {
+
+                var device = new Device()
+                {
+                    LastLoggedInAt = DateTime.UtcNow,
+                    DeviceToken = deviceToken,
+                    UserId = user.Id,
+                    OptIn = true
+                };
+                await deviceRepository.AddAsync(device);
+            }
             var token = await tokenRepository.GenerateToken(user.Id);
             return token;
         }
