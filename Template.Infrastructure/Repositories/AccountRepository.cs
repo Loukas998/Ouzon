@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -9,6 +10,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Domain.Entities;
+using Template.Domain.Entities.AuthEntities;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -16,6 +18,7 @@ namespace Template.Infrastructure.Repositories;
 
 public class AccountRepository(UserManager<User> userManager,
         TemplateDbContext dbcontext,
+        ITokenRepository tokenRepository,
         IHostEnvironment hostEnvironment
         ) : IAccountRepository
 {
@@ -39,11 +42,24 @@ public class AccountRepository(UserManager<User> userManager,
 
     public async Task<IEnumerable<IdentityError>> Register(User owner, string password, string role)
     {
+       var user = await userManager.FindByEmailAsync(owner.Email);
+        if(user != null)
+        {
+            var list = new List<IdentityError>
+            {
+                new()
+                {
+                    Code = "User already exists",
+                    Description = "User with the same email already exists"
+                }
+            };
+        }
         var res = await userManager.CreateAsync(owner, password);
         if (res.Succeeded)
         {
             await userManager.AddToRoleAsync(owner, role);
         }
+        
         return res.Errors;
     }
 
@@ -189,6 +205,22 @@ public class AccountRepository(UserManager<User> userManager,
         await userManager.UpdateAsync(user);
         await dbcontext.SaveChangesAsync();
         return true;
+    }
+    public async Task<AuthResponse>?LoginUser(string email,string password)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return null;
+        }
+
+        bool isValidCredentials = await userManager.CheckPasswordAsync(user, password);
+        if (isValidCredentials)
+        {
+            var token = await tokenRepository.GenerateToken(user.Id);
+            return token;
+        }
+        return null;
     }
     //public async Task<bool> Verify(string verficationToken)
     //{

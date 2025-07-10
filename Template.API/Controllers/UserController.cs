@@ -27,6 +27,10 @@ public class UserController(IMediator mediator,IUserContext userContext) : Contr
     public async Task<ActionResult> LoginUser(LoginUserCommand request)
     {
         var result = await mediator.Send(request);
+        if(result == null)
+        {
+            return BadRequest(new { Errors = "Either Email or Password is wrong" });
+        }
         return Ok(result);
     }
     [HttpPost]

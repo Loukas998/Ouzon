@@ -20,31 +20,31 @@ public class RegisterUserCommandHandler(IMapper mapper,
     {
         var user = mapper.Map<User>(request);
         user.UserName = request.UserName;
+        user.Clinic = new Domain.Entities.Users.Clinic()
+        {
+            Address = request.Address,
+            Longtitude = request.Longtitude,
+            Latitude =request.Latitude,
+            Name = request.ClinicName,
+
+        };
         var errors = await accountRepository.Register(user, request.Password,request.Role);
         return errors;
     }
 }
 public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
         ITokenRepository tokenRepository,
+        IAccountRepository accountRepository,
         UserManager<User> userManager) : IRequestHandler<LoginUserCommand, AuthResponse?>
 {
     public async Task<AuthResponse?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("looking for user with email: {Email}", request.Email);
-
-        var user = await userManager.FindByEmailAsync(request.Email);
-        if (user == null)
+       var tokenResponse = await accountRepository.LoginUser(request.Email, request.Password);
+        if(tokenResponse != null)
         {
-           // throw new NotFoundException(nameof(User), request.Email);
+            return tokenResponse;
         }
-
-        bool isValidCredentials = await userManager.CheckPasswordAsync(user, request.Password);
-        if (isValidCredentials)
-        {
-            var token = await tokenRepository.GenerateToken(user.Id);
-            return token;
-        }
-
         return null;
     }
 }

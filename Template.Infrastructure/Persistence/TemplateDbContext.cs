@@ -5,6 +5,7 @@ using Template.Domain.Entities;
 using Template.Domain.Entities.Materials;
 using Template.Domain.Entities.ProcedureRelatedEntities;
 using Template.Domain.Entities.Schedule;
+using Template.Domain.Entities.Users;
 
 namespace Template.Infrastructure.Persistence;
 
@@ -20,6 +21,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 	internal DbSet<ProcedureTool> ProcedureTools { get; set; }
 	internal DbSet<Category> Categories{ get; set; }
 	internal DbSet<Holiday> Holidays { get; set; }
+	internal DbSet<Clinic> Clinics { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -27,6 +29,12 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
 		//relationships between the tables
 
+		//user has one or more clinics
+
+		modelBuilder.Entity<User>()
+			.HasOne(u => u.Clinic)
+			.WithOne(c => c.User)
+			.HasForeignKey<Clinic>(c => c.UserId);
 		// Kit has many Implants
 		modelBuilder.Entity<Kit>()
 			.HasMany(k => k.Implants)
