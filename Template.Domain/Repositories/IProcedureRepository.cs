@@ -10,7 +10,7 @@ namespace Template.Domain.Repositories
     public interface IProcedureRepository : IGenericRepository<Procedure>
     {
 
-        Task<Procedure> GetWithToolsAndKitsAsync(int id);
+        Task<Procedure> GetDetailedWithId(int id);
         Task<List<Procedure>> GetFilteredProcedures(int pageSize, int pageNum, string? DoctorId, string? AssistantId);
     }
 }

@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Template.Application.Users.Queries
+namespace Template.Domain.Enums
 {
-    public class GetUsersByRoleQuery
+    public enum EnumRoleNames
     {
+        Administrator,
+        AssistantDoctor,
+        User
     }
 }

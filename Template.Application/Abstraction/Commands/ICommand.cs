@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Template.Application.Users.Dtos;
 using Template.Domain.Entities.ResponseEntity;
 
-namespace Template.Application.Users.Queries;
+namespace Template.Application.Abstraction.Commands;
 
- public class GetCurrentUserQuery :IRequest<Result<UserDto>>
+public interface ICommand : IRequest<Result>
 {
 
+}
+public interface ICommand<TResult> : IRequest<Result<TResult>>
+{
 }

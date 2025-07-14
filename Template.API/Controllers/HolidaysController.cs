@@ -19,7 +19,12 @@ public class HolidaysController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateHoliday([FromBody] CreateHolidayCommand command)
     {
-        int id = await mediator.Send(command);
+        var result = await mediator.Send(command);
+        int id = result.Data;
+        if (!result.SuccessStatus)
+        {
+            return BadRequest(result.Errors);
+        }
         return CreatedAtAction(nameof(GetHolidayById), new { id }, null);
     }
 
@@ -27,20 +32,36 @@ public class HolidaysController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<HolidayDto>> GetHolidayById([FromRoute] int id)
     {
         var holiday = await mediator.Send(new GetHolidayByIdQuery(id));
-        return Ok(holiday);
+        if (!holiday.SuccessStatus)
+        {
+            return NotFound(holiday.Errors);
+        }
+        return Ok(holiday.Data);
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<HolidayDto>>> GetAllHolidays()
     {
         var holidays = await mediator.Send(new GetAllHolidaysQuery());
-        return Ok(holidays);
+        if (!holidays.SuccessStatus)
+        {
+            return BadRequest(holidays.Errors);
+        }
+        if (!holidays.Data.Any())
+        {
+            return NotFound();
+        }
+        return Ok(holidays.Data);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteHoliday([FromRoute] int id)
     {
-        await mediator.Send(new DeleteHolidayCommand(id));
+        var res = await mediator.Send(new DeleteHolidayCommand(id));
+        if (!res.SuccessStatus) 
+        {
+            return BadRequest(res.Errors);
+        }
         return NoContent();
     }
 
@@ -48,7 +69,11 @@ public class HolidaysController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] ChangeHolidayStatusCommand command)
     {
         command.HolidayId = id;
-        await mediator.Send(command);
+        var result = await mediator.Send(command);
+        if (!result.SuccessStatus)
+        {
+            return BadRequest(result.Errors);
+        }
         return NoContent();
     }
 }

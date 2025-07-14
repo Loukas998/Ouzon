@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using Template.Application.Abstraction.Commands;
 
 namespace Template.Application.Implants.Commands.Create;
 
-public class CreateImplantCommand : IRequest<int>
+public class CreateImplantCommand : ICommand<int>
 {
 	public float Radius { get; set; }
 	public float Width { get; set; }

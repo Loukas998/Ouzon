@@ -21,6 +21,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 	internal DbSet<Procedure> Procedures { get; set; }
 	internal DbSet<ProcedureKit> ProcedureKits { get; set; }
 	internal DbSet<ProcedureTool> ProcedureTools { get; set; }
+	internal DbSet<Domain.Entities.ProcedureRelatedEntities.ProcedureAssistant> ProcedureAssistants { get; set; }
 	internal DbSet<Category> Categories{ get; set; }
 	internal DbSet<Holiday> Holidays { get; set; }
 	internal DbSet<Notification> Notifications { get; set; }
@@ -77,11 +78,15 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			  .HasForeignKey(t => t.CategoryId);
 
         modelBuilder.Entity<Procedure>()
-			.HasOne(p => p.Assistant)
-			.WithMany(ass=>ass.InProcedure)
-			.HasForeignKey(p => p.AssistantId)
+			.HasMany(p => p.AssistantsInProcedure)
+			.WithOne(prass=>prass.Procedure)
+			.HasForeignKey(p => p.ProcedureId)
 			.OnDelete(DeleteBehavior.NoAction);
 
+		modelBuilder.Entity<User>()
+			.HasMany(ass => ass.InProcedure)
+			.WithOne(prass => prass.Asisstant)
+			.HasForeignKey(prass => prass.AsisstantId);
 
 		modelBuilder.Entity<Procedure>()
 			.HasOne(p => p.Doctor)

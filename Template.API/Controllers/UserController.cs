@@ -5,13 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using Template.Application.Tokens.Commands;
 using Template.Application.Users;
 using Template.Application.Users.Commands;
+using Template.Application.Users.Dtos;
 using Template.Application.Users.Queries;
+using Template.Application.Users.Queries.CurrentUser;
+using Template.Application.Users.Queries.UserDetails;
 
 namespace Template.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class UserController(IMediator mediator,IUserContext userContext) : ControllerBase
+public class UserController(IMediator mediator, IUserContext userContext) : ControllerBase
 {
     [HttpPost(Name = "RegisterUser")]
     public async Task<IActionResult> RegisterUser(RegisterUserCommand request)
@@ -27,11 +30,11 @@ public class UserController(IMediator mediator,IUserContext userContext) : Contr
     public async Task<ActionResult> LoginUser(LoginUserCommand request)
     {
         var result = await mediator.Send(request);
-        if(result == null)
+        if (!result.SuccessStatus)
         {
-            return BadRequest(new { Errors = "Either Email or Password is wrong" });
+            return BadRequest(result.Errors);
         }
-        return Ok(result);
+        return Ok(result.Data);
     }
     [HttpPost]
     [Route("RefreshToken")]
@@ -57,6 +60,20 @@ public class UserController(IMediator mediator,IUserContext userContext) : Contr
             return BadRequest(result.Errors);
         }
         return Ok(result.Data);
+    }
+    [HttpGet("{Id}")]
+    public async Task<ActionResult<UserDetailedDto>> GetFullUserProfile([FromRoute]string Id)
+    {
+        var user = await mediator.Send(new GetUserDetailsByIdQuery(Id));
+        if (!user.SuccessStatus)
+        {
+            return BadRequest(user.Errors);
+        }
+        if(user.Data == null)
+        {
+            return NotFound();
+        }
+        return Ok(user.Data);
     }
     //[HttpGet(Name ="GetUsersByRole")]
     ////public async Task<ActionResult> GetUsersByRole([FromQuery]string role)

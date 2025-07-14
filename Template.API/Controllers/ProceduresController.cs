@@ -16,20 +16,22 @@ public class ProceduresController (IMediator mediator):ControllerBase
     [HttpPost(Name ="AddProcedure")]
     public async Task<IActionResult>AddProcedure(CreateProcedureCommand request)
     {
-        var id = await mediator.Send(request);
+        var result = await mediator.Send(request);
+        var id = result.Data;
         return CreatedAtAction(nameof(GetProcedure), new { id }, null);
     }
     [HttpGet("{id}")]
     public async Task<ActionResult<ProcedureDto>> GetProcedure([FromRoute]int id)
     {
         var result = await mediator.Send(new GetProcedureQuery(id));
-        return Ok(result);
+       
+        return Ok(result.Data);
     }
     [HttpGet(Name = "GetAllProcedures")]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures()
     {
         var result = await mediator.Send(new GetAllProceduresQuery());
-        if (!result.Any())
+        if (!result.Data.Any())
         {
             return NoContent();
         }
@@ -39,9 +41,9 @@ public class ProceduresController (IMediator mediator):ControllerBase
     public async Task<ActionResult<IEnumerable<ProcedureDto>>>GetProceduresPaged([FromQuery]int pageSize,int pageNum,string?DoctorId,string?AssistantId)
     {
         var result = await mediator.Send(new GetProceduresPagedQuery(pageSize,pageNum,DoctorId,AssistantId));
-        if (!result.Any())
+        if (!result.Data.Any())
         {
-            return NoContent();
+            return NotFound();
         }
         return Ok(result);
     }

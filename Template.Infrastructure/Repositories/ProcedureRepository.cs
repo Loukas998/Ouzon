@@ -22,17 +22,20 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
         this.toolRepository = toolRepository;
         this.kitRepository = kitRepository;
     }
-   public async Task<Procedure>GetWithToolsAndKitsAsync(int id)
+   public async Task<Procedure>GetDetailedWithId(int id)
     {
         var procedure = await dbContext.Procedures
             .Include(pro => pro.ToolsInProcedure)
                 .ThenInclude(tp => tp.Tool)
             .Include(pro => pro.KitsInProcedure)
                 .ThenInclude(tp => tp.Kit)
-                    .ThenInclude(kit=>kit.Implants)
+                    .ThenInclude(kit => kit.Implants)
              .Include(pro => pro.KitsInProcedure)
                  .ThenInclude(tp => tp.Kit)
                  .ThenInclude(kit => kit.Tools)
+                 .Include(pro => pro.AssistantsInProcedure)
+                 .ThenInclude(ap => ap.Asisstant)
+                 .Include(pro => pro.Doctor)
 
             .FirstOrDefaultAsync(pro => pro.Id == id);
         return procedure;
@@ -46,7 +49,7 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
         }
         if (!string.IsNullOrEmpty(AssistantId))
         {
-            query = query.Where(p => p.AssistantId == AssistantId);
+            query = query.Where(p => p.AssistantsInProcedure.Any(x=>x.AsisstantId == AssistantId) );
         }
         var procedures = await query.Skip((pageNum - 1) * pageSize)
             .Take(pageSize)

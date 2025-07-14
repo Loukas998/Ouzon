@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Template.Application.Abstraction.Commands;
 
 namespace Template.Application.Tools.Commands.Create;
 
-public class CreateToolCommand :IRequest<int>
+public class CreateToolCommand :ICommand<int>
 {
     public string Name { get; set; }
     public float Width { get; set; }

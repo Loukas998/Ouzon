@@ -12,7 +12,7 @@ using Template.Domain.Entities;
 using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Repositories;
 
-namespace Template.Application.Users.Queries;
+namespace Template.Application.Users.Queries.CurrentUser;
 
 class GetCurrentUserQueryHandler(ILogger<GetCurrentUserQueryHandler>logger,IMapper mapper,IUserContext userContext,IAccountRepository accountRepository): IRequestHandler<GetCurrentUserQuery, Result<UserDto>>
 {
