@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Abstraction.Queries;
 using Template.Application.Procedure.Dtos;
+using Template.Domain.Entities.Materials;
 using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Repositories;
 
@@ -33,8 +35,9 @@ namespace Template.Application.Procedure.Queries.GetById
                     DoctorId = result.DoctorId,
                     CategoryId = result.CategoryId,
                     Date = result.Date,
-                    KitsWithImplants = result.Kits.Where(kit => kit.Implants.Any()),
-                    KitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any()),
+                    MainKits = result.Kits.Where(kit=>kit.IsMainKit),
+                    KitsWithImplants = result.Kits.Where(kit => kit.Implants.Any()&&!kit.IsMainKit),
+                    KitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any()&&kit.IsMainKit),
                     ToolsNotInKit = result.Tools.Where(tool => tool.KitId == null),
                     Status = result.Status,
                     Doctor = result.Doctor

@@ -22,7 +22,7 @@ namespace Template.Application.Procedure.Commands.Update
     {
         public async Task<Result> Handle(UpdateProcedureCommand request, CancellationToken cancellationToken)
         {
-            var procedure = await procedureRepository.FindByIdAsync(request.Id);
+            var procedure = await procedureRepository.GetDetailedWithId(request.Id);
             if(procedure == null)
             {
                 return Result.Failure(["Entity not Found"]);
@@ -30,10 +30,12 @@ namespace Template.Application.Procedure.Commands.Update
             mapper.Map(request, procedure);
             if (request.AssistantIds != null)
             {
+
                 if (procedure.AssistantsInProcedure == null)
                 {
                     procedure.AssistantsInProcedure = new List<ProcedureAssistant>();
                 }
+                procedure.AssistantsInProcedure.Clear();
                 foreach(var assistantId in request.AssistantIds)
                 {
                     var exists = await accountRepository.UserInRoleAsync(assistantId, EnumRoleNames.AssistantDoctor.ToString());
@@ -41,7 +43,7 @@ namespace Template.Application.Procedure.Commands.Update
                     {
                         return Result.Failure(["Assistant Doesn't Exist"]);
                     }
-                    procedure.AssistantsInProcedure.Add(new Domain.Entities.ProcedureRelatedEntities.ProcedureAssistant()
+                    procedure.AssistantsInProcedure.Add(new ProcedureAssistant()
                     {
                         AsisstantId = assistantId
                     });

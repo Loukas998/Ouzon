@@ -19,16 +19,4 @@ public class UpdateProcedureCommand : ICommand
     public EnumProcedureStatus? Status { get; set; }
     public List<int>? ToolIds { get; set; }
     public List<int>? KitIds { get; set; }
-
-    public event EventHandler? CanExecuteChanged;
-
-    public bool CanExecute(object? parameter)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Execute(object? parameter)
-    {
-        throw new NotImplementedException();
-    }
 }

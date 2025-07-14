@@ -50,7 +50,11 @@ public class ProceduresController (IMediator mediator):ControllerBase
     [HttpPut(Name = "UpdateProcedure")]
     public async Task<IActionResult>UpdateProcedure(UpdateProcedureCommand request)
     {
-        await mediator.Send(request);
+        var result = await mediator.Send(request);
+        if (!result.SuccessStatus)
+        {
+            return BadRequest(result.Errors);
+        }
         return NoContent();
     }
     

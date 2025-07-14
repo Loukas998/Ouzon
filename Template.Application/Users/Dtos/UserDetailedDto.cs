@@ -17,8 +17,8 @@ namespace Template.Application.Users.Dtos
         public string Email { get; set; }
         public string? PhoneNumber { get; set; }
         public string Role { get; set; } = "User";
-        public List<ProcedureDto>? InProcedure { get; set; }
-        public List<ProcedureDto>? ProcedureFrom { get; set; }
+        public List<ProcedureSummaryDto>? InProcedure { get; set; }
+        public List<ProcedureSummaryDto>? ProcedureFrom { get; set; }
         public List<HolidayDto>? Holidays { get; set; }
         public List<Device>? Devices { get; set; }
     }

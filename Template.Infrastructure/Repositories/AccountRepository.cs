@@ -262,10 +262,11 @@ public class AccountRepository(UserManager<User> userManager,
     public async Task<User>GetUserDetails(string? id)
     {
         var user = await userManager.Users
-            .Include(u=>u.InProcedure)
-            .ThenInclude(prc=>prc.Procedure)
-            .Include(u=>u.ProcedureFrom)
-            .Include(u=>u.Devices)
+            .Include(u => u.InProcedure)
+            .ThenInclude(prc => prc.Procedure)
+            .Include(u => u.ProcedureFrom)
+            .Include(u => u.Devices)
+            .Include(u => u.Holidays)
             .Where(u=>u.Id == id)
             .FirstOrDefaultAsync()
             ;

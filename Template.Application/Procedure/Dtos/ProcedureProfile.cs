@@ -25,5 +25,6 @@ public class ProcedureProfile:Profile
             .ForMember(dest => dest.Doctor, opt => opt.MapFrom(src => src.Doctor))
             .ReverseMap();
         CreateMap<UpdateProcedureCommand, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
+        CreateMap<ProcedureSummaryDto, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
     }
 }

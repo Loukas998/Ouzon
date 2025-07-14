@@ -13,6 +13,7 @@ public class Kit
 	public int Id { get; set; }
 	public string? Name { get; set; }
 	public string? ImagePath { get; set; }
+	public bool IsMainKit { get; set; } = false;
 
 	public List<Implant>? Implants { get; set; }
 

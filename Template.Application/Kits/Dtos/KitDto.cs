@@ -7,5 +7,6 @@ public class KitDto
 {
 	public int Id { get; set; }
 	public string? Name { get; set; }
+	public bool IsMainKit { get; set; }
 	public List<ImplantDto>? Implants { get; set; } = [];
 }

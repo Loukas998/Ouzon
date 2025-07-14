@@ -56,5 +56,11 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
            .ToListAsync();
         return procedures;
     }
+    public async Task<int>AddProcedureAssistant(ProcedureAssistant entity)
+    {
+        await dbContext.ProcedureAssistants.AddAsync(entity);
+        await dbContext.SaveChangesAsync();
+        return entity.Id;
+    }
 
 }
