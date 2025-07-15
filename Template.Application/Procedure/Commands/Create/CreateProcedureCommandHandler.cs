@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Abstraction.Commands;
@@ -57,12 +58,19 @@ namespace Template.Application.Procedure.Commands.Create
                 }
                 if (request.KitIds != null)
                 {
+                    var mainKitCount = 0;
                     foreach (var kitId in request.KitIds)
                     {
                         var kit = await kitRepository.FindByIdAsync(kitId);
                         if (kit == null)
                         {
                             return Result.Failure<int>(["Tool not found"]);
+                        }
+                        else if (kit.IsMainKit)
+                        {
+                           if (mainKitCount >= 1)
+                            return Result.Failure<int>(["There Can only be 1 Main Kit per Procedure"]);
+                            mainKitCount++;
                         }
                         procedure.KitsInProcedure.Add(new ProcedureKit()
                         {

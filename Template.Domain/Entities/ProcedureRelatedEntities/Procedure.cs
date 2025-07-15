@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Domain.Entities.Materials;
+using Template.Domain.Entities.Users;
 using Template.Domain.Enums;
 
 namespace Template.Domain.Entities.ProcedureRelatedEntities;
@@ -20,5 +21,6 @@ public class Procedure
     public List<ProcedureTool> ToolsInProcedure { get; set; } = [];
     public User Doctor { get; set; }
     public List<ProcedureAssistant>? AssistantsInProcedure { get; set; }
+    public List<Rating>? Ratings { get; set; } = [];
     public Category Category { get; set; }
 }

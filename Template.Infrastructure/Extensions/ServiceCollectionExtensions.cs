@@ -40,6 +40,7 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<IToolRepository, ToolRepository>();
 		services.AddScoped<IProcedureRepository, ProcedureRepository>();
 		services.AddScoped<IHolidayRepository, HolidayRepository>();
+		services.AddScoped<IRatingsRepository, RatingRepository>();
 		services.AddTransient<INotificationService, NotificationService>();
 	}
 }

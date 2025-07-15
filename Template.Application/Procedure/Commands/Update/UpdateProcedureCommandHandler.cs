@@ -67,6 +67,7 @@ namespace Template.Application.Procedure.Commands.Update
             }
             if (request.KitIds != null)
             {
+                var mainKitCount = 0;
                 procedure.KitsInProcedure.Clear();
                 foreach (var kit in request.KitIds)
                 {
@@ -75,10 +76,19 @@ namespace Template.Application.Procedure.Commands.Update
                     {
                         return Result.Failure(["Entity Not Found"]);
                     }
+                   else if (kitEntity.IsMainKit)
+                    {
+                        if (mainKitCount >= 1)
+                        {
+                            return Result.Failure(["There Can only be 1 Main Kit per Procedure"]);
+                        }
+                        mainKitCount++;
+                    }
                     procedure.KitsInProcedure.Add(new ProcedureKit()
                     {
                         KitId = kit
                     });
+                  
                 }
             }
             await procedureRepository.UpdateAsync(procedure);

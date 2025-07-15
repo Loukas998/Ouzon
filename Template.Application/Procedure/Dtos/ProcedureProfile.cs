@@ -26,5 +26,6 @@ public class ProcedureProfile:Profile
             .ReverseMap();
         CreateMap<UpdateProcedureCommand, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
         CreateMap<ProcedureSummaryDto, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
+        CreateMap<ProcedureKitDetailsDto, ProcedureDto>().ReverseMap();
     }
 }

@@ -62,5 +62,31 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
         await dbContext.SaveChangesAsync();
         return entity.Id;
     }
+    public async Task<Procedure>GetProcedureWithKits(int Id)
+    {
+        return await dbContext.Procedures
+            .Include(x => x.KitsInProcedure)
+            .ThenInclude(kp => kp.Kit)
+            .ThenInclude(kp=>kp.Tools)
+            .Include(kp=>kp.KitsInProcedure)
+            .ThenInclude(kp=>kp.Kit)
+            .ThenInclude(k=>k.Implants)
+            .FirstOrDefaultAsync(x => x.Id == Id);
+    }
+    public async Task<Procedure> GetProcedureWithAssistants(int Id)
+    {
+        return await dbContext.Procedures
+            .Include(x => x.AssistantsInProcedure)
+            .ThenInclude(kp => kp.Asisstant)
+            .FirstOrDefaultAsync(x => x.Id == Id);
+    }
+    public async Task<Procedure> GetProcedureWithToolsNotInKit(int Id)
+    {
+        return await dbContext.Procedures
+            .Include(x => x.ToolsInProcedure)
+            .ThenInclude(kp => kp.Tool)
+            .FirstOrDefaultAsync(x => x.Id == Id);
+    }
+
 
 }
