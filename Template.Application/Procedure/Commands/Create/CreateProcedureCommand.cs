@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Template.Application.Abstraction.Commands;
+using Template.Application.Procedure.Dtos;
 using Template.Domain.Entities.ResponseEntity;
 
 namespace Template.Application.Procedure.Commands.Create;
@@ -17,7 +18,7 @@ public class CreateProcedureCommand : ICommand<int>
     public int NumberOfAssistants{ get; set; }
     public DateTime Date { get; set; }
     public int CategoryId { get; set; }
-    public List<int>? ToolsIds { get; set; }
+    public List<AddProcedureToolDto>? ToolsIds { get; set; }
     public List<int>? KitIds { get; set; }
     
 }

@@ -43,8 +43,8 @@ namespace Template.Application.Procedure.Commands.Create
                 {
                     foreach (var toolId in request.ToolsIds)
                     {
-                        var tool = await toolRepository.FindByIdAsync(toolId);
-                        if (tool == null)
+                        var tool = await toolRepository.FindByIdAsync(toolId.ToolId);
+                        if (tool == null || tool.Quantity<toolId.Quantity)
                         {
                             return Result.Failure<int>(["Tool not found"]);
                         }
@@ -53,6 +53,8 @@ namespace Template.Application.Procedure.Commands.Create
                             ToolId = tool.Id,
                             Procedure = procedure,
                         };
+                        tool.Quantity -= toolId.Quantity;
+                        await toolRepository.UpdateAsync(tool);
                         procedure.ToolsInProcedure.Add(proTool);
                     }
                 }

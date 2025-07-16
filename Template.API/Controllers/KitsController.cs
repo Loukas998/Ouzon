@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Template.Application.Kits.Commands.Create;
 using Template.Application.Kits.Commands.Delete;
 using Template.Application.Kits.Dtos;
+using Template.Application.Kits.Queries.Filter;
 using Template.Application.Kits.Queries.GetAll;
 using Template.Application.Kits.Queries.GetById;
 using Template.Domain.Entities.Materials;
@@ -51,6 +52,16 @@ public class KitsController(IMediator mediator) : ControllerBase
 		}
 		return Ok(kit);
 	}
+	[HttpGet("filter")]
+	public async Task<ActionResult<List<KitDto>>> GetFilteredKits([FromQuery]int pageNum,int pageSize, string? brandName,bool? isMainKit, bool? hasImplants)
+	{
+        var res = await mediator.Send(new GetKitsWithFilterQuery(pageNum,pageSize,brandName,isMainKit,hasImplants));
+        if (!res.SuccessStatus)
+        {
+            return BadRequest(res.Errors);
+        }
+		return Ok(res.Data);
+    }
 
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteKit([FromRoute] int id)

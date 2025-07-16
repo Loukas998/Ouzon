@@ -29,7 +29,7 @@ public class Result
     }
     public static Result<T> Failure<T>(List<string> errors)
     {
-        return new Result<T>(default,false, new List<string>());
+        return new Result<T>(default,false,errors);
     }
 
 }
@@ -40,6 +40,7 @@ public class Result<T> : Result
          : base(success, errors)
     {
         Data = data;
+        this.Errors = errors;
     }
     public static Result<T> Success(T data)
     {

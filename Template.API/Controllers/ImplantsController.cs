@@ -46,8 +46,18 @@ public class ImplantsController(IMediator mediator) : ControllerBase
 		}
 		return Ok(implant.Data);
 	}
+	//[HttpGet("filter")]
+ //   public async Task<ActionResult<ImplantDto>> GetImplantsWithFilters([FromQuery])
+ //   {
+ //       var implant = await mediator.Send(new GetImplantByIdQuery(id));
+ //       if (!implant.SuccessStatus)
+ //       {
+ //           return NotFound(implant.Errors);
+ //       }
+ //       return Ok(implant.Data);
+ //   }
 
-	[HttpDelete("{id}")]
+    [HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteImplant([FromRoute] int id)
 	{
 		var res = await mediator.Send(new DeleteImplantCommand(id));
