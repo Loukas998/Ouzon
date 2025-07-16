@@ -8,6 +8,7 @@ namespace Template.API.Controllers;
 [Route("api/[controller]")]
 public class NotificationsController(IMediator mediator) : ControllerBase
 {
+    [HttpPost]
     public async Task<IActionResult> SendNotification([FromBody] SendNotificationCommand command)
     {
         await mediator.Send(command);

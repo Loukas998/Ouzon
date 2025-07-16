@@ -40,5 +40,6 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<IProcedureRepository, ProcedureRepository>();
 		services.AddScoped<IHolidayRepository, HolidayRepository>();
 		services.AddTransient<INotificationService, NotificationService>();
+		services.AddScoped<IDeviceRepository, DeviceRepository>();
 	}
 }
