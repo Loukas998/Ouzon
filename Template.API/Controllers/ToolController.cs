@@ -7,6 +7,7 @@ using Template.Application.Tools.Dtos;
 using Template.Application.Tools.Queries;
 using Template.Application.Tools.Queries.GetAll;
 using Template.Application.Tools.Queries.GetById;
+using Template.Application.Tools.Queries.GetWithFilter;
 
 namespace Template.API.Controllers
 {
@@ -48,6 +49,12 @@ namespace Template.API.Controllers
                 return NoContent();
             }
             return Ok(tools);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ToolDto>>> GetFilteredTools([FromQuery] GetToolsWithFilterQuery query)
+        {
+            return Ok(await mediator.Send(query));
         }
     }
 }

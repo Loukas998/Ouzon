@@ -6,6 +6,7 @@ using Template.Application.Implants.Commands.Update;
 using Template.Application.Implants.Dtos;
 using Template.Application.Implants.Queries.GetAll;
 using Template.Application.Implants.Queries.GetById;
+using Template.Application.Implants.Queries.GetWithFilter;
 
 namespace Template.API.Controllers;
 
@@ -48,5 +49,11 @@ public class ImplantsController(IMediator mediator) : ControllerBase
 		command.ImplantId = implantId;
 		await mediator.Send(command);
 		return NoContent();
+	}
+
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<ImplantDto>>> GetFilteredImplants([FromQuery] GetImplantsWithFilterQuery query)
+	{
+		return Ok(await mediator.Send(query));
 	}
 }
