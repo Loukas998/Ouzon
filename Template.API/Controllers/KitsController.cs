@@ -50,7 +50,7 @@ public class KitsController(IMediator mediator) : ControllerBase
 		{
 			return BadRequest(kit.Errors);
 		}
-		return Ok(kit);
+		return Ok(kit.Data);
 	}
 	[HttpGet("filter")]
 	public async Task<ActionResult<List<KitDto>>> GetFilteredKits([FromQuery]int pageNum,int pageSize, string? brandName,bool? isMainKit, bool? hasImplants)

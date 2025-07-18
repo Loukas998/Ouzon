@@ -20,13 +20,13 @@ namespace Template.Application.Procedure.Dtos
         public EnumProcedureStatus Status { get; set; } = EnumProcedureStatus.REQUEST_SENT;
         public DateTime Date { get; set; }
         public UserDto Doctor { get; set; }
-        public IEnumerable<KitDto>? MainKits { get; set; } = [];
-        public IEnumerable<ToolDto>? ToolsNotInKit { get; set; } = [];
-        public IEnumerable<KitDto>? KitsWithImplants { get; set; } = [];
-        public IEnumerable<KitDto>? KitsWithoutImplants { get; set; } = [];
+        public IEnumerable<KitDto>? MainKits { get; set; } = []; // surgical kits
+        public IEnumerable<ToolDto>? ToolsNotInKit { get; set; } = []; // required tools
+        public IEnumerable<KitDto>? KitsWithImplants { get; set; } = []; // implant kits
+        public IEnumerable<KitDto>? KitsWithoutImplants { get; set; } = []; // required tools
         public IEnumerable<UserDto>? Assistants { get; set; } = [];
-        public IEnumerable<ImplantDto>? ProcedureImplantsWithoutTools { get; set; } = [];
-        public IEnumerable<ProcedureImplantToolsDetailsDto>? ProcedureImplantsWithTools { get; set; } = [];
+        public IEnumerable<ImplantDto>? ProcedureImplantsWithoutTools { get; set; } = []; // implant kits
+        public IEnumerable<ProcedureImplantToolsDetailsDto>? ProcedureImplantsWithTools { get; set; } = []; // implant kits
 
     }
 }
