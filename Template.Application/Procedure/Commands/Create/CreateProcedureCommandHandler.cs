@@ -23,8 +23,9 @@ namespace Template.Application.Procedure.Commands.Create
         private readonly IMapper mapper;
         private readonly ILogger<CreateProcedureCommandHandler> logger;
         private readonly IUserContext userContext;
-        public CreateProcedureCommandHandler(IProcedureRepository procedureRepository, IToolRepository toolRepository, 
-            IKitRepository kitRepository, ILogger<CreateProcedureCommandHandler> logger, IMapper mapper, IUserContext userContext)
+        private readonly IImplantRepository implantRepository;
+        public CreateProcedureCommandHandler(IProcedureRepository procedureRepository, IToolRepository toolRepository,
+            IKitRepository kitRepository, ILogger<CreateProcedureCommandHandler> logger, IMapper mapper, IUserContext userContext, IImplantRepository implantRepository)
         {
             this.procedureRepository = procedureRepository;
             this.toolRepository = toolRepository;
@@ -32,6 +33,7 @@ namespace Template.Application.Procedure.Commands.Create
             this.logger = logger;
             this.mapper = mapper;
             this.userContext = userContext;
+            this.implantRepository = implantRepository;
         }
         public async Task<Result<int>> Handle(CreateProcedureCommand request, CancellationToken cancellationToken)
         {
@@ -78,6 +80,44 @@ namespace Template.Application.Procedure.Commands.Create
                         {
                             KitId = kit.Id
                         });
+                    }
+                }
+                if (request.ImplantTools != null && request.ImplantTools.Count > 0)
+                {
+                    procedure.ProcedureImplants = new List<ProcedureImplant>();
+                    procedure.ProcedureImplantTools = new List<ProcedureImplantTool>();
+
+                    foreach(var ImplantTool in request.ImplantTools)
+                    {
+                        var implant = await implantRepository.FindByIdAsync(ImplantTool.ImplantId);
+                        if(implant == null)
+                        {
+                            return Result.Failure<int>(["Entity doesn't exist"]);
+                        }
+                        if (ImplantTool.ToolIds == null || ImplantTool.ToolIds.Count == 0)
+                        {
+                            procedure.ProcedureImplants.Add(new ProcedureImplant()
+                            {
+                                ImplantId = implant.Id
+                            });
+                        }
+                        else
+                        {
+                            foreach(var toolId in ImplantTool.ToolIds)
+                            {
+                                var tool = await toolRepository.FindByIdAsync(toolId);
+                                if (tool == null)
+                                {
+                                    return Result.Failure<int>(["Entity doesn't exist"]);
+                                }
+                                procedure.ProcedureImplantTools.Add(new ProcedureImplantTool()
+                                {
+                                    ImplantId = implant.Id,
+                                    ToolId = tool.Id
+                                });
+
+                            }
+                        }
                     }
                 }
 

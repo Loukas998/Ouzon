@@ -28,8 +28,11 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 	internal DbSet<Device> Devices { get; set; } 
 	internal DbSet<Clinic> Clinics { get; set; }
 	internal DbSet<Rating> Ratings { get; set; }
+	internal DbSet<ProcedureImplantTool> ProcedureImplantTools { get; set; }
+	internal DbSet<ProcedureImplant> ProcedureImplants{ get; set; }
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
 
@@ -66,6 +69,20 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			.WithOne(tp => tp.Tool)
 			.HasForeignKey(tp => tp.ToolId);
 
+        modelBuilder.Entity<Tool>()
+        .HasMany(t => t.ProcedureImplantTools)
+        .WithOne(tp => tp.Tool)
+        .HasForeignKey(tp => tp.ToolId);
+
+        modelBuilder.Entity<Implant>()
+        .HasMany(t => t.ProcedureImplantTools)
+        .WithOne(tp => tp.Implant)
+        .HasForeignKey(tp => tp.ImplantId);
+
+        modelBuilder.Entity<Implant>()
+	.HasMany(t => t.ProcedureImplants)
+	.WithOne(tp => tp.Implant)
+	.HasForeignKey(tp => tp.ImplantId);
 
 
         modelBuilder.Entity<Category>()
@@ -112,7 +129,16 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 			.WithOne(r => r.Procedure)
 			.HasForeignKey(r => r.ProcedureId);
 
-		modelBuilder.Entity<User>()
+        modelBuilder.Entity<Procedure>()
+        .HasMany(t => t.ProcedureImplantTools)
+        .WithOne(tp => tp.Procedure)
+        .HasForeignKey(tp => tp.ProcedureId);
+        modelBuilder.Entity<Procedure>()
+	.HasMany(t => t.ProcedureImplants)
+    .WithOne(tp => tp.Procedure)
+	.HasForeignKey(tp => tp.ProcedureId);
+
+        modelBuilder.Entity<User>()
 			.HasMany(u => u.Holidays)
 			.WithOne()
 			.HasForeignKey(h => h.UserId);

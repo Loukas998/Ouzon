@@ -1,4 +1,5 @@
-﻿using Template.Application.Implants.Dtos;
+﻿using System.Text.Json.Serialization;
+using Template.Application.Implants.Dtos;
 using Template.Application.Tools.Dtos;
 using Template.Domain.Entities.Materials;
 
@@ -10,5 +11,6 @@ public class KitDto
 	public string? Name { get; set; }
 	public bool IsMainKit { get; set; }
 	public List<ImplantDto>? Implants { get; set; } = [];
+	
 	public List<ToolDto>? Tools { get; set; } = [];
 }

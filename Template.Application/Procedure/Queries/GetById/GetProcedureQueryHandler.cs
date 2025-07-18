@@ -8,7 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Abstraction.Queries;
+using Template.Application.Implants.Dtos;
 using Template.Application.Procedure.Dtos;
+using Template.Application.Tools.Dtos;
 using Template.Domain.Entities.Materials;
 using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Repositories;
@@ -35,13 +37,21 @@ namespace Template.Application.Procedure.Queries.GetById
                     DoctorId = result.DoctorId,
                     CategoryId = result.CategoryId,
                     Date = result.Date,
-                    MainKits = result.Kits.Where(kit=>kit.IsMainKit),
-                    KitsWithImplants = result.Kits.Where(kit => kit.Implants.Any()&&!kit.IsMainKit),
-                    KitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any()&&kit.IsMainKit),
+                    MainKits = result.Kits.Where(kit => kit.IsMainKit),
+                    KitsWithImplants = result.Kits.Where(kit => kit.Implants.Any() && !kit.IsMainKit),
+                    KitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any() && !kit.IsMainKit),
                     ToolsNotInKit = result.Tools.Where(tool => tool.KitId == null),
                     Status = result.Status,
-                    Doctor = result.Doctor
+                    Doctor = result.Doctor,
+                    ProcedureImplantsWithoutTools = procedure.ProcedureImplants.Where(pi => pi.Implant != null).Select(pi => mapper.Map<ImplantDto>(pi.Implant)),
+                    ProcedureImplantsWithTools = procedure.ProcedureImplantTools.GroupBy(pit => pit.Implant).Select(g => new ProcedureImplantToolsDetailsDto()
+                    {
+                        Implant = mapper.Map<ImplantDto>(g.Key),
+                        ToolsWithImplant = g.Where(pit => pit.Tool != null)
+                        .Select(pit => mapper.Map<ToolDto>(pit.Tool)).Distinct().ToList()
+                    })
                 };
+
                 return Result.Success(detailedResult);
             }
             catch(Exception ex) 

@@ -36,7 +36,13 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
                  .Include(pro => pro.AssistantsInProcedure)
                  .ThenInclude(ap => ap.Asisstant)
                  .Include(pro => pro.Doctor)
-
+                 .ThenInclude(doc=>doc.Clinic)
+                 .Include(pro => pro.ProcedureImplants)
+                 .ThenInclude(pi => pi.Implant)
+                 .Include(pro => pro.ProcedureImplantTools)
+                 .ThenInclude(pro => pro.Implant)
+                 .Include(pro => pro.ProcedureImplantTools)
+                 .ThenInclude(pro => pro.Tool)
             .FirstOrDefaultAsync(pro => pro.Id == id);
         return procedure;
     }
@@ -53,6 +59,21 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
         }
         var procedures = await query.Skip((pageNum - 1) * pageSize)
             .Take(pageSize)
+           .ToListAsync();
+        return procedures;
+    }
+    public async Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId)
+    {
+        var query = dbContext.Procedures.AsQueryable();
+        if (!string.IsNullOrEmpty(DoctorId))
+        {
+            query = query.Where(p => p.DoctorId == DoctorId);
+        }
+        if (!string.IsNullOrEmpty(AssistantId))
+        {
+            query = query.Where(p => p.AssistantsInProcedure.Any(x => x.AsisstantId == AssistantId));
+        }
+        var procedures = await query
            .ToListAsync();
         return procedures;
     }

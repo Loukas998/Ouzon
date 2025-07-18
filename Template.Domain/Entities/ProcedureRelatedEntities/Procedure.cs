@@ -23,4 +23,6 @@ public class Procedure
     public List<ProcedureAssistant>? AssistantsInProcedure { get; set; }
     public List<Rating>? Ratings { get; set; } = [];
     public Category Category { get; set; }
+    public List<ProcedureImplantTool> ProcedureImplantTools { get; set; }
+    public List<ProcedureImplant> ProcedureImplants { get; set; }
 }

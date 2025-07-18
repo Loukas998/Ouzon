@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Template.Application.Kits.Dtos;
 
@@ -18,6 +19,7 @@ namespace Template.Application.Tools.Dtos
         public int? KitId { get; set; }
         public int? CategoryId { get; set; }
 
+        [JsonIgnore]
         public KitDto? Kit { get; set; }
     }
 }
