@@ -5,6 +5,7 @@ using Template.Application.Holidays.Commands.Create;
 using Template.Application.Holidays.Commands.Delete;
 using Template.Application.Holidays.Dtos;
 using Template.Application.Holidays.Queries.GetAll;
+using Template.Application.Holidays.Queries.GetAssistantHolidays;
 using Template.Application.Holidays.Queries.GetById;
 using Template.Application.Holidays.Queries.GetWithFilter;
 using Template.Application.Implants.Commands.Delete;
@@ -44,6 +45,21 @@ public class HolidaysController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<IEnumerable<HolidayDto>>> GetAllHolidays()
     {
         var holidays = await mediator.Send(new GetAllHolidaysQuery());
+        if (!holidays.SuccessStatus)
+        {
+            return BadRequest(holidays.Errors);
+        }
+        if (!holidays.Data.Any())
+        {
+            return NotFound();
+        }
+        return Ok(holidays.Data);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<HolidayDto>>> GetAssistantHolidays()
+    {
+        var holidays = await mediator.Send(new GetAssistantHolidaysQuery());
         if (!holidays.SuccessStatus)
         {
             return BadRequest(holidays.Errors);

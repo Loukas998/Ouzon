@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    partial class TemplateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250717144355_ProcedureImplantToolsAdded")]
+    partial class ProcedureImplantToolsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -392,29 +395,6 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("ProcedureAssistants");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureImplant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ImplantId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProcedureId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ImplantId");
-
-                    b.HasIndex("ProcedureId");
-
-                    b.ToTable("ProcedureImplants");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureImplantTool", b =>
                 {
                     b.Property<int>("Id")
@@ -791,25 +771,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("Procedure");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureImplant", b =>
-                {
-                    b.HasOne("Template.Domain.Entities.Materials.Implant", "Implant")
-                        .WithMany("ProcedureImplants")
-                        .HasForeignKey("ImplantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", "Procedure")
-                        .WithMany("ProcedureImplants")
-                        .HasForeignKey("ProcedureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Implant");
-
-                    b.Navigation("Procedure");
-                });
-
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureImplantTool", b =>
                 {
                     b.HasOne("Template.Domain.Entities.Materials.Implant", "Implant")
@@ -916,8 +877,6 @@ namespace Template.Infrastructure.Migrations
             modelBuilder.Entity("Template.Domain.Entities.Materials.Implant", b =>
                 {
                     b.Navigation("ProcedureImplantTools");
-
-                    b.Navigation("ProcedureImplants");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Kit", b =>
@@ -948,8 +907,6 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("KitsInProcedure");
 
                     b.Navigation("ProcedureImplantTools");
-
-                    b.Navigation("ProcedureImplants");
 
                     b.Navigation("Ratings");
 

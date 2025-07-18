@@ -22,6 +22,10 @@ public class AssignAssistantsToProcedureCommandHandler (IProcedureRepository pro
         {
             return Result.Failure(["Entity not Found"]);
         }
+        if (request.AssistantsIds.Count > procedure.NumberOfAsisstants)
+        {
+            return Result.Failure(["You are putting more Assistants than allowed"]);
+        }
         procedure.AssistantsInProcedure.Clear();
         foreach (var assistantId in request.AssistantsIds)
         {
@@ -40,6 +44,7 @@ public class AssignAssistantsToProcedureCommandHandler (IProcedureRepository pro
                 AsisstantId = assistantId,
             });
         }
+        procedure.Status = Domain.Enums.EnumProcedureStatus.IN_PROGRESS;
         await procedureRepository.UpdateAsync(procedure);
         return Result.Success();
     }

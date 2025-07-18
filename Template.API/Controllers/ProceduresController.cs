@@ -1,14 +1,17 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Procedure.Commands.AssignAssistnatsToProcedure;
 using Template.Application.Procedure.Commands.Create;
 using Template.Application.Procedure.Commands.Update;
 using Template.Application.Procedure.Dtos;
+using Template.Application.Procedure.Queries;
 using Template.Application.Procedure.Queries.GetAll;
 using Template.Application.Procedure.Queries.GetById;
 using Template.Application.Procedure.Queries.GetPaged;
 using Template.Application.Procedure.Queries.GetWithAssistants;
 using Template.Application.Procedure.Queries.GetWithKitsOnly;
+using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
 
@@ -24,7 +27,7 @@ public class ProceduresController (IMediator mediator):ControllerBase
         return CreatedAtAction(nameof(GetProcedure), new { id }, null);
     }
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProcedureDto>> GetProcedure([FromRoute]int id)
+    public async Task<ActionResult<ProcedureDetailedDto>> GetProcedure([FromRoute]int id)
     {
         var result = await mediator.Send(new GetProcedureQuery(id));
        
@@ -40,6 +43,18 @@ public class ProceduresController (IMediator mediator):ControllerBase
         }
         return Ok(result.Data);
     }
+    [HttpGet(Name = "GetAssistantProcedures")]
+    [Authorize(Roles = nameof(EnumRoleNames.AssistantDoctor))]
+    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAssistantProcedures()
+    {
+        var result = await mediator.Send(new GetAssistantProceduresQuery());
+        if (!result.Data.Any())
+        {
+            return NotFound();
+        }
+        return Ok(result.Data);
+    }
+
     [HttpGet(Name = "GetProceduresPaged")]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>>GetProceduresPaged([FromQuery]int pageSize,int pageNum,string?DoctorId,string?AssistantId)
     {

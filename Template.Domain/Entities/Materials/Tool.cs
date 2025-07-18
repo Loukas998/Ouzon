@@ -25,5 +25,6 @@ public class Tool
     public Category? Category { get; set; }
     [JsonIgnore]
     public List<ProcedureTool>? ProceduresWithTool { get; set; }
+    public List<ProcedureImplantTool>? ProcedureImplantTools { get; set; }
 
 }

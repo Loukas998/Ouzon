@@ -1,4 +1,6 @@
-﻿namespace Template.Domain.Entities.Materials;
+﻿using Template.Domain.Entities.ProcedureRelatedEntities;
+
+namespace Template.Domain.Entities.Materials;
 
 public class Implant
 {
@@ -15,4 +17,6 @@ public class Implant
 	public int KitId { get; set; }
 
 	public Kit Kit { get; set; }
+	public List<ProcedureImplantTool> ProcedureImplantTools { get; set; }
+	public List<ProcedureImplant> ProcedureImplants{ get; set; }
 }

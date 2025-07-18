@@ -10,6 +10,7 @@ namespace Template.Domain.Repositories
     public interface IProcedureRepository : IGenericRepository<Procedure>
     {
         Task<int> AddProcedureAssistant(ProcedureAssistant entity);
+        Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId);
         Task<Procedure> GetDetailedWithId(int id);
         Task<List<Procedure>> GetFilteredProcedures(int pageSize, int pageNum, string? DoctorId, string? AssistantId);
         Task<Procedure> GetProcedureWithAssistants(int Id);

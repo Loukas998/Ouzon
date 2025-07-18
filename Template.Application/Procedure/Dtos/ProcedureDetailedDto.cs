@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Template.Application.Implants.Dtos;
 using Template.Application.Kits.Dtos;
 using Template.Application.Tools.Dtos;
 using Template.Application.Users.Dtos;
@@ -24,6 +25,8 @@ namespace Template.Application.Procedure.Dtos
         public IEnumerable<KitDto>? KitsWithImplants { get; set; } = [];
         public IEnumerable<KitDto>? KitsWithoutImplants { get; set; } = [];
         public IEnumerable<UserDto>? Assistants { get; set; } = [];
+        public IEnumerable<ImplantDto>? ProcedureImplantsWithoutTools { get; set; } = [];
+        public IEnumerable<ProcedureImplantToolsDetailsDto>? ProcedureImplantsWithTools { get; set; } = [];
 
     }
 }
