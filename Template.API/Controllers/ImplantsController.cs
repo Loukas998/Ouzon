@@ -82,7 +82,7 @@ public class ImplantsController(IMediator mediator) : ControllerBase
 		return NoContent();
 	}
 
-	[HttpGet]
+	[HttpGet("GetFilteredImplants")]
 	public async Task<ActionResult<IEnumerable<ImplantDto>>> GetFilteredImplants([FromQuery] GetImplantsWithFilterQuery query)
 	{
 		return Ok(await mediator.Send(query));

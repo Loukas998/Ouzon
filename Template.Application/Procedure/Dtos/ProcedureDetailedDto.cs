@@ -11,7 +11,7 @@ using Template.Domain.Enums;
 
 namespace Template.Application.Procedure.Dtos
 {
-   public class ProcedureDetailedDto 
+    public class ProcedureDetailedDto
     {
         public int Id { get; set; }
         public string DoctorId { get; set; }
