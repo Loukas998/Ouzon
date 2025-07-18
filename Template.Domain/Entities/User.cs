@@ -19,7 +19,7 @@ namespace Template.Domain.Entities
 		public List<Holiday> Holidays { get; set; } = [];
 
 		public Clinic? Clinic { get; set; }
-		public List<Procedure>? InProcedure { get; set; } = [];
+		public List<ProcedureAssistant>? InProcedure { get; set; } = [];
 		public List<Procedure>? ProcedureFrom { get; set; } = [];
 		public List<Device> Devices { get; set; } = [];
 	}

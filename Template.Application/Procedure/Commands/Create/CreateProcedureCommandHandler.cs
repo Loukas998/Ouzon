@@ -4,15 +4,18 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Template.Application.Abstraction.Commands;
 using Template.Application.Users;
 using Template.Domain.Entities.ProcedureRelatedEntities;
+using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Procedure.Commands.Create
 {
-    class CreateProcedureCommandHandler : IRequestHandler<CreateProcedureCommand, int>
+    class CreateProcedureCommandHandler : ICommandHandler<CreateProcedureCommand,int>
     {
         private readonly IProcedureRepository procedureRepository;
         private readonly IToolRepository toolRepository;
@@ -30,7 +33,7 @@ namespace Template.Application.Procedure.Commands.Create
             this.mapper = mapper;
             this.userContext = userContext;
         }
-        public async Task<int> Handle(CreateProcedureCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(CreateProcedureCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -40,42 +43,51 @@ namespace Template.Application.Procedure.Commands.Create
                 {
                     foreach (var toolId in request.ToolsIds)
                     {
-                        var tool = await toolRepository.FindByIdAsync(toolId);
-                        if (tool == null)
+                        var tool = await toolRepository.FindByIdAsync(toolId.ToolId);
+                        if (tool == null || tool.Quantity<toolId.Quantity)
                         {
-                            throw new Exception("tool not found");
+                            return Result.Failure<int>(["Tool not found"]);
                         }
                         var proTool = new ProcedureTool()
                         {
                             ToolId = tool.Id,
                             Procedure = procedure,
                         };
+                        tool.Quantity -= toolId.Quantity;
+                        await toolRepository.UpdateAsync(tool);
                         procedure.ToolsInProcedure.Add(proTool);
                     }
                 }
                 if (request.KitIds != null)
                 {
+                    var mainKitCount = 0;
                     foreach (var kitId in request.KitIds)
                     {
-                        var tool = await kitRepository.FindByIdAsync(kitId);
-                        if (tool == null)
+                        var kit = await kitRepository.FindByIdAsync(kitId);
+                        if (kit == null)
                         {
-                            throw new Exception();
+                            return Result.Failure<int>(["Tool not found"]);
+                        }
+                        else if (kit.IsMainKit)
+                        {
+                           if (mainKitCount >= 1)
+                            return Result.Failure<int>(["There Can only be 1 Main Kit per Procedure"]);
+                            mainKitCount++;
                         }
                         procedure.KitsInProcedure.Add(new ProcedureKit()
                         {
-                            KitId = tool.Id
+                            KitId = kit.Id
                         });
                     }
                 }
 
                 var procedureId = await procedureRepository.AddAsync(procedure);
-                return procedureId.Id;
+                return Result.Success(procedureId.Id);
             }
             catch(Exception ex)
             {
                 logger.LogError(ex, "Could not add procedure");
-                return -1;
+                return Result.Failure<int>([ex.Message,"Something Went Wrong"]);
             }
         }
     }

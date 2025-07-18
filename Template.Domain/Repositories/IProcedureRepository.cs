@@ -9,8 +9,11 @@ namespace Template.Domain.Repositories
 {
     public interface IProcedureRepository : IGenericRepository<Procedure>
     {
-
-        Task<Procedure> GetWithToolsAndKitsAsync(int id);
+        Task<int> AddProcedureAssistant(ProcedureAssistant entity);
+        Task<Procedure> GetDetailedWithId(int id);
         Task<List<Procedure>> GetFilteredProcedures(int pageSize, int pageNum, string? DoctorId, string? AssistantId);
+        Task<Procedure> GetProcedureWithAssistants(int Id);
+        Task<Procedure> GetProcedureWithKits(int Id);
+        Task<Procedure> GetProcedureWithToolsNotInKit(int Id);
     }
 }

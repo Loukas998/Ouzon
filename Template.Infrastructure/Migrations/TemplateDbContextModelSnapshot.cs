@@ -227,6 +227,9 @@ namespace Template.Infrastructure.Migrations
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsMainKit")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -283,7 +286,7 @@ namespace Template.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("DeviceToken")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("LastLoggedInAt")
                         .HasColumnType("datetime2");
@@ -295,6 +298,10 @@ namespace Template.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeviceToken")
+                        .IsUnique()
+                        .HasFilter("[DeviceToken] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -336,9 +343,6 @@ namespace Template.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AssistantId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -349,21 +353,43 @@ namespace Template.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("HasAssistant")
-                        .HasColumnType("bit");
+                    b.Property<int>("NumberOfAsisstants")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssistantId");
-
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DoctorId");
 
                     b.ToTable("Procedures");
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureAssistant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AsisstantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProcedureId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AsisstantId");
+
+                    b.HasIndex("ProcedureId");
+
+                    b.ToTable("ProcedureAssistants");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureKit", b =>
@@ -550,6 +576,30 @@ namespace Template.Infrastructure.Migrations
                     b.ToTable("Clinics");
                 });
 
+            modelBuilder.Entity("Template.Domain.Entities.Users.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProcedureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RatingValue")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcedureId");
+
+                    b.ToTable("Ratings");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -654,11 +704,6 @@ namespace Template.Infrastructure.Migrations
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
                 {
-                    b.HasOne("Template.Domain.Entities.User", "Assistant")
-                        .WithMany("InProcedure")
-                        .HasForeignKey("AssistantId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("Template.Domain.Entities.Materials.Category", "Category")
                         .WithMany("Procedures")
                         .HasForeignKey("CategoryId")
@@ -671,11 +716,28 @@ namespace Template.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Assistant");
-
                     b.Navigation("Category");
 
                     b.Navigation("Doctor");
+                });
+
+            modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureAssistant", b =>
+                {
+                    b.HasOne("Template.Domain.Entities.User", "Asisstant")
+                        .WithMany("InProcedure")
+                        .HasForeignKey("AsisstantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", "Procedure")
+                        .WithMany("AssistantsInProcedure")
+                        .HasForeignKey("ProcedureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Asisstant");
+
+                    b.Navigation("Procedure");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureKit", b =>
@@ -736,11 +798,15 @@ namespace Template.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Template.Domain.Entities.Materials.Category", b =>
+            modelBuilder.Entity("Template.Domain.Entities.Users.Rating", b =>
                 {
-                    b.Navigation("Procedures");
+                    b.HasOne("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", "Procedure")
+                        .WithMany("Ratings")
+                        .HasForeignKey("ProcedureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Tools");
+                    b.Navigation("Procedure");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Category", b =>
@@ -771,19 +837,22 @@ namespace Template.Infrastructure.Migrations
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
                 {
+                    b.Navigation("AssistantsInProcedure");
+
                     b.Navigation("KitsInProcedure");
+
+                    b.Navigation("Ratings");
 
                     b.Navigation("ToolsInProcedure");
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Clinic");
+
                     b.Navigation("Devices");
 
                     b.Navigation("Holidays");
-
-                    b.Navigation("Clinic");
-
 
                     b.Navigation("InProcedure");
 

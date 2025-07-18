@@ -41,11 +41,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 	}
 	public async Task UpdateAsync(T entity)
 	{
-		dbContext.Update(entity);
+		dbContext.Set<T>().Update(entity);
 		await SaveChangesAsync();
 	}
 	public async Task SaveChangesAsync()
 	{
 		await dbContext.SaveChangesAsync();
 	}
+
 }

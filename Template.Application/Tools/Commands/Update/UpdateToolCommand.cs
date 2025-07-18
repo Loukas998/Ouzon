@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Template.Application.Abstraction.Commands;
 using Template.Application.Tools.Dtos;
 
 namespace Template.Application.Tools.Commands.Update;
 
-public class UpdateToolCommand :IRequest
+public class UpdateToolCommand :ICommand
 {
     public int Id { get; set; }
     public string Name { get; set; }

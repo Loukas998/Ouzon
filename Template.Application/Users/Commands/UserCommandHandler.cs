@@ -7,9 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Template.Application.Abstraction.Commands;
 using Template.Domain.Entities;
 using Template.Domain.Entities.AuthEntities;
 using Template.Domain.Entities.Notifications;
+using Template.Domain.Entities.ResponseEntity;
+using Template.Domain.Enums;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Users.Commands;
@@ -21,14 +24,17 @@ public class RegisterUserCommandHandler(IMapper mapper,
     {
         var user = mapper.Map<User>(request);
         user.UserName = request.UserName;
-        user.Clinic = new Domain.Entities.Users.Clinic()
+        if (request.Role == EnumRoleNames.User.ToString())
         {
-            Address = request.Address,
-            Longtitude = request.Longtitude,
-            Latitude =request.Latitude,
-            Name = request.ClinicName,
+            user.Clinic = new Domain.Entities.Users.Clinic()
+            {
+                Address = request.Address,
+                Longtitude = request.Longtitude,
+                Latitude = request.Latitude,
+                Name = request.ClinicName,
 
-        };
+            };
+        }
         var errors = await accountRepository.Register(user, request.Password,request.Role);
         return errors;
     }
@@ -36,16 +42,16 @@ public class RegisterUserCommandHandler(IMapper mapper,
 public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
         ITokenRepository tokenRepository,
         IAccountRepository accountRepository,
-        UserManager<User> userManager, IDeviceRepository deviceRepository) : IRequestHandler<LoginUserCommand, AuthResponse?>
+        UserManager<User> userManager, IDeviceRepository deviceRepository) : ICommandHandler<LoginUserCommand, AuthResponse?>
 {
-    public async Task<AuthResponse?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<AuthResponse?>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("looking for user with email: {Email}", request.Email);
        var tokenResponse = await accountRepository.LoginUser(request.Email, request.Password,request.DeviceToken);
         if(tokenResponse != null)
         {
-            return tokenResponse;
+            return Result.Success(tokenResponse);
         }
-        return null;
+        return Result.Failure<AuthResponse?>(["Email or Password is Wrong"]);
     }
 }

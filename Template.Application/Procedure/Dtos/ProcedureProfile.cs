@@ -21,7 +21,11 @@ public class ProcedureProfile:Profile
         CreateMap<Domain.Entities.ProcedureRelatedEntities.Procedure, ProcedureDto>()
             .ForMember(dest => dest.Tools, opt => opt.MapFrom(src => src.ToolsInProcedure.Select(tp => tp.Tool)))
             .ForMember(dest => dest.Kits, opt => opt.MapFrom(src => src.KitsInProcedure.Select(kp => kp.Kit)))
+            .ForMember(dest => dest.Assistants, opt => opt.MapFrom(src => src.AssistantsInProcedure.Select(kp => kp.Asisstant)))
+            .ForMember(dest => dest.Doctor, opt => opt.MapFrom(src => src.Doctor))
             .ReverseMap();
         CreateMap<UpdateProcedureCommand, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
+        CreateMap<ProcedureSummaryDto, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
+        CreateMap<ProcedureKitDetailsDto, ProcedureDto>().ReverseMap();
     }
 }

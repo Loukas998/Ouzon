@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Template.Domain.Entities;
 using Template.Domain.Entities.AuthEntities;
 using Template.Domain.Entities.Notifications;
+using Template.Domain.Enums;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -221,10 +222,10 @@ public class AccountRepository(UserManager<User> userManager,
         bool isValidCredentials = await userManager.CheckPasswordAsync(user, password);
         if (isValidCredentials)
         {
-            var existingDevice = await deviceRepository.SearchAsync(deviceToken, null, null, null, null);
+            var existingDevice = await deviceRepository.GetDeviceByToken(deviceToken);
             if (existingDevice != null)
             {
-                existingDevice[0].LastLoggedInAt = DateTime.UtcNow;
+                existingDevice.LastLoggedInAt = DateTime.UtcNow;
                 await deviceRepository.SaveChangesAsync();
             }
             else
@@ -243,6 +244,34 @@ public class AccountRepository(UserManager<User> userManager,
             return token;
         }
         return null;
+    }
+    public async Task<bool>UserInRoleAsync(string id,string roleName)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        if(user is null)
+        {
+            return false;
+        }
+        var success = await userManager.IsInRoleAsync(user, roleName);
+        if (!success)
+        {
+            return false;
+        }
+        return true;
+    }
+    public async Task<User>GetUserDetails(string? id)
+    {
+        var user = await userManager.Users
+            .Include(u => u.InProcedure)
+            .ThenInclude(prc => prc.Procedure)
+            .Include(u => u.ProcedureFrom)
+            .Include(u => u.Devices)
+            .Include(u => u.Holidays)
+            .Where(u=>u.Id == id)
+            .FirstOrDefaultAsync()
+            ;
+        return user;
+
     }
     //public async Task<bool> Verify(string verficationToken)
     //{
