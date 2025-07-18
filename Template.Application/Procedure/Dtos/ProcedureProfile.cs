@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Template.Application.Implants.Dtos;
 using Template.Application.Kits.Dtos;
 using Template.Application.Procedure.Commands.Create;
 using Template.Application.Procedure.Commands.Update;
@@ -27,5 +28,14 @@ public class ProcedureProfile:Profile
         CreateMap<UpdateProcedureCommand, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
         CreateMap<ProcedureSummaryDto, Domain.Entities.ProcedureRelatedEntities.Procedure>().ReverseMap();
         CreateMap<ProcedureKitDetailsDto, ProcedureDto>().ReverseMap();
+        CreateMap<Kit,ProcedureImplantToolsDetailsDto>()
+            .ForMember(dest => dest.Implant, opt => opt.MapFrom(src => src.Implants.FirstOrDefault()))
+            .ForMember(dest => dest.ToolsWithImplant, opt => opt.MapFrom(src => src.Tools));
+        CreateMap<KitDto, ProcedureImplantToolsDetailsDto>()
+    .ForMember(dest => dest.Implant, opt => opt.MapFrom(src => src.Implants.FirstOrDefault()))
+    .ForMember(dest => dest.ToolsWithImplant, opt => opt.MapFrom(src => src.Tools))
+    .ReverseMap()
+    ;
+        CreateMap<ImplantDto, ProcedureImplantToolsDetailsDto>().ReverseMap();
     }
 }

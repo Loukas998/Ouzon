@@ -37,21 +37,33 @@ namespace Template.Application.Procedure.Queries.GetById
                     DoctorId = result.DoctorId,
                     CategoryId = result.CategoryId,
                     Date = result.Date,
-                    MainKits = result.Kits.Where(kit => kit.IsMainKit),
-                    KitsWithImplants = result.Kits.Where(kit => kit.Implants.Any() && !kit.IsMainKit),
-                    KitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any() && !kit.IsMainKit),
-                    ToolsNotInKit = result.Tools.Where(tool => tool.KitId == null),
+                    SurgicalKits = result.Kits.Where(kit => kit.IsMainKit).ToList(),
+                    ImplantKits = mapper.Map<List<ProcedureImplantToolsDetailsDto>>(result.Kits.Where(kit => kit.Implants.Any() && !kit.IsMainKit)),
+                    RequiredTools = result.Tools.Where(tool => tool.KitId == null).ToList(),
                     Status = result.Status,
                     Doctor = result.Doctor,
-                    ProcedureImplantsWithoutTools = procedure.ProcedureImplants.Where(pi => pi.Implant != null).Select(pi => mapper.Map<ImplantDto>(pi.Implant)),
-                    ProcedureImplantsWithTools = procedure.ProcedureImplantTools.GroupBy(pit => pit.Implant).Select(g => new ProcedureImplantToolsDetailsDto()
-                    {
-                        Implant = mapper.Map<ImplantDto>(g.Key),
-                        ToolsWithImplant = g.Where(pit => pit.Tool != null)
-                        .Select(pit => mapper.Map<ToolDto>(pit.Tool)).Distinct().ToList()
-                    })
+                    Assistants = result.Assistants.ToList()??[]
                 };
+                var procedureImplantsWithTools = procedure.ProcedureImplantTools.GroupBy(pit => pit.Implant).Select(g => new ProcedureImplantToolsDetailsDto()
+                {
+                    Implant = mapper.Map<ImplantDto>(g.Key),
+                    ToolsWithImplant = g.Where(pit => pit.Tool != null)
+                        .Select(pit => mapper.Map<ToolDto>(pit.Tool)).Distinct()
+                        .ToList()
+                });
+                detailedResult.ImplantKits.AddRange(procedureImplantsWithTools);
 
+                var kitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any() && !kit.IsMainKit).Select(kit => kit.Tools).ToList();
+                detailedResult.RequiredTools.AddRange(mapper.Map<List<ToolDto>>(kitsWithoutImplants));
+
+                var procedureImplants = procedure.ProcedureImplants.Where(pi => pi.Implant != null).Select(pi => mapper.Map<ImplantDto>(pi.Implant)).ToList();
+
+                detailedResult.ImplantKits.AddRange(procedureImplants.Select(imp => new ProcedureImplantToolsDetailsDto()
+                {
+                    Implant = imp,
+                    ToolsWithImplant = []
+                }));
+                
                 return Result.Success(detailedResult);
             }
             catch(Exception ex) 
