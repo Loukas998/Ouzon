@@ -67,7 +67,7 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
         var query = dbContext.Procedures.AsQueryable();
         if (!string.IsNullOrEmpty(DoctorId))
         {
-            query = query.Where(p => p.DoctorId == DoctorId);
+            query = query.Where(p => p.DoctorId == DoctorId).Include(p => p.Doctor).ThenInclude(d => d.Clinic);
         }
         if (!string.IsNullOrEmpty(AssistantId))
         {
