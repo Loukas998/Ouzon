@@ -12,7 +12,7 @@ using Template.Application.Tools.Queries.GetWithFilter;
 namespace Template.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/tools")]
     public class ToolController(IMediator mediator) : ControllerBase
     {
         [HttpPost]
@@ -74,7 +74,7 @@ namespace Template.API.Controllers
             return Ok(res.Data);
         }
 
-        [HttpGet]
+        [HttpGet("filter")]
         public async Task<ActionResult<IEnumerable<ToolDto>>> GetFilteredTools([FromQuery] GetToolsWithFilterQuery query)
         {
             return Ok(await mediator.Send(query));

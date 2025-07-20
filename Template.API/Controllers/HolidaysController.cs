@@ -15,7 +15,7 @@ using Template.Application.Implants.Queries.GetAll;
 namespace Template.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/holidays")]
 public class HolidaysController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
@@ -56,22 +56,7 @@ public class HolidaysController(IMediator mediator) : ControllerBase
         return Ok(holidays.Data);
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<HolidayDto>>> GetAssistantHolidays()
-    {
-        var holidays = await mediator.Send(new GetAssistantHolidaysQuery());
-        if (!holidays.SuccessStatus)
-        {
-            return BadRequest(holidays.Errors);
-        }
-        if (!holidays.Data.Any())
-        {
-            return NotFound();
-        }
-        return Ok(holidays.Data);
-    }
-
-    [HttpGet]
+    [HttpGet("filter")]
     public async Task<ActionResult<IEnumerable<HolidayDto>>> FilterHolidays([FromQuery]int pageNum,int pageSize,DateTime?FromDate,DateTime?ToDate,string? AssistantId)
     {
         var holidays = await mediator.Send(new GetHolidayWithFilterQuery(pageNum,pageSize,FromDate,ToDate,AssistantId));

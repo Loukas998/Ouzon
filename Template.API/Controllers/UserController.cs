@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Template.Application.Holidays.Dtos;
+using Template.Application.Holidays.Queries.GetAssistantHolidays;
+using Template.Application.Procedure.Dtos;
+using Template.Application.Procedure.Queries;
 using Template.Application.Tokens.Commands;
 using Template.Application.Users;
 using Template.Application.Users.Commands;
@@ -9,14 +13,15 @@ using Template.Application.Users.Dtos;
 using Template.Application.Users.Queries;
 using Template.Application.Users.Queries.CurrentUser;
 using Template.Application.Users.Queries.UserDetails;
+using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/users")]
 public class UserController(IMediator mediator, IUserContext userContext) : ControllerBase
 {
-    [HttpPost(Name = "RegisterUser")]
+    [HttpPost("register")]
     public async Task<IActionResult> RegisterUser(RegisterUserCommand request)
     {
         var result = await mediator.Send(request);
@@ -26,7 +31,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         }
         return Ok();
     }
-    [HttpPost(Name = "LoginUser")]
+    [HttpPost("login")]
     public async Task<ActionResult> LoginUser(LoginUserCommand request)
     {
         var result = await mediator.Send(request);
@@ -37,7 +42,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         return Ok(result.Data);
     }
     [HttpPost]
-    [Route("RefreshToken")]
+    [Route("token/refresh")]
     [Authorize]
     public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequestCommand request)
     {
@@ -49,7 +54,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         return Ok(response);
     }
     [HttpGet]
-    [Route("CurrentUser")]
+    [Route("current")]
     [Authorize]
     public async Task<ActionResult<CurrentUser>> GetCurrentUser()
     {
@@ -75,6 +80,32 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
             return NotFound();
         }
         return Ok(user.Data);
+    }
+
+    [HttpGet("holidays")]
+    public async Task<ActionResult<IEnumerable<HolidayDto>>> GetAssistantHolidays()
+    {
+        var holidays = await mediator.Send(new GetAssistantHolidaysQuery());
+        if (!holidays.SuccessStatus)
+        {
+            return BadRequest(holidays.Errors);
+        }
+        if (!holidays.Data.Any())
+        {
+            return NotFound();
+        }
+        return Ok(holidays.Data);
+    }
+    [HttpGet("procedures")]
+    [Authorize(Roles = nameof(EnumRoleNames.AssistantDoctor))]
+    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAssistantProcedures()
+    {
+        var result = await mediator.Send(new GetAssistantProceduresQuery());
+        if (!result.Data.Any())
+        {
+            return NotFound();
+        }
+        return Ok(result.Data);
     }
     //[HttpGet(Name ="GetUsersByRole")]
     ////public async Task<ActionResult> GetUsersByRole([FromQuery]string role)

@@ -11,7 +11,7 @@ using Template.Application.Implants.Queries.GetWithFilter;
 namespace Template.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/implants")]
 public class ImplantsController(IMediator mediator) : ControllerBase
 {
 	[HttpPost]

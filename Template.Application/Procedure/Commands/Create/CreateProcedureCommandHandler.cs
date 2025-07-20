@@ -40,6 +40,7 @@ namespace Template.Application.Procedure.Commands.Create
             try
             {
                 var procedure = mapper.Map<Domain.Entities.ProcedureRelatedEntities.Procedure>(request);
+                procedure.NumberOfAsisstants = request.NumberOfAssistants;
                 procedure.DoctorId = userContext.GetCurrentUser().Id;
                 if (request.ToolsIds != null)
                 {

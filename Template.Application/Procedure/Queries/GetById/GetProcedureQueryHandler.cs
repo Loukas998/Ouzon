@@ -39,7 +39,7 @@ namespace Template.Application.Procedure.Queries.GetById
                     Date = result.Date,
                     SurgicalKits = result.Kits.Where(kit => kit.IsMainKit).ToList(),
                     ImplantKits = mapper.Map<List<ProcedureImplantToolsDetailsDto>>(result.Kits.Where(kit => kit.Implants.Any() && !kit.IsMainKit)),
-                    RequiredTools = result.Tools.Where(tool => tool.KitId == null).ToList(),
+                    RequiredTools = result.Tools.ToList(),
                     Status = result.Status,
                     Doctor = result.Doctor,
                     Assistants = result.Assistants.ToList()??[]

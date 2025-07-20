@@ -16,10 +16,10 @@ using Template.Domain.Enums;
 namespace Template.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/procedures")]
 public class ProceduresController (IMediator mediator):ControllerBase
 {
-    [HttpPost(Name ="AddProcedure")]
+    [HttpPost]
     public async Task<IActionResult>AddProcedure(CreateProcedureCommand request)
     {
         var result = await mediator.Send(request);
@@ -33,7 +33,7 @@ public class ProceduresController (IMediator mediator):ControllerBase
        
         return Ok(result.Data);
     }
-    [HttpGet(Name = "GetAllProcedures")]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures()
     {
         var result = await mediator.Send(new GetAllProceduresQuery());
@@ -43,19 +43,8 @@ public class ProceduresController (IMediator mediator):ControllerBase
         }
         return Ok(result.Data);
     }
-    [HttpGet(Name = "GetAssistantProcedures")]
-    [Authorize(Roles = nameof(EnumRoleNames.AssistantDoctor))]
-    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAssistantProcedures()
-    {
-        var result = await mediator.Send(new GetAssistantProceduresQuery());
-        if (!result.Data.Any())
-        {
-            return NotFound();
-        }
-        return Ok(result.Data);
-    }
 
-    [HttpGet(Name = "GetProceduresPaged")]
+    [HttpGet("paged")]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>>GetProceduresPaged([FromQuery]int pageSize,int pageNum,string?DoctorId,string?AssistantId)
     {
         var result = await mediator.Send(new GetProceduresPagedQuery(pageSize,pageNum,DoctorId,AssistantId));
@@ -65,7 +54,7 @@ public class ProceduresController (IMediator mediator):ControllerBase
         }
         return Ok(result.Data);
     }
-    [HttpPut(Name = "UpdateProcedure")]
+    [HttpPatch]
     public async Task<IActionResult>UpdateProcedure(UpdateProcedureCommand request)
     {
         var result = await mediator.Send(request);
@@ -75,7 +64,7 @@ public class ProceduresController (IMediator mediator):ControllerBase
         }
         return NoContent();
     }
-    [HttpPut(Name = "AssignAssistantToProcedure")]
+    [HttpPut]
     public async Task<IActionResult> AssignAssistantToProcedure(AssignAssistantsToProcedureCommand request)
     {
         var result = await mediator.Send(request);
@@ -85,7 +74,7 @@ public class ProceduresController (IMediator mediator):ControllerBase
         }
         return NoContent();
     }
-    [HttpGet("{id}")]
+    [HttpGet("{id}/kits")]
     public async Task<ActionResult<ProcedureKitDetailsDto>>GetProcedureKits(int id)
     {
         var result = await mediator.Send(new GetProcedureWithKitsOnlyQuery(id));
@@ -95,7 +84,7 @@ public class ProceduresController (IMediator mediator):ControllerBase
         }
         return Ok(result.Data);
     }
-    [HttpGet("{id}")]
+    [HttpGet("{id}/assistants")]
     public async Task<ActionResult<ProcedureKitDetailsDto>> GetProcedureAssistants(int id)
     {
         var result = await mediator.Send(new GetProcedureAssistantsQuery(id));
