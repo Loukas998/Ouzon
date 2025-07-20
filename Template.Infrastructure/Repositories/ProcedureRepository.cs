@@ -64,7 +64,10 @@ public class ProcedureRepository :GenericRepository<Procedure>,IProcedureReposit
     }
     public async Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId)
     {
-        var query = dbContext.Procedures.AsQueryable();
+        var query = dbContext.Procedures
+            .Include(pro => pro.Doctor)
+            .ThenInclude(doc => doc.Clinic)
+            .AsQueryable();
         if (!string.IsNullOrEmpty(DoctorId))
         {
             query = query.Where(p => p.DoctorId == DoctorId);

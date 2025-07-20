@@ -16,10 +16,12 @@ public class UserProfile:Profile
     public UserProfile()
     {
         CreateMap<RegisterUserCommand, User>();
-        CreateMap<ClinicDto, Clinic>().ReverseMap();
+        CreateMap<Clinic, ClinicDto>().ReverseMap();
         CreateMap<User, UserDto>()
             .ForMember(dest => dest.Clinic, opt => opt.MapFrom(src => src.Clinic))
             .ReverseMap();
+
+
         CreateMap<User, UserDetailedDto>()
             .ForMember(dest => dest.Holidays, opt => opt.MapFrom(src => src.Holidays))
             .ForMember(dest => dest.InProcedure, opt => opt.MapFrom(src => src.InProcedure.Select(pro=>pro.Procedure)))

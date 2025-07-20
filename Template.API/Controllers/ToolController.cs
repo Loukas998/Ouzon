@@ -36,7 +36,7 @@ namespace Template.API.Controllers
             {
                 return BadRequest(res.Errors);
             }
-            return Ok();
+            return Ok(res.Data);
         }
         [HttpPatch]
         public async Task<ActionResult> UpdateTool(UpdateToolCommand request)
