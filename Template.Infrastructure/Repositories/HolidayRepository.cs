@@ -9,10 +9,10 @@ public class HolidayRepository : GenericRepository<Holiday>, IHolidayRepository
 {
     public HolidayRepository(TemplateDbContext dbContext) : base(dbContext)
     {
-        
+
 
     }
-    public async Task<List<Holiday>>GetHolidaysWithFilter(int pageNum, int pageSize, DateTime? FromDate, DateTime? ToDate, string? AssistantId)
+    public async Task<List<Holiday>> GetHolidaysWithFilter(int pageNum, int pageSize, DateTime? FromDate, DateTime? ToDate, string? AssistantId)
     {
         var query = dbContext.Holidays.AsQueryable();
         if (FromDate != null)
@@ -23,7 +23,7 @@ public class HolidayRepository : GenericRepository<Holiday>, IHolidayRepository
         {
             query = query.Where(h => h.To > ToDate);
         }
-        if(AssistantId != null)
+        if (AssistantId != null)
         {
             query = query.Where(h => h.UserId == AssistantId);
         }

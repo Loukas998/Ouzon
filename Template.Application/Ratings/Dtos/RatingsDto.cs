@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Template.Application.Procedure.Dtos;
+using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Application.Users.Dtos;
 using Template.Domain.Entities.ProcedureRelatedEntities;
 

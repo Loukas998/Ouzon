@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Abstraction.Queries;
-using Template.Application.Procedure.Dtos;
+using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Domain.Entities.ResponseEntity;
 
 namespace Template.Application.Procedure.Queries.GetById

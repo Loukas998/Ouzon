@@ -7,20 +7,20 @@ namespace Template.Infrastructure.Repositories;
 
 public class ImplantRepository : GenericRepository<Implant>, IImplantRepository
 {
-	public ImplantRepository(TemplateDbContext dbContext) : base(dbContext)
-	{
+    public ImplantRepository(TemplateDbContext dbContext) : base(dbContext)
+    {
 
-	}
+    }
 
     public async Task<List<Implant>> GetFilteredImplants(string? brand, float? radius, float? width, float? height, float? kitId, int? pageNum, int? pageSize)
     {
         var implants = dbContext.Implants.AsQueryable();
 
-        if(!string.IsNullOrEmpty(brand))
+        if (!string.IsNullOrEmpty(brand))
         {
             implants.Where(i => i.Brand!.Contains(brand));
         }
-        if(radius != null)
+        if (radius != null)
         {
             implants.Where(i => i.Radius == radius);
         }

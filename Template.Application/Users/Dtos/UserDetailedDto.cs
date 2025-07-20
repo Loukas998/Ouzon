@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Holidays.Dtos;
-using Template.Application.Procedure.Dtos;
+using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Domain.Entities.Notifications;
 using Template.Domain.Entities.ProcedureRelatedEntities;
 

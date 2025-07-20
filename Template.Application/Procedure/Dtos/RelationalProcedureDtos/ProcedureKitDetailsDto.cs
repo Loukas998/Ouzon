@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template.Application.Kits.Dtos;
-using Template.Domain.Enums;
+﻿using Template.Application.Kits.Dtos;
 
 namespace Template.Application.Procedure.Dtos;
 
