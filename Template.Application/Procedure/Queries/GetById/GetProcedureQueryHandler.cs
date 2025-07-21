@@ -26,7 +26,6 @@ namespace Template.Application.Procedure.Queries.GetById
                 var detailedResult = new ProcedureDetailedDto()
                 {
                     Id = result.Id,
-                    // AssistantId = result.AssistantId,
                     DoctorId = result.DoctorId,
                     CategoryId = result.CategoryId,
                     Date = result.Date,

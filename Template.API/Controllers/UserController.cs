@@ -10,6 +10,7 @@ using Template.Application.Users;
 using Template.Application.Users.Commands;
 using Template.Application.Users.Dtos;
 using Template.Application.Users.Queries.CurrentUser;
+using Template.Application.Users.Queries.GetUsers;
 using Template.Application.Users.Queries.UserDetails;
 using Template.Domain.Enums;
 
@@ -105,10 +106,14 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         }
         return Ok(result.Data);
     }
-    //[HttpGet(Name ="GetUsersByRole")]
-    ////public async Task<ActionResult> GetUsersByRole([FromQuery]string role)
-    ////{
-
-    ////}
+    [HttpGet]
+    public async Task<ActionResult> GetUsers([FromQuery] string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName)
+    {
+        var result = await mediator.Send(new GetUsersWithFiltersQuery(role, email, phoneNumber, clinicAddress, clinicName));
+        if (!result.SuccessStatus)
+        {
+            return BadRequest(result.Errors);
+        }
+        return Ok(result.Data);
+    }
 }
-

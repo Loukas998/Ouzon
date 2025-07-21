@@ -22,7 +22,7 @@ namespace Template.Application.Procedure.Queries.GetPaged
         {
             var user = userContext.GetCurrentUser();
             logger.LogInformation("Getting procedures: {@Procedure}", request);
-            var procedures = await procedureRepository.GetFilteredProcedures(request.PageSize, request.PageNum,request.DoctorId,request.AssistantId);
+            var procedures = await procedureRepository.GetPagedFilteredProcedures(request.PageSize, request.PageNum,request.DoctorId,request.AssistantId);
             if(procedures == null)
             {
                 return Result.Failure<IEnumerable<ProcedureDto>>(["Data not Found"]);

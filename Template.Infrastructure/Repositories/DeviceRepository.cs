@@ -11,21 +11,21 @@ public class DeviceRepository(TemplateDbContext dbContext) : GenericRepository<D
     {
         var query = dbContext.Devices.AsQueryable();
 
-        if(deviceToken != null) query = query.Where(d => d.DeviceToken == deviceToken);
+        if (deviceToken != null) query = query.Where(d => d.DeviceToken == deviceToken);
 
-        if(userId != null) query = query.Where(d => d.UserId == userId);
+        if (userId != null) query = query.Where(d => d.UserId == userId);
 
-        if(optIn != null) query = query.Where(d => d.OptIn == optIn);
+        if (optIn != null) query = query.Where(d => d.OptIn == optIn);
 
-        if(loggedInInAfter != null) query = query.Where(d => d.LastLoggedInAt <= loggedInInAfter);
+        if (loggedInInAfter != null) query = query.Where(d => d.LastLoggedInAt <= loggedInInAfter);
 
-        if(loggedInBefore != null) query = query.Where(d => d.LastLoggedInAt >= loggedInBefore);
+        if (loggedInBefore != null) query = query.Where(d => d.LastLoggedInAt >= loggedInBefore);
 
         var device = await query.ToListAsync();
         return device;
     }
-    public async Task<Device>GetDeviceByToken(string DeviceToken)
+    public async Task<Device> GetDeviceByToken(string DeviceToken, string userId)
     {
-       return await dbContext.Devices.FirstOrDefaultAsync(d => d.DeviceToken == DeviceToken);
+        return await dbContext.Devices.FirstOrDefaultAsync(d => d.DeviceToken == DeviceToken && d.UserId == userId);
     }
 }
