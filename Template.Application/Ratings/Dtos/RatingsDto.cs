@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template.Application.Procedure.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
 using Template.Application.Users.Dtos;
-using Template.Domain.Entities.ProcedureRelatedEntities;
 
 namespace Template.Application.Ratings.Dtos
 {
     public class RatingsDto
     {
-        public int RatingValue { get; set; }
-        public string? Comment { get; set; }
-        public int ProcedureId { get; set; }
-        public ProcedureSummaryDto Procedure { get; set; }
+        public string? Note { get; set; }
+        [Range(0, 5)]
+        public int Rate { get; set; }
+        public string? DoctorId { get; set; }
         public UserDto Doctor { get; set; }
+        public string? AssistantId { get; set; }
+        public UserDto Assistant { get; set; }
     }
 }

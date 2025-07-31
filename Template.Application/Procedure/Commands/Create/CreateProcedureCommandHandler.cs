@@ -1,12 +1,5 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using Template.Application.Abstraction.Commands;
 using Template.Application.Users;
 using Template.Domain.Entities.ProcedureRelatedEntities;
@@ -15,7 +8,7 @@ using Template.Domain.Repositories;
 
 namespace Template.Application.Procedure.Commands.Create
 {
-    class CreateProcedureCommandHandler : ICommandHandler<CreateProcedureCommand,int>
+    class CreateProcedureCommandHandler : ICommandHandler<CreateProcedureCommand, int>
     {
         private readonly IProcedureRepository procedureRepository;
         private readonly IToolRepository toolRepository;
@@ -41,13 +34,14 @@ namespace Template.Application.Procedure.Commands.Create
             {
                 var procedure = mapper.Map<Domain.Entities.ProcedureRelatedEntities.Procedure>(request);
                 procedure.NumberOfAsisstants = request.NumberOfAssistants;
-                procedure.DoctorId = userContext.GetCurrentUser().Id;
+                var userId = userContext.GetCurrentUser().Id;
+                procedure.DoctorId = userId;
                 if (request.ToolsIds != null)
                 {
                     foreach (var toolId in request.ToolsIds)
                     {
                         var tool = await toolRepository.FindByIdAsync(toolId.ToolId);
-                        if (tool == null || tool.Quantity<toolId.Quantity)
+                        if (tool == null || tool.Quantity < toolId.Quantity)
                         {
                             return Result.Failure<int>(["Tool not found"]);
                         }
@@ -73,8 +67,8 @@ namespace Template.Application.Procedure.Commands.Create
                         }
                         else if (kit.IsMainKit)
                         {
-                           if (mainKitCount >= 1)
-                            return Result.Failure<int>(["There Can only be 1 Main Kit per Procedure"]);
+                            if (mainKitCount >= 1)
+                                return Result.Failure<int>(["There Can only be 1 Main Kit per Procedure"]);
                             mainKitCount++;
                         }
                         procedure.KitsInProcedure.Add(new ProcedureKit()
@@ -88,10 +82,10 @@ namespace Template.Application.Procedure.Commands.Create
                     procedure.ProcedureImplants = new List<ProcedureImplant>();
                     procedure.ProcedureImplantTools = new List<ProcedureImplantTool>();
 
-                    foreach(var ImplantTool in request.ImplantTools)
+                    foreach (var ImplantTool in request.ImplantTools)
                     {
                         var implant = await implantRepository.FindByIdAsync(ImplantTool.ImplantId);
-                        if(implant == null)
+                        if (implant == null)
                         {
                             return Result.Failure<int>(["Entity doesn't exist"]);
                         }
@@ -104,7 +98,7 @@ namespace Template.Application.Procedure.Commands.Create
                         }
                         else
                         {
-                            foreach(var toolId in ImplantTool.ToolIds)
+                            foreach (var toolId in ImplantTool.ToolIds)
                             {
                                 var tool = await toolRepository.FindByIdAsync(toolId);
                                 if (tool == null)
@@ -125,10 +119,10 @@ namespace Template.Application.Procedure.Commands.Create
                 var procedureId = await procedureRepository.AddAsync(procedure);
                 return Result.Success(procedureId.Id);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex, "Could not add procedure");
-                return Result.Failure<int>([ex.Message,"Something Went Wrong"]);
+                return Result.Failure<int>([ex.Message, "Something Went Wrong"]);
             }
         }
     }

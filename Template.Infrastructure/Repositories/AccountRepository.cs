@@ -1,19 +1,10 @@
-﻿using Azure.Core;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 using Template.Domain.Entities;
 using Template.Domain.Entities.AuthEntities;
 using Template.Domain.Entities.Notifications;
-using Template.Domain.Enums;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -46,8 +37,8 @@ public class AccountRepository(UserManager<User> userManager,
 
     public async Task<IEnumerable<IdentityError>> Register(User owner, string password, string role)
     {
-       var user = await userManager.FindByEmailAsync(owner.Email);
-        if(user != null)
+        var user = await userManager.FindByEmailAsync(owner.Email);
+        if (user != null)
         {
             var list = new List<IdentityError>
             {
@@ -63,7 +54,7 @@ public class AccountRepository(UserManager<User> userManager,
         {
             await userManager.AddToRoleAsync(owner, role);
         }
-        
+
         return res.Errors;
     }
 
@@ -210,7 +201,7 @@ public class AccountRepository(UserManager<User> userManager,
         await dbcontext.SaveChangesAsync();
         return true;
     }
-    public async Task<AuthResponse>?LoginUser(string email,string password,string deviceToken)
+    public async Task<AuthResponse>? LoginUser(string email, string password, string deviceToken)
     {
         var user = await userManager.FindByEmailAsync(email);
 
@@ -245,10 +236,10 @@ public class AccountRepository(UserManager<User> userManager,
         }
         return null;
     }
-    public async Task<bool>UserInRoleAsync(string id,string roleName)
+    public async Task<bool> UserInRoleAsync(string id, string roleName)
     {
         var user = await userManager.FindByIdAsync(id);
-        if(user is null)
+        if (user is null)
         {
             return false;
         }
@@ -259,7 +250,7 @@ public class AccountRepository(UserManager<User> userManager,
         }
         return true;
     }
-    public async Task<User>GetUserDetails(string? id)
+    public async Task<User> GetUserDetails(string? id)
     {
         var user = await userManager.Users
             .Include(u => u.InProcedure)
@@ -267,11 +258,31 @@ public class AccountRepository(UserManager<User> userManager,
             .Include(u => u.ProcedureFrom)
             .Include(u => u.Devices)
             .Include(u => u.Holidays)
-            .Where(u=>u.Id == id)
+            .Where(u => u.Id == id)
             .FirstOrDefaultAsync()
             ;
         return user;
 
+    }
+
+    public async Task<List<User>> GetAssistants(string? sortByRating)
+    {
+        var users = userManager.Users
+            .Include(u => u.RatingsGiven)
+            .AsQueryable();
+        if (sortByRating.Equals("desc"))
+        {
+            return await users.OrderByDescending(u => u.RatingsGiven.Any() ?
+                u.RatingsGiven.Average(r => r.Rate)
+                : 0).ToListAsync();
+        }
+        if (sortByRating.Equals("asc"))
+        {
+            return await users.OrderBy(u => u.RatingsGiven.Any() ?
+                u.RatingsGiven.Average(r => r.Rate)
+                : 0).ToListAsync();
+        }
+        return await users.ToListAsync();
     }
     //public async Task<bool> Verify(string verficationToken)
     //{

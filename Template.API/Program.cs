@@ -1,7 +1,6 @@
 using Microsoft.Extensions.FileProviders;
 using Template.API.Extensions;
 using Template.Application.Extensions;
-using Template.Domain.Entities;
 using Template.Infrastructure.Extensions;
 using Template.Infrastructure.Seeders;
 
@@ -21,30 +20,31 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowAll",
-		b => b.AllowAnyHeader()
-			.AllowAnyOrigin()
-			.AllowAnyMethod());
+    options.AddPolicy("AllowAll",
+        b => b.AllowAnyHeader()
+            .AllowAnyOrigin()
+            .AllowAnyMethod());
 });
 
 var app = builder.Build();
 
 var scope = app.Services.CreateScope(); //for seeders
-										// example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
+                                        // example: var govSeeder = scope.ServiceProvider.GetRequiredService<IGovernorateSeeder>();
 var rolesSeeder = scope.ServiceProvider.GetRequiredService<IRolesSeeder>();
 await rolesSeeder.Seed();
 var categoriesSeeder = scope.ServiceProvider.GetRequiredService<ICategorySeeder>();
 await categoriesSeeder.Seed();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
-if(!Directory.Exists(Path.Combine(builder.Environment.ContentRootPath, "Images"))){
-	Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "Images"));
+if (!Directory.Exists(Path.Combine(builder.Environment.ContentRootPath, "Images")))
+{
+    Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "Images"));
 }
 app.UseStaticFiles(new StaticFileOptions
 {

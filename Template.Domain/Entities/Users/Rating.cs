@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template.Domain.Entities.ProcedureRelatedEntities;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Template.Domain.Entities.Users
 {
-   public class Rating
+    public class Rating
 
     {
         public int Id { get; set; }
-        public int RatingValue { get; set; }
-        public string? Comment { get; set; }
-        public int ProcedureId { get; set; }
-        public Procedure Procedure { get; set; }
+        public string? Note { get; set; }
+        [Range(0, 5)]
+        public int Rate { get; set; }
+        public string? DoctorId { get; set; }
+        public User Doctor { get; set; }
+        public string? AssistantId { get; set; }
+        public User Assistant { get; set; }
     }
 }

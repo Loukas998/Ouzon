@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Holidays.Dtos;
 using Template.Application.Holidays.Queries.GetAssistantHolidays;
@@ -10,8 +9,8 @@ using Template.Application.Tokens.Commands;
 using Template.Application.Users;
 using Template.Application.Users.Commands;
 using Template.Application.Users.Dtos;
-using Template.Application.Users.Queries;
 using Template.Application.Users.Queries.CurrentUser;
+using Template.Application.Users.Queries.GetAllAssistants;
 using Template.Application.Users.Queries.UserDetails;
 using Template.Domain.Enums;
 
@@ -56,7 +55,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     [HttpGet]
     [Route("current")]
     [Authorize]
-    public async Task<ActionResult<CurrentUser>> GetCurrentUser()
+    public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
         var query = new GetCurrentUserQuery();
         var result = await mediator.Send(query);
@@ -67,15 +66,15 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         return Ok(result.Data);
     }
     [HttpGet("{Id}")]
-    [ProducesResponseType(200,StatusCode=200,Type =typeof(UserDetailedDto))]
-    public async Task<ActionResult<UserDetailedDto>> GetFullUserProfile([FromRoute]string Id)
+    [ProducesResponseType(200, StatusCode = 200, Type = typeof(UserDetailedDto))]
+    public async Task<ActionResult<UserDetailedDto>> GetFullUserProfile([FromRoute] string Id)
     {
         var user = await mediator.Send(new GetUserDetailsByIdQuery(Id));
         if (!user.SuccessStatus)
         {
             return BadRequest(user.Errors);
         }
-        if(user.Data == null)
+        if (user.Data == null)
         {
             return NotFound();
         }
@@ -106,6 +105,13 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
             return NotFound();
         }
         return Ok(result.Data);
+    }
+
+    [HttpGet("GetAllAssistants")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
+    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllAssistants([FromQuery] string? sortByRating)
+    {
+        return Ok(await mediator.Send(new GetAllAssistantsQuery(sortByRating)));
     }
     //[HttpGet(Name ="GetUsersByRole")]
     ////public async Task<ActionResult> GetUsersByRole([FromQuery]string role)

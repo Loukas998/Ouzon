@@ -53,7 +53,7 @@ namespace Template.Application.Procedure.Queries.GetById
                 });
                 detailedResult.ImplantKits.AddRange(procedureImplantsWithTools);
 
-                var kitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any() && !kit.IsMainKit).Select(kit => kit.Tools).ToList();
+                var kitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any() && !kit.IsMainKit).SelectMany(kit => kit.Tools).ToList();
                 detailedResult.RequiredTools.AddRange(mapper.Map<List<ToolDto>>(kitsWithoutImplants));
 
                 var procedureImplants = procedure.ProcedureImplants.Where(pi => pi.Implant != null).Select(pi => mapper.Map<ImplantDto>(pi.Implant)).ToList();
