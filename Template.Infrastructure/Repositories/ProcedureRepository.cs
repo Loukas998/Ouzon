@@ -90,7 +90,7 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
         {
             query = query.Where(pro => pro.Doctor.UserName!.Contains(doctorName));
         }
-        if (assistantNames.Count > 0)
+        if (assistantNames != null && assistantNames.Count > 0)
         {
             foreach (var assistantName in assistantNames)
             {

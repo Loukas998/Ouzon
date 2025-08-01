@@ -66,10 +66,6 @@ public class TokenRepository(IConfiguration configuration, UserManager<User> use
 
     public async Task<AuthResponse?> VerifyRefreshToken(RefreshTokenRequest request)
     {
-        /*var jwtSecurityHandler = new JwtSecurityTokenHandler();
-        var tokenContent = jwtSecurityHandler.ReadJwtToken(request.Token);
-
-        var username = tokenContent.Claims.ToList().FirstOrDefault(q => q.Type == JwtRegisteredClaimNames.Sub)?.Value;*/
         _user = await userManager.FindByIdAsync(request.user_id);
         if (_user is null)
         {

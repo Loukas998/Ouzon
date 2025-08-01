@@ -19,7 +19,7 @@ namespace Template.Application.Procedure.Queries.AssistantProcedures
             try
             {
                 var currentUser = userContext.GetCurrentUser();
-                var procedures = await procedureRepository.GetAllFilteredProcedures(null, currentUser.Id);
+                var procedures = await procedureRepository.GetAllFilteredProcedures(null, currentUser.Id, null, null, null, null, null, [], null, null);
                 if (procedures == null)
                 {
                     return Result.Failure<IEnumerable<ProcedureDto>>(["Data not Found"]);

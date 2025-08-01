@@ -48,7 +48,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         var response = await mediator.Send(request);
         if (response == null)
         {
-            return Unauthorized();
+            return BadRequest();
         }
         return Ok(response);
     }

@@ -1,16 +1,11 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using Template.Application.Abstraction.Commands;
 using Template.Domain.Entities.AuthEntities;
 
 namespace Template.Application.Users.Commands;
-public class RegisterUserCommand :IRequest<IEnumerable<IdentityError>>
+public class RegisterUserCommand : IRequest<IEnumerable<IdentityError>>
 {
     public string UserName { get; set; }
     public string Email { get; set; }
@@ -26,6 +21,7 @@ public class RegisterUserCommand :IRequest<IEnumerable<IdentityError>>
 
 public class LoginUserCommand : ICommand<AuthResponse?>
 {
+    [EmailAddress]
     public string Email { get; set; } = default!;
     public string Password { get; set; } = default!;
     public string? DeviceToken { get; set; }
