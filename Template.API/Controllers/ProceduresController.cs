@@ -31,10 +31,14 @@ public class ProceduresController(IMediator mediator) : ControllerBase
 
         return Ok(result.Data);
     }
-    [HttpGet]
+    [HttpPost("FilteredProcedure")]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures([FromQuery] DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames, string? clinicName, string? clinicAddress)
     {
         var result = await mediator.Send(new GetAllProceduresQuery(from, to, minNumberOfAssistants, maxNumberOfAssistants, doctorName, assistantNames, clinicName, clinicAddress));
+        if (!result.SuccessStatus)
+        {
+            return NotFound(result.Errors);
+        }
         if (!result.Data.Any())
         {
             return NotFound();

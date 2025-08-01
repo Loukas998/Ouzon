@@ -56,11 +56,13 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
            .ToListAsync();
         return procedures;
     }
-    public async Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string> assistantNames, string? clinicName, string? clinicAddress)
+    public async Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames, string? clinicName, string? clinicAddress)
     {
         var query = dbContext.Procedures
             .Include(pro => pro.Doctor)
             .ThenInclude(doc => doc.Clinic)
+            .Include(pro => pro.AssistantsInProcedure!)
+                .ThenInclude(asp => asp.Asisstant)
             .AsQueryable();
         if (!string.IsNullOrEmpty(DoctorId))
         {
@@ -90,12 +92,17 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
         {
             query = query.Where(pro => pro.Doctor.UserName!.Contains(doctorName));
         }
-        if (assistantNames != null && assistantNames.Count > 0)
+        if (assistantNames?.Count > 0)
         {
-            foreach (var assistantName in assistantNames)
+            var validNames = assistantNames.Where(name => !string.IsNullOrWhiteSpace(name)).ToList();
+
+            if (validNames.Any())
             {
-                if (!string.IsNullOrWhiteSpace(assistantName))
-                    query = query.Where(pro => pro.AssistantsInProcedure!.Any(asp => asp.Asisstant.UserName!.Contains(assistantName)));
+                query = query
+                    .Where(pro => pro.AssistantsInProcedure != null && pro.AssistantsInProcedure.Any())
+                    .Where(pro => pro.AssistantsInProcedure!
+                        .Select(asp => asp.Asisstant.UserName) // Fixed typo (if applicable)
+                        .Any(userName => validNames.Contains(userName)));
             }
         }
         if (!string.IsNullOrWhiteSpace(clinicName))
@@ -142,5 +149,25 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
             .FirstOrDefaultAsync(x => x.Id == Id);
     }
 
+    public async Task<List<Procedure>> GetPagedFilteredProcedures(int pageSize, int pageNum, string? DoctorId, string? AssistantId)
+    {
+        var query = dbContext.Procedures
+            .Include(pro => pro.Doctor)
+            .ThenInclude(doc => doc.Clinic)
+            .AsQueryable();
+        if (!string.IsNullOrEmpty(DoctorId))
+        {
+            query = query.Where(p => p.DoctorId == DoctorId).Include(p => p.Doctor).ThenInclude(d => d.Clinic);
+        }
+        if (!string.IsNullOrEmpty(AssistantId))
+        {
+            query = query.Where(p => p.AssistantsInProcedure.Any(x => x.AsisstantId == AssistantId));
+        }
 
+        var procedures = await query
+           .Skip(pageSize * (pageNum - 1))
+           .Take(pageSize)
+           .ToListAsync();
+        return procedures;
+    }
 }

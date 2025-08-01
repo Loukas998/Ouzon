@@ -6,7 +6,7 @@ namespace Template.Domain.Repositories
     {
         Task<int> AddProcedureAssistant(ProcedureAssistant entity);
 
-        Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string> assistantNames, string? clinicName, string? clinicAddress);
+        Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames, string? clinicName, string? clinicAddress);
         Task<Procedure> GetDetailedWithId(int id);
         Task<List<Procedure>> GetPagedFilteredProcedures(int pageSize, int pageNum, string? DoctorId, string? AssistantId);
         Task<Procedure> GetProcedureWithAssistants(int Id);

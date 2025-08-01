@@ -292,6 +292,10 @@ public class AccountRepository(UserManager<User> userManager,
         return await query.ToListAsync();
     }
 
+    public Task<List<User>> GetAssistants(string? sortByRating)
+    {
+        throw new NotImplementedException();
+    }
 }
 //public async Task<bool> Verify(string verficationToken)
 //{
