@@ -1,23 +1,16 @@
 ﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Template.Application.Abstraction.Queries;
 using Template.Application.Implants.Dtos;
 using Template.Application.Procedure.Dtos;
+using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Application.Tools.Dtos;
-using Template.Domain.Entities.Materials;
 using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Procedure.Queries.GetById
 {
-    public class GetProcedureQueryHandler(IProcedureRepository procedureRepository, ILogger<GetProcedureQueryHandler> logger,IMapper mapper)
+    public class GetProcedureQueryHandler(IProcedureRepository procedureRepository, ILogger<GetProcedureQueryHandler> logger, IMapper mapper)
         : IQueryHandler<GetProcedureQuery, ProcedureDetailedDto>
     {
         public async Task<Result<ProcedureDetailedDto>> Handle(GetProcedureQuery request, CancellationToken cancellationToken)
@@ -33,7 +26,6 @@ namespace Template.Application.Procedure.Queries.GetById
                 var detailedResult = new ProcedureDetailedDto()
                 {
                     Id = result.Id,
-                    // AssistantId = result.AssistantId,
                     DoctorId = result.DoctorId,
                     CategoryId = result.CategoryId,
                     Date = result.Date,
@@ -42,7 +34,7 @@ namespace Template.Application.Procedure.Queries.GetById
                     RequiredTools = result.Tools.ToList(),
                     Status = result.Status,
                     Doctor = result.Doctor,
-                    Assistants = result.Assistants.ToList()??[]
+                    Assistants = result.Assistants.ToList() ?? []
                 };
                 var procedureImplantsWithTools = procedure.ProcedureImplantTools.GroupBy(pit => pit.Implant).Select(g => new ProcedureImplantToolsDetailsDto()
                 {
@@ -53,7 +45,7 @@ namespace Template.Application.Procedure.Queries.GetById
                 });
                 detailedResult.ImplantKits.AddRange(procedureImplantsWithTools);
 
-                var kitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any() && !kit.IsMainKit).SelectMany(kit => kit.Tools).ToList();
+                var kitsWithoutImplants = result.Kits.Where(kit => !kit.Implants.Any() && !kit.IsMainKit).SelectMany(k => k.Tools);
                 detailedResult.RequiredTools.AddRange(mapper.Map<List<ToolDto>>(kitsWithoutImplants));
 
                 var procedureImplants = procedure.ProcedureImplants.Where(pi => pi.Implant != null).Select(pi => mapper.Map<ImplantDto>(pi.Implant)).ToList();
@@ -63,10 +55,10 @@ namespace Template.Application.Procedure.Queries.GetById
                     Implant = imp,
                     ToolsWithImplant = []
                 }));
-                
+
                 return Result.Success(detailedResult);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 logger.LogError(ex, "Something went wrong");
                 throw;

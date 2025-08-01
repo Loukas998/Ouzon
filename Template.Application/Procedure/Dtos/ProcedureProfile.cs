@@ -1,20 +1,14 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Template.Application.Implants.Dtos;
 using Template.Application.Kits.Dtos;
 using Template.Application.Procedure.Commands.Create;
 using Template.Application.Procedure.Commands.Update;
-using Template.Application.Tools.Dtos;
+using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Domain.Entities.Materials;
-using Template.Domain.Entities.ProcedureRelatedEntities;
 
 namespace Template.Application.Procedure.Dtos;
 
-public class ProcedureProfile:Profile
+public class ProcedureProfile : Profile
 {
     public ProcedureProfile()
     {
@@ -33,7 +27,7 @@ public class ProcedureProfile:Profile
 
         CreateMap<ProcedureKitDetailsDto, ProcedureDto>().ReverseMap();
 
-        CreateMap<Kit,ProcedureImplantToolsDetailsDto>()
+        CreateMap<Kit, ProcedureImplantToolsDetailsDto>()
             .ForMember(dest => dest.Implant, opt => opt.MapFrom(src => src.Implants.FirstOrDefault()))
             .ForMember(dest => dest.ToolsWithImplant, opt => opt.MapFrom(src => src.Tools));
 

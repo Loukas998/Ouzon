@@ -1,20 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Template.Domain.Entities.Materials;
-using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Template.Infrastructure.Repositories;
 
-public class ToolRepository : GenericRepository<Tool>,IToolRepository
+public class ToolRepository : GenericRepository<Tool>, IToolRepository
 {
-    public ToolRepository(TemplateDbContext dbContext):base(dbContext)
+    public ToolRepository(TemplateDbContext dbContext) : base(dbContext)
     {
         this.dbContext = dbContext;
     }
@@ -23,13 +16,13 @@ public class ToolRepository : GenericRepository<Tool>,IToolRepository
     {
         var tools = dbContext.Tools.AsQueryable();
 
-        if(!string.IsNullOrWhiteSpace(name))
+        if (!string.IsNullOrWhiteSpace(name))
         {
             tools.Where(t => t.Name.Contains(name));
         }
         if (width != null)
         {
-            tools.Where(t => t.Width ==  width);
+            tools.Where(t => t.Width == width);
         }
         if (height != null)
         {
@@ -49,7 +42,7 @@ public class ToolRepository : GenericRepository<Tool>,IToolRepository
         }
 
 
-        if(pageNum != null && pageSize != null)
+        if (pageNum != null && pageSize != null)
         {
             var pagedResult = await tools.Skip((int)((pageNum - 1) * pageSize))
                 .Take((int)pageSize)

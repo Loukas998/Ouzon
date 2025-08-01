@@ -1,15 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Template.Infrastructure.Persistence;
 
 namespace Template.Infrastructure.Seeders;
 
-public class RolesSeeder (TemplateDbContext dbContext) : IRolesSeeder
+public class RolesSeeder(TemplateDbContext dbContext) : IRolesSeeder
 {
     public async Task Seed()
     {

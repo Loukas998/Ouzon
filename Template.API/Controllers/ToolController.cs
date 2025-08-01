@@ -4,7 +4,6 @@ using Template.Application.Tools.Commands.Create;
 using Template.Application.Tools.Commands.Delete;
 using Template.Application.Tools.Commands.Update;
 using Template.Application.Tools.Dtos;
-using Template.Application.Tools.Queries;
 using Template.Application.Tools.Queries.GetAll;
 using Template.Application.Tools.Queries.GetById;
 using Template.Application.Tools.Queries.GetWithFilter;
@@ -18,18 +17,18 @@ namespace Template.API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateTool([FromBody] CreateToolCommand request)
         {
-            var res= await mediator.Send(request);
+            var res = await mediator.Send(request);
             if (!res.SuccessStatus)
             {
                 return BadRequest(res.Errors);
 
             }
             int Id = res.Data;
-            return CreatedAtAction(nameof(GetToolById), new{ Id },null);
+            return CreatedAtAction(nameof(GetToolById), new { Id }, null);
         }
 
         [HttpGet("{Id}")]
-        public async Task<ActionResult<ToolDto>> GetToolById([FromRoute]int Id)
+        public async Task<ActionResult<ToolDto>> GetToolById([FromRoute] int Id)
         {
             var res = await mediator.Send(new GetToolByIdQuery(Id));
             if (!res.SuccessStatus)
@@ -41,7 +40,7 @@ namespace Template.API.Controllers
         [HttpPatch]
         public async Task<ActionResult> UpdateTool(UpdateToolCommand request)
         {
-           var res =  await mediator.Send(request);
+            var res = await mediator.Send(request);
             if (!res.SuccessStatus)
             {
                 return BadRequest(res.Errors);
@@ -52,7 +51,7 @@ namespace Template.API.Controllers
         public async Task<ActionResult> DeleteTool([FromRoute] int Id)
         {
             var command = new DeleteToolCommand() { Id = Id };
-           var res = await mediator.Send(command);
+            var res = await mediator.Send(command);
             if (!res.SuccessStatus)
             {
                 return BadRequest(res.Errors);

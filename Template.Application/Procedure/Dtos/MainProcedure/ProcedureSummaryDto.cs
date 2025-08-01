@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template.Application.Users.Dtos;
+﻿using Template.Application.Users.Dtos;
 using Template.Domain.Enums;
 
-namespace Template.Application.Procedure.Dtos
+namespace Template.Application.Procedure.Dtos.MainProcedure
 {
-   public class ProcedureSummaryDto
+    public class ProcedureSummaryDto
     {
         public int Id { get; set; }
         public string DoctorId { get; set; }

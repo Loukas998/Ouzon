@@ -1,42 +1,40 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Procedure.Commands.AssignAssistnatsToProcedure;
 using Template.Application.Procedure.Commands.Create;
 using Template.Application.Procedure.Commands.Update;
 using Template.Application.Procedure.Dtos;
-using Template.Application.Procedure.Queries;
+using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Application.Procedure.Queries.GetAll;
 using Template.Application.Procedure.Queries.GetById;
 using Template.Application.Procedure.Queries.GetPaged;
 using Template.Application.Procedure.Queries.GetWithAssistants;
 using Template.Application.Procedure.Queries.GetWithKitsOnly;
-using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
 
 [ApiController]
 [Route("api/procedures")]
-public class ProceduresController (IMediator mediator):ControllerBase
+public class ProceduresController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult>AddProcedure(CreateProcedureCommand request)
+    public async Task<IActionResult> AddProcedure(CreateProcedureCommand request)
     {
         var result = await mediator.Send(request);
         var id = result.Data;
         return CreatedAtAction(nameof(GetProcedure), new { id }, null);
     }
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProcedureDetailedDto>> GetProcedure([FromRoute]int id)
+    public async Task<ActionResult<ProcedureDetailedDto>> GetProcedure([FromRoute] int id)
     {
         var result = await mediator.Send(new GetProcedureQuery(id));
-       
+
         return Ok(result.Data);
     }
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures()
+    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures([FromQuery] DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames, string? clinicName, string? clinicAddress)
     {
-        var result = await mediator.Send(new GetAllProceduresQuery());
+        var result = await mediator.Send(new GetAllProceduresQuery(from, to, minNumberOfAssistants, maxNumberOfAssistants, doctorName, assistantNames, clinicName, clinicAddress));
         if (!result.Data.Any())
         {
             return NotFound();
@@ -45,9 +43,9 @@ public class ProceduresController (IMediator mediator):ControllerBase
     }
 
     [HttpGet("paged")]
-    public async Task<ActionResult<IEnumerable<ProcedureDto>>>GetProceduresPaged([FromQuery]int pageSize,int pageNum,string?DoctorId,string?AssistantId)
+    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetProceduresPaged([FromQuery] int pageSize, int pageNum, string? DoctorId, string? AssistantId)
     {
-        var result = await mediator.Send(new GetProceduresPagedQuery(pageSize,pageNum,DoctorId,AssistantId));
+        var result = await mediator.Send(new GetProceduresPagedQuery(pageSize, pageNum, DoctorId, AssistantId));
         if (!result.Data.Any())
         {
             return NotFound();
@@ -55,7 +53,7 @@ public class ProceduresController (IMediator mediator):ControllerBase
         return Ok(result.Data);
     }
     [HttpPatch]
-    public async Task<IActionResult>UpdateProcedure(UpdateProcedureCommand request)
+    public async Task<IActionResult> UpdateProcedure(UpdateProcedureCommand request)
     {
         var result = await mediator.Send(request);
         if (!result.SuccessStatus)
@@ -75,7 +73,7 @@ public class ProceduresController (IMediator mediator):ControllerBase
         return NoContent();
     }
     [HttpGet("{id}/kits")]
-    public async Task<ActionResult<ProcedureKitDetailsDto>>GetProcedureKits(int id)
+    public async Task<ActionResult<ProcedureKitDetailsDto>> GetProcedureKits(int id)
     {
         var result = await mediator.Send(new GetProcedureWithKitsOnlyQuery(id));
         if (!result.SuccessStatus)

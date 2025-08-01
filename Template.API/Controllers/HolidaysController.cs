@@ -5,12 +5,8 @@ using Template.Application.Holidays.Commands.Create;
 using Template.Application.Holidays.Commands.Delete;
 using Template.Application.Holidays.Dtos;
 using Template.Application.Holidays.Queries.GetAll;
-using Template.Application.Holidays.Queries.GetAssistantHolidays;
 using Template.Application.Holidays.Queries.GetById;
 using Template.Application.Holidays.Queries.GetWithFilter;
-using Template.Application.Implants.Commands.Delete;
-using Template.Application.Implants.Dtos;
-using Template.Application.Implants.Queries.GetAll;
 
 namespace Template.API.Controllers;
 
@@ -57,9 +53,9 @@ public class HolidaysController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("filter")]
-    public async Task<ActionResult<IEnumerable<HolidayDto>>> FilterHolidays([FromQuery]int pageNum,int pageSize,DateTime?FromDate,DateTime?ToDate,string? AssistantId)
+    public async Task<ActionResult<IEnumerable<HolidayDto>>> FilterHolidays([FromQuery] int pageNum, int pageSize, DateTime? FromDate, DateTime? ToDate, string? AssistantId)
     {
-        var holidays = await mediator.Send(new GetHolidayWithFilterQuery(pageNum,pageSize,FromDate,ToDate,AssistantId));
+        var holidays = await mediator.Send(new GetHolidayWithFilterQuery(pageNum, pageSize, FromDate, ToDate, AssistantId));
         if (!holidays.SuccessStatus)
         {
             return BadRequest(holidays.Errors);
@@ -74,7 +70,7 @@ public class HolidaysController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> DeleteHoliday([FromRoute] int id)
     {
         var res = await mediator.Send(new DeleteHolidayCommand(id));
-        if (!res.SuccessStatus) 
+        if (!res.SuccessStatus)
         {
             return BadRequest(res.Errors);
         }

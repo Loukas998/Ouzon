@@ -1,5 +1,5 @@
 ﻿using Template.Application.Holidays.Dtos;
-using Template.Application.Procedure.Dtos;
+using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Domain.Entities.Notifications;
 
 namespace Template.Application.Users.Dtos

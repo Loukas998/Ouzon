@@ -213,7 +213,7 @@ public class AccountRepository(UserManager<User> userManager,
         bool isValidCredentials = await userManager.CheckPasswordAsync(user, password);
         if (isValidCredentials)
         {
-            var existingDevice = await deviceRepository.GetDeviceByToken(deviceToken);
+            var existingDevice = await deviceRepository.GetDeviceByToken(deviceToken, user.Id);
             if (existingDevice != null)
             {
                 existingDevice.LastLoggedInAt = DateTime.UtcNow;
@@ -264,57 +264,66 @@ public class AccountRepository(UserManager<User> userManager,
         return user;
 
     }
-
-    public async Task<List<User>> GetAssistants(string? sortByRating)
+    public async Task<List<User>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName)
     {
-        var users = userManager.Users
-            .Include(u => u.RatingsGiven)
+        var query = dbcontext.Users
+            .Include(u => u.Clinic)
             .AsQueryable();
-        if (sortByRating.Equals("desc"))
+        if (!string.IsNullOrEmpty(email))
+            query = query.Where(u => u.Email!.Contains(email));
+
+        if (!string.IsNullOrEmpty(phoneNumber))
+            query = query.Where(u => u.PhoneNumber!.Contains(phoneNumber));
+
+        if (!string.IsNullOrEmpty(clinicAddress))
+            query = query.Where(u => u.Clinic!.Address!.Contains(clinicAddress));
+        if (!string.IsNullOrEmpty(clinicName))
+            query = query.Where(u => u.Clinic!.Name.Contains(clinicName));
+
+        if (!string.IsNullOrEmpty(role))
         {
-            return await users.OrderByDescending(u => u.RatingsGiven.Any() ?
-                u.RatingsGiven.Average(r => r.Rate)
-                : 0).ToListAsync();
+            query = from user in query
+                    join userRole in dbcontext.UserRoles on user.Id equals userRole.UserId
+                    join roleDb in dbcontext.Roles on userRole.RoleId equals roleDb.Id
+                    where roleDb.Name == role
+                    select user;
         }
-        if (sortByRating.Equals("asc"))
-        {
-            return await users.OrderBy(u => u.RatingsGiven.Any() ?
-                u.RatingsGiven.Average(r => r.Rate)
-                : 0).ToListAsync();
-        }
-        return await users.ToListAsync();
+
+        return await query.ToListAsync();
     }
-    //public async Task<bool> Verify(string verficationToken)
-    //{
-    //    var user = await dbcontext.Users.FirstOrDefaultAsync(u => u.VerificationToken == verficationToken);
-    //    if (user != null)
-    //    {
-    //        user.VerifiedAt = DateTime.Now;
-    //        user.EmailConfirmed = true;
-    //        await userManager.UpdateAsync(user);
-    //        await dbcontext.SaveChangesAsync();
-    //        return true;
-    //    }
-    //    return false;
-    //}
-    //public async Task DeleteAccount(string userId)
-    //{
-    //    var user = await userManager.FindByIdAsync(userId);
-    //    if (user == null)
-    //    {
-    //        return;
-    //    }
-    //    if (user.ProfileImagePath != null)
-    //    {
-    //        var path = Path.Combine(hostEnvironment.ContentRootPath, user.ProfileImagePath);
-    //        File.Delete(path);
 
-    //    }
+}
+//public async Task<bool> Verify(string verficationToken)
+//{
+//    var user = await dbcontext.Users.FirstOrDefaultAsync(u => u.VerificationToken == verficationToken);
+//    if (user != null)
+//    {
+//        user.VerifiedAt = DateTime.Now;
+//        user.EmailConfirmed = true;
+//        await userManager.UpdateAsync(user);
+//        await dbcontext.SaveChangesAsync();
+//        return true;
+//    }
+//    return false;
+//}
+//public async Task DeleteAccount(string userId)
+//{
+//    var user = await userManager.FindByIdAsync(userId);
+//    if (user == null)
+//    {
+//        return;
+//    }
+//    if (user.ProfileImagePath != null)
+//    {
+//        var path = Path.Combine(hostEnvironment.ContentRootPath, user.ProfileImagePath);
+//        File.Delete(path);
 
-    //    await userManager.DeleteAsync(user);
-    //    await dbcontext.SaveChangesAsync();
-    //}
-    /*
+//    }
+
+//    await userManager.DeleteAsync(user);
+//    await dbcontext.SaveChangesAsync();
+//}
+/*
 public async Task<IEnumerable<IdentityError>> Verify(string email, string verficationToken)
 {
 var user = await userManager.FindByEmailAsync(email);
@@ -329,4 +338,4 @@ return check.Errors;
 }
 */
 
-}
+
