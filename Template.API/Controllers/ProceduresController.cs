@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Procedure.Commands.AssignAssistnatsToProcedure;
+using Template.Application.Procedure.Commands.ChangeStatus;
 using Template.Application.Procedure.Commands.Create;
 using Template.Application.Procedure.Commands.Update;
 using Template.Application.Procedure.Dtos;
@@ -95,5 +96,12 @@ public class ProceduresController(IMediator mediator) : ControllerBase
             return BadRequest(result.Errors);
         }
         return Ok(result.Data);
+    }
+
+    [HttpPatch("{id}/ChangeStatus")]
+    public async Task<ActionResult<ProcedureDetailedDto>> ChangeProcedureStatus([FromRoute] int id, [FromBody] ChangeStatusCommand command)
+    {
+        command.ProcedureId = id;
+        return await mediator.Send(command);
     }
 }
