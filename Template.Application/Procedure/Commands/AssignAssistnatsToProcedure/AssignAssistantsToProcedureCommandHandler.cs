@@ -6,7 +6,7 @@ using Template.Domain.Repositories;
 namespace Template.Application.Procedure.Commands.AssignAssistnatsToProcedure;
 
 public class AssignAssistantsToProcedureCommandHandler(IProcedureRepository procedureRepository
-    , IMapper mapper, IAccountRepository accountRepository) : ICommandHandler<AssignAssistantsToProcedureCommand>
+    , IMapper mapper, IAccountRepository accountRepository, INotificationService notificationService) : ICommandHandler<AssignAssistantsToProcedureCommand>
 {
     public async Task<Result> Handle(AssignAssistantsToProcedureCommand request, CancellationToken cancellationToken)
     {
@@ -39,6 +39,25 @@ public class AssignAssistantsToProcedureCommandHandler(IProcedureRepository proc
         }
         procedure.Status = Domain.Enums.EnumProcedureStatus.IN_PROGRESS;
         await procedureRepository.UpdateAsync(procedure);
+
+        //sending notification to each assigned assistant
+        var assistantNotification = new Domain.Entities.Notifications.Notification
+        {
+            Title = "New assignment",
+            Body = "New procedure has been assigned to you, please check the procedure's details",
+            Read = false,
+        };
+        foreach (var assistantId in request.AssistantsIds)
+        {
+            var assistant = await accountRepository.GetUserWithDevicesAsync(assistantId);
+            foreach (var device in assistant.Devices)
+            {
+                assistantNotification.DeviceId = device.Id;
+                await notificationService.SendNotificationAsync(assistantNotification);
+                await notificationService.SaveNotificationAsync(assistantNotification);
+            }
+        }
+
         return Result.Success();
     }
 }

@@ -22,6 +22,11 @@ public class AccountRepository(UserManager<User> userManager,
         return await userManager.FindByIdAsync(id);
     }
 
+    public async Task<User> GetUserWithDevicesAsync(string id)
+    {
+        return await dbcontext.Users.Include(u => u.Devices).FirstOrDefaultAsync(u => u.Id.Equals(id));
+    }
+
     //public async Task<bool> FillWallet(string email, int amount)
     //{
     //    var user = await userManager.FindByEmailAsync(email);

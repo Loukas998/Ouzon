@@ -10,7 +10,7 @@ using Template.Domain.Repositories;
 namespace Template.Application.Procedure.Commands.ChangeStatus;
 
 public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository,
-    IMapper mapper) : IRequestHandler<ChangeStatusCommand, ProcedureDetailedDto>
+    IMapper mapper, INotificationService notificationService, IAccountRepository accountRepository) : IRequestHandler<ChangeStatusCommand, ProcedureDetailedDto>
 {
     public async Task<ProcedureDetailedDto> Handle(ChangeStatusCommand request, CancellationToken cancellationToken)
     {
@@ -55,6 +55,37 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
             Implant = imp,
             ToolsWithImplant = []
         }));
+
+        //sending notification to admin 
+        if (request.NewStatus.Equals(3))
+        {
+            var adminNotification = new Domain.Entities.Notifications.Notification
+            {
+                Title = "Done",
+                Body = "The procedure assist has been done",
+                Read = false,
+                DeviceId = null
+            };
+            await notificationService.SaveNotificationAsync(adminNotification);
+        }
+        else
+        {
+            //sending notification to doctor
+            var doctor = await accountRepository.GetUserWithDevicesAsync(procedure.DoctorId);
+            var doctorNotification = new Domain.Entities.Notifications.Notification
+            {
+                Title = "Status changed",
+                Body = $"Procedure's status has been changed from: {procedure.Status}, to: {request.NewStatus}",
+                Read = false,
+            };
+            foreach (var device in doctor.Devices)
+            {
+                doctorNotification.DeviceId = device.Id;
+                await notificationService.SaveNotificationAsync(doctorNotification);
+                await notificationService.SendNotificationAsync(doctorNotification);
+            }
+
+        }
 
         return detailedResult;
     }

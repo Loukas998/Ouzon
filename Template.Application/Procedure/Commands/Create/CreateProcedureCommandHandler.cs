@@ -17,8 +17,10 @@ namespace Template.Application.Procedure.Commands.Create
         private readonly ILogger<CreateProcedureCommandHandler> logger;
         private readonly IUserContext userContext;
         private readonly IImplantRepository implantRepository;
+        private readonly INotificationService notificationService;
         public CreateProcedureCommandHandler(IProcedureRepository procedureRepository, IToolRepository toolRepository,
-            IKitRepository kitRepository, ILogger<CreateProcedureCommandHandler> logger, IMapper mapper, IUserContext userContext, IImplantRepository implantRepository)
+            IKitRepository kitRepository, ILogger<CreateProcedureCommandHandler> logger, IMapper mapper, IUserContext userContext,
+            IImplantRepository implantRepository, INotificationService notificationService)
         {
             this.procedureRepository = procedureRepository;
             this.toolRepository = toolRepository;
@@ -27,6 +29,7 @@ namespace Template.Application.Procedure.Commands.Create
             this.mapper = mapper;
             this.userContext = userContext;
             this.implantRepository = implantRepository;
+            this.notificationService = notificationService;
         }
         public async Task<Result<int>> Handle(CreateProcedureCommand request, CancellationToken cancellationToken)
         {
@@ -34,8 +37,8 @@ namespace Template.Application.Procedure.Commands.Create
             {
                 var procedure = mapper.Map<Domain.Entities.ProcedureRelatedEntities.Procedure>(request);
                 procedure.NumberOfAsisstants = request.NumberOfAssistants;
-                var userId = userContext.GetCurrentUser().Id;
-                procedure.DoctorId = userId;
+                var userId = userContext.GetCurrentUser();
+                procedure.DoctorId = userId.Id;
                 if (request.ToolsIds != null)
                 {
                     foreach (var toolId in request.ToolsIds)
@@ -115,8 +118,18 @@ namespace Template.Application.Procedure.Commands.Create
                         }
                     }
                 }
-
                 var procedureId = await procedureRepository.AddAsync(procedure);
+
+                //sending notification to the admin
+                var adminNotification = new Domain.Entities.Notifications.Notification
+                {
+                    Title = "New procedure",
+                    Body = $"New procedure has been submitted by Dr.{userId.Email}",
+                    Read = false,
+                    DeviceId = null
+                };
+                await notificationService.SaveNotificationAsync(adminNotification);
+
                 return Result.Success(procedureId.Id);
             }
             catch (Exception ex)

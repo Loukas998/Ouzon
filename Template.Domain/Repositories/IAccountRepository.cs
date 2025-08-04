@@ -9,8 +9,9 @@ public interface IAccountRepository
     Task<bool> CheckPassword(string userId, string password);
     Task<User> GetUserAsync(string id);
     Task<User> GetUserDetails(string? id);
+    Task<User> GetUserWithDevicesAsync(string id);
     Task<List<User>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);
-    Task<AuthResponse>? LoginUser(string email, string password,string deviceToken);
+    Task<AuthResponse>? LoginUser(string email, string password, string deviceToken);
     Task<int> NewUsersAfterMonth(int month, string roleId, int year);
     Task<int> NumberOfUsersInRole(string roleId);
     Task<IEnumerable<IdentityError>> Register(User owner, string password, string role);

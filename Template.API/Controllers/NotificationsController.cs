@@ -23,4 +23,7 @@ public class NotificationsController(IMediator mediator) : ControllerBase
         await mediator.Send(command);
         return Ok();
     }
+
+    // 1- GetCurrentUserNotifications
+    // 2- SetNotificationsToRead
 }
