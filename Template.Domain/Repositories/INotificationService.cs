@@ -6,5 +6,5 @@ public interface INotificationService
 {
     public Task SaveNotificationAsync(Notification entity);
     public Task SendNotificationAsync(Notification entity);
-    public Task<List<Notification>> GetCurrentUserNotificationsAsync();
+    public Task<List<Notification>> GetCurrentUserNotificationsAsync(int deviceId);
 }

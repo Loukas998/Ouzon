@@ -26,7 +26,7 @@ public class NotificationsController(IMediator mediator) : ControllerBase
 
     // 1- GetCurrentUserNotifications
     [HttpGet("CurrnetUserNotifications")]
-    public Task<IActionResult> GetCurrentUserNotifications()
+    public Task<IActionResult> GetCurrentUserNotifications([FromQuery] int deviceId)
     {
         throw new NotImplementedException();
     }
