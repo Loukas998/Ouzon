@@ -1,12 +1,15 @@
 ﻿using FirebaseAdmin.Messaging;
-using System;
-using Template.Domain.Entities.Notifications;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Services;
 
 public class NotificationService(TemplateDbContext dbContext) : INotificationService
 {
+    public Task<List<Domain.Entities.Notifications.Notification>> GetCurrentUserNotificationsAsync()
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task SaveNotificationAsync(Domain.Entities.Notifications.Notification entity)
     {
         dbContext.Notifications.Add(entity);

@@ -25,5 +25,15 @@ public class NotificationsController(IMediator mediator) : ControllerBase
     }
 
     // 1- GetCurrentUserNotifications
-    // 2- SetNotificationsToRead
+    [HttpGet("CurrnetUserNotifications")]
+    public Task<IActionResult> GetCurrentUserNotifications()
+    {
+        throw new NotImplementedException();
+    }
+    // 2- SetNotificationsAsRead
+    [HttpGet("{id}/SetNotificationsAsRead")]
+    public Task<IActionResult> SetNotificationsAsRead([FromRoute] int id)
+    {
+        throw new NotImplementedException();
+    }
 }
