@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Template.Domain.Entities.ProcedureRelatedEntities;
+using Template.Domain.Enums;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -56,7 +57,9 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
            .ToListAsync();
         return procedures;
     }
-    public async Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames, string? clinicName, string? clinicAddress)
+    public async Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to,
+        int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames, string? clinicName,
+        string? clinicAddress, EnumProcedureStatus? status, string isDoctorAuthenticated, string isAssistantAuthenticated)
     {
         var query = dbContext.Procedures
             .Include(pro => pro.Doctor)
@@ -113,8 +116,23 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
         {
             query = query.Where(pro => pro.Doctor.Clinic!.Address!.Contains(clinicAddress));
         }
-        var procedures = await query
-           .ToListAsync();
+        if (status != null)
+        {
+            query = query.Where(pro => pro.Status == status);
+        }
+        if (!string.IsNullOrWhiteSpace(isDoctorAuthenticated))
+        {
+            query = query.Where(pro => pro.DoctorId.Equals(isDoctorAuthenticated));
+        }
+        if (!string.IsNullOrWhiteSpace(isAssistantAuthenticated))
+        {
+            query = query
+                    .Where(pro => pro.AssistantsInProcedure != null && pro.AssistantsInProcedure.Any())
+                    .Where(pro => pro.AssistantsInProcedure!
+                        .Select(asp => asp.Asisstant.Id)
+                        .Any(assistantId => assistantId.Equals(isAssistantAuthenticated)));
+        }
+        var procedures = await query.ToListAsync();
         return procedures;
     }
     public async Task<int> AddProcedureAssistant(ProcedureAssistant entity)

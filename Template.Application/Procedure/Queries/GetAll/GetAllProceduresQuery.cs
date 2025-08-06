@@ -1,9 +1,11 @@
 ﻿using Template.Application.Abstraction.Queries;
 using Template.Application.Procedure.Dtos.MainProcedure;
+using Template.Domain.Enums;
 
 namespace Template.Application.Procedure.Queries.GetAll
 {
-    public class GetAllProceduresQuery(DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames, string? clinicName, string? clinicAddress) : IQuery<IEnumerable<ProcedureDto>>
+    public class GetAllProceduresQuery(DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName,
+        List<string>? assistantNames, string? clinicName, string? clinicAddress, EnumProcedureStatus status) : IQuery<IEnumerable<ProcedureDto>>
     {
         public DateTime? From { get; set; } = from;
         public DateTime? To { get; set; } = to;
@@ -13,5 +15,6 @@ namespace Template.Application.Procedure.Queries.GetAll
         public List<string>? AssistantNames { get; set; } = assistantNames;
         public string? ClinicName { get; set; } = clinicName;
         public string? ClinicAddress { get; set; } = clinicAddress;
+        public EnumProcedureStatus? Status { get; set; } = status;
     }
 }

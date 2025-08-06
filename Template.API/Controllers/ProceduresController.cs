@@ -11,6 +11,7 @@ using Template.Application.Procedure.Queries.GetById;
 using Template.Application.Procedure.Queries.GetPaged;
 using Template.Application.Procedure.Queries.GetWithAssistants;
 using Template.Application.Procedure.Queries.GetWithKitsOnly;
+using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
 
@@ -33,9 +34,10 @@ public class ProceduresController(IMediator mediator) : ControllerBase
         return Ok(result.Data);
     }
     [HttpPost("FilteredProcedure")]
-    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures([FromQuery] DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames, string? clinicName, string? clinicAddress)
+    public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures([FromQuery] DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName,
+        List<string>? assistantNames, string? clinicName, string? clinicAddress, EnumProcedureStatus status)
     {
-        var result = await mediator.Send(new GetAllProceduresQuery(from, to, minNumberOfAssistants, maxNumberOfAssistants, doctorName, assistantNames, clinicName, clinicAddress));
+        var result = await mediator.Send(new GetAllProceduresQuery(from, to, minNumberOfAssistants, maxNumberOfAssistants, doctorName, assistantNames, clinicName, clinicAddress, status));
         if (!result.SuccessStatus)
         {
             return NotFound(result.Errors);
