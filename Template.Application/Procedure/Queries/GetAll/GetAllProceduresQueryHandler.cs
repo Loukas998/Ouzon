@@ -16,8 +16,8 @@ namespace Template.Application.Procedure.Queries.GetAll
         public async Task<Result<IEnumerable<ProcedureDto>>> Handle(GetAllProceduresQuery request, CancellationToken cancellationToken)
         {
             var currentUser = userContext.GetCurrentUser();
-            string isDoctorAuthenticated;
-            string isAssistantAuthenticated;
+            string isDoctorAuthenticated = "";
+            string isAssistantAuthenticated = "";
 
             if (currentUser.Roles.Any() && currentUser.Roles.Contains("User"))
             {

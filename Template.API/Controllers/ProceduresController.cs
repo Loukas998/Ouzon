@@ -35,9 +35,13 @@ public class ProceduresController(IMediator mediator) : ControllerBase
     }
     [HttpPost("FilteredProcedure")]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures([FromQuery] DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName,
-        List<string>? assistantNames, string? clinicName, string? clinicAddress, EnumProcedureStatus status)
+        List<string>? assistantNames, string? clinicName, string? clinicAddress, EnumProcedureStatus? status)
     {
-        var result = await mediator.Send(new GetAllProceduresQuery(from, to, minNumberOfAssistants, maxNumberOfAssistants, doctorName, assistantNames, clinicName, clinicAddress, status));
+        var result = await mediator.Send(
+            new GetAllProceduresQuery(
+                from, to, minNumberOfAssistants, maxNumberOfAssistants,
+                doctorName, assistantNames, clinicName, clinicAddress, status));
+
         if (!result.SuccessStatus)
         {
             return NotFound(result.Errors);
