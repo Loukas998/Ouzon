@@ -67,6 +67,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     }
     [HttpGet("{Id}")]
     [ProducesResponseType(200, StatusCode = 200, Type = typeof(UserDetailedDto))]
+    [Authorize]
     public async Task<ActionResult<UserDetailedDto>> GetFullUserProfile([FromRoute] string Id)
     {
         var user = await mediator.Send(new GetUserDetailsByIdQuery(Id));

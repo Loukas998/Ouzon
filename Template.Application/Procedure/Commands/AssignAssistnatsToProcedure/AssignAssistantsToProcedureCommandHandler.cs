@@ -22,7 +22,7 @@ public class AssignAssistantsToProcedureCommandHandler(IProcedureRepository proc
         procedure.AssistantsInProcedure.Clear();
         foreach (var assistantId in request.AssistantsIds)
         {
-            var assistant = await accountRepository.GetUserAsync(assistantId);
+            var assistant = await accountRepository.GetUserAsync(assistantId, false);
             if (assistant == null)
             {
                 return Result.Failure(["Assistant not Found"]);

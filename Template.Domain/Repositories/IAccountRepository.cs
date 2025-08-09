@@ -7,7 +7,7 @@ namespace Template.Domain.Repositories;
 public interface IAccountRepository
 {
     Task<bool> CheckPassword(string userId, string password);
-    Task<User> GetUserAsync(string id);
+    Task<User> GetUserAsync(string id, bool isAssistant);
     Task<User> GetUserDetails(string? id);
     Task<User> GetUserWithDevicesAsync(string id);
     Task<List<User>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);

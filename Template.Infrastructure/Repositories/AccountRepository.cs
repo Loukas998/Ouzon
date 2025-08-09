@@ -17,8 +17,11 @@ public class AccountRepository(UserManager<User> userManager,
         IDeviceRepository deviceRepository
         ) : IAccountRepository
 {
-    public async Task<User> GetUserAsync(string id)
+    public async Task<User> GetUserAsync(string id, bool isAssistant)
     {
+        if (isAssistant)
+            return await dbcontext.Users.Include(u => u.RatingsReceived).FirstOrDefaultAsync(u => u.Id.Equals(id));
+
         return await userManager.FindByIdAsync(id);
     }
 
@@ -119,7 +122,7 @@ public class AccountRepository(UserManager<User> userManager,
     }
     public async Task<bool> CheckPassword(string userId, string password)
     {
-        var user = await GetUserAsync(userId);
+        var user = await GetUserAsync(userId, false);
         if (user == null || password == null)
         {
             return false;
@@ -257,16 +260,16 @@ public class AccountRepository(UserManager<User> userManager,
     }
     public async Task<User> GetUserDetails(string? id)
     {
-        var user = await userManager.Users
+        var user = userManager.Users
             .Include(u => u.InProcedure)
             .ThenInclude(prc => prc.Procedure)
             .Include(u => u.ProcedureFrom)
             .Include(u => u.Devices)
             .Include(u => u.Holidays)
-            .Where(u => u.Id == id)
-            .FirstOrDefaultAsync()
-            ;
-        return user;
+            .Include(u => u.RatingsReceived)
+            .AsQueryable();
+
+        return await user.FirstOrDefaultAsync(u => u.Id.Equals(id));
 
     }
     public async Task<List<User>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName)
