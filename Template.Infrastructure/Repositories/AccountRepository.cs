@@ -267,6 +267,7 @@ public class AccountRepository(UserManager<User> userManager,
             .Include(u => u.Devices)
             .Include(u => u.Holidays)
             .Include(u => u.RatingsReceived)
+            .AsSplitQuery()
             .AsQueryable();
 
         return await user.FirstOrDefaultAsync(u => u.Id.Equals(id));

@@ -38,6 +38,7 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
                  .ThenInclude(pro => pro.Implant)
               .Include(pro => pro.ProcedureImplantTools)
                  .ThenInclude(pro => pro.Tool)
+                 .AsSplitQuery()
             .FirstOrDefaultAsync(pro => pro.Id == id);
         return procedure;
     }
@@ -62,10 +63,6 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
         string? clinicAddress, EnumProcedureStatus? status, string? isDoctorAuthenticated, string? isAssistantAuthenticated)
     {
         var query = dbContext.Procedures
-            .Include(pro => pro.Doctor)
-            .ThenInclude(doc => doc.Clinic)
-            .Include(pro => pro.AssistantsInProcedure!)
-                .ThenInclude(asp => asp.Asisstant)
             .AsQueryable();
         if (!string.IsNullOrEmpty(DoctorId))
         {
@@ -132,6 +129,11 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
                         .Select(asp => asp.Asisstant.Id)
                         .Any(assistantId => assistantId.Equals(isAssistantAuthenticated)));
         }
+        query = query.Include(pro => pro.Doctor)
+            .ThenInclude(doc => doc.Clinic)
+            .Include(pro => pro.AssistantsInProcedure!)
+                .ThenInclude(asp => asp.Asisstant)
+                .AsSplitQuery();
         var procedures = await query.ToListAsync();
         return procedures;
     }
@@ -150,6 +152,7 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
             .Include(kp => kp.KitsInProcedure)
             .ThenInclude(kp => kp.Kit)
             .ThenInclude(k => k.Implants)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == Id);
     }
     public async Task<Procedure> GetProcedureWithAssistants(int Id)
@@ -189,69 +192,69 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
         return procedures;
     }
 
-    public async Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to,
-        int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames,
-        string? clinicName, string? clinicAddress)
-    {
-        var query = dbContext.Procedures
-            .Include(pro => pro.Doctor)
-            .ThenInclude(doc => doc.Clinic)
-            .Include(pro => pro.AssistantsInProcedure!)
-                .ThenInclude(asp => asp.Asisstant)
-            .AsQueryable();
-        if (!string.IsNullOrEmpty(DoctorId))
-        {
-            query = query.Where(p => p.DoctorId == DoctorId).Include(p => p.Doctor).ThenInclude(d => d.Clinic);
-        }
-        if (!string.IsNullOrEmpty(AssistantId))
-        {
-            query = query.Where(p => p.AssistantsInProcedure.Any(x => x.AsisstantId == AssistantId));
-        }
-        if (from != null)
-        {
-            query = query.Where(pro => pro.Date >= from);
-        }
-        if (to != null)
-        {
-            query = query.Where(pro => pro.Date <= to);
-        }
-        if (minNumberOfAssistants != null)
-        {
-            query = query.Where(pro => pro.NumberOfAsisstants >= minNumberOfAssistants);
-        }
-        if (maxNumberOfAssistants != null)
-        {
-            query = query.Where(pro => pro.NumberOfAsisstants <= maxNumberOfAssistants);
-        }
-        if (!string.IsNullOrWhiteSpace(doctorName))
-        {
-            query = query.Where(pro => pro.Doctor.UserName!.Contains(doctorName));
-        }
-        if (assistantNames?.Count > 0)
-        {
-            var validNames = assistantNames.Where(name => !string.IsNullOrWhiteSpace(name)).ToList();
+    //public async Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to,
+    //    int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames,
+    //    string? clinicName, string? clinicAddress)
+    //{
+    //    var query = dbContext.Procedures
+    //        .Include(pro => pro.Doctor)
+    //        .ThenInclude(doc => doc.Clinic)
+    //        .Include(pro => pro.AssistantsInProcedure!)
+    //            .ThenInclude(asp => asp.Asisstant)
+    //        .AsQueryable();
+    //    if (!string.IsNullOrEmpty(DoctorId))
+    //    {
+    //        query = query.Where(p => p.DoctorId == DoctorId).Include(p => p.Doctor).ThenInclude(d => d.Clinic);
+    //    }
+    //    if (!string.IsNullOrEmpty(AssistantId))
+    //    {
+    //        query = query.Where(p => p.AssistantsInProcedure.Any(x => x.AsisstantId == AssistantId));
+    //    }
+    //    if (from != null)
+    //    {
+    //        query = query.Where(pro => pro.Date >= from);
+    //    }
+    //    if (to != null)
+    //    {
+    //        query = query.Where(pro => pro.Date <= to);
+    //    }
+    //    if (minNumberOfAssistants != null)
+    //    {
+    //        query = query.Where(pro => pro.NumberOfAsisstants >= minNumberOfAssistants);
+    //    }
+    //    if (maxNumberOfAssistants != null)
+    //    {
+    //        query = query.Where(pro => pro.NumberOfAsisstants <= maxNumberOfAssistants);
+    //    }
+    //    if (!string.IsNullOrWhiteSpace(doctorName))
+    //    {
+    //        query = query.Where(pro => pro.Doctor.UserName!.Contains(doctorName));
+    //    }
+    //    if (assistantNames?.Count > 0)
+    //    {
+    //        var validNames = assistantNames.Where(name => !string.IsNullOrWhiteSpace(name)).ToList();
 
-            if (validNames.Any())
-            {
-                query = query
-                    .Where(pro => pro.AssistantsInProcedure != null && pro.AssistantsInProcedure.Any())
-                    .Where(pro => pro.AssistantsInProcedure!
-                        .Select(asp => asp.Asisstant.UserName) // Fixed typo (if applicable)
-                        .Any(userName => validNames.Contains(userName)));
-            }
-        }
-        if (!string.IsNullOrWhiteSpace(clinicName))
-        {
-            query = query.Where(pro => pro.Doctor.Clinic!.Name!.Contains(clinicName));
-        }
-        if (!string.IsNullOrWhiteSpace(clinicAddress))
-        {
-            query = query.Where(pro => pro.Doctor.Clinic!.Address!.Contains(clinicAddress));
-        }
+    //        if (validNames.Any())
+    //        {
+    //            query = query
+    //                .Where(pro => pro.AssistantsInProcedure != null && pro.AssistantsInProcedure.Any())
+    //                .Where(pro => pro.AssistantsInProcedure!
+    //                    .Select(asp => asp.Asisstant.UserName) // Fixed typo (if applicable)
+    //                    .Any(userName => validNames.Contains(userName)));
+    //        }
+    //    }
+    //    if (!string.IsNullOrWhiteSpace(clinicName))
+    //    {
+    //        query = query.Where(pro => pro.Doctor.Clinic!.Name!.Contains(clinicName));
+    //    }
+    //    if (!string.IsNullOrWhiteSpace(clinicAddress))
+    //    {
+    //        query = query.Where(pro => pro.Doctor.Clinic!.Address!.Contains(clinicAddress));
+    //    }
 
 
-        var procedures = await query.ToListAsync();
-        return procedures;
-    }
+    //    var procedures = await query.ToListAsync();
+    //    return procedures;
+    //}
 
 }

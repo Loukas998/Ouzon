@@ -16,8 +16,8 @@ namespace Template.Domain.Repositories
         Task<Procedure> GetProcedureWithKits(int Id);
         Task<Procedure> GetProcedureWithToolsNotInKit(int Id);
 
-        Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to, int? minNumberOfAssistants,
-            int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames,
-            string? clinicName, string? clinicAddress);
+        //Task<List<Procedure>> GetAllFilteredProcedures(string? DoctorId, string? AssistantId, DateTime? from, DateTime? to, int? minNumberOfAssistants,
+        //    int? maxNumberOfAssistants, string? doctorName, List<string>? assistantNames,
+        //    string? clinicName, string? clinicAddress);
     }
 }
