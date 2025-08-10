@@ -9,7 +9,7 @@ public class ProcedureDto
 {
     public int Id { get; set; }
     public string DoctorId { get; set; }
-    public int NumberOfAssistants { get; set; }
+    public int NumberOfAsisstants { get; set; }
     public List<string>? AssistantIds { get; set; }
     public int CategoryId { get; set; }
     public EnumProcedureStatus Status { get; set; } = EnumProcedureStatus.REQUEST_SENT;
