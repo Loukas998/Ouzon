@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,5 +45,19 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IHolidayRepository, HolidayRepository>();
         services.AddScoped<IRatingsRepository, RatingRepository>();
         services.AddTransient<INotificationService, NotificationService>();
+
+        var fileName = "ouzon-2ce7d-firebase-adminsdk-fbsvc-ec2f64d95b.json";
+
+        // This gets the absolute path to the Infrastructure project's folder at runtime
+        var basePath = Directory.GetCurrentDirectory();
+        var fullPath = Path.Combine(basePath, fileName);
+
+        if (FirebaseApp.DefaultInstance == null)
+        {
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile(fullPath)
+            });
+        }
     }
 }

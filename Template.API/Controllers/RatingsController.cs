@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Ratings.Commands.Rate;
+using Template.Application.Ratings.Dtos;
+using Template.Application.Ratings.Queries.CurrentAssistantRatings;
 using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
@@ -15,5 +17,12 @@ public class RatingsController(IMediator mediator) : ControllerBase
     {
         await mediator.Send(command);
         return Ok();
+    }
+
+    [HttpGet("CurrentAssistantRatings")]
+    [Authorize(Roles = nameof(EnumRoleNames.AssistantDoctor))]
+    public async Task<ActionResult<IEnumerable<RatingsDto>>> GetCurrentAssistantRatings()
+    {
+        return Ok(await mediator.Send(new GetCurrentAssistantRatingsQuery()));
     }
 }

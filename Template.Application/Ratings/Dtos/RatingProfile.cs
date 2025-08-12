@@ -8,7 +8,9 @@ public class RatingProfile : Profile
 {
     public RatingProfile()
     {
-        CreateMap<Rating, RatingsDto>();
+        CreateMap<Rating, RatingsDto>()
+            .ForMember(r => r.DoctorName, opt => opt.Ignore());
+
         CreateMap<AddRatingToAssistantCommand, Rating>();
     }
 }
