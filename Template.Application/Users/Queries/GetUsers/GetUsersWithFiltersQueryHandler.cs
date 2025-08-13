@@ -11,7 +11,7 @@ namespace Template.Application.Users.Queries.GetUsers
         public async Task<Result<List<UserDto>>> Handle(GetUsersWithFiltersQuery request, CancellationToken cancellationToken)
         {
             var users = await accountRepository.GetUsersWithFilters(request.Role,
-                request.Email, request.PhoneNumber, request.Email, request.ClinicName);
+                request.Email, request.PhoneNumber, request.ClinicAddress, request.ClinicName);
             if (users == null)
             {
                 return Result.Failure<List<UserDto>>(["Entity not found"]);

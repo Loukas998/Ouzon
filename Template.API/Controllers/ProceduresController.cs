@@ -23,6 +23,10 @@ public class ProceduresController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> AddProcedure(CreateProcedureCommand request)
     {
         var result = await mediator.Send(request);
+        if (!result.SuccessStatus)
+        {
+            return BadRequest(result.Errors);
+        }
         var id = result.Data;
         return CreatedAtAction(nameof(GetProcedure), new { id }, null);
     }
@@ -30,7 +34,10 @@ public class ProceduresController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<ProcedureDetailedDto>> GetProcedure([FromRoute] int id)
     {
         var result = await mediator.Send(new GetProcedureQuery(id));
-
+        if (!result.SuccessStatus)
+        {
+            return BadRequest(result.Errors);
+        }
         return Ok(result.Data);
     }
     [HttpPost("FilteredProcedure")]
@@ -105,9 +112,8 @@ public class ProceduresController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{id}/ChangeStatus")]
-    public async Task<ActionResult<ProcedureDetailedDto>> ChangeProcedureStatus([FromRoute] int id, [FromBody] ChangeStatusCommand command)
+    public async Task<ActionResult<ProcedureDetailedDto>> ChangeProcedureStatus([FromBody] ChangeStatusCommand command)
     {
-        command.ProcedureId = id;
         return await mediator.Send(command);
     }
 }
