@@ -21,6 +21,7 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
         }
 
         procedure.Status = request.NewStatus;
+        await procedureRepository.UpdateAsync(procedure);
         await procedureRepository.SaveChangesAsync();
         var result = mapper.Map<ProcedureDto>(procedure);
         var detailedResult = new ProcedureDetailedDto()
@@ -82,7 +83,7 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
             {
                 doctorNotification.DeviceId = device.Id;
                 await notificationService.SaveNotificationAsync(doctorNotification);
-                await notificationService.SendNotificationAsync(doctorNotification);
+                // await notificationService.SendNotificationAsync(doctorNotification);
             }
 
         }

@@ -77,10 +77,9 @@ public class HolidaysController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] ChangeHolidayStatusCommand command)
+    [HttpPut("ChangeStatus")]
+    public async Task<IActionResult> ChangeStatus([FromBody] ChangeHolidayStatusCommand command)
     {
-        command.HolidayId = id;
         var result = await mediator.Send(command);
         if (!result.SuccessStatus)
         {

@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Template.Application.Abstraction.Commands;
 using Template.Domain.Entities.ResponseEntity;
-using Template.Domain.Entities.Schedule;
-using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Holidays.Commands.ChangeStatus;
 
-public class ChangeHolidayStatusCommandHandler(ILogger<ChangeHolidayStatusCommandHandler> logger, IHolidayRepository holidayRepository, 
+public class ChangeHolidayStatusCommandHandler(ILogger<ChangeHolidayStatusCommandHandler> logger, IHolidayRepository holidayRepository,
     IMapper mapper) : ICommandHandler<ChangeHolidayStatusCommand>
 {
     public async Task<Result> Handle(ChangeHolidayStatusCommand request, CancellationToken cancellationToken)
@@ -23,6 +20,7 @@ public class ChangeHolidayStatusCommandHandler(ILogger<ChangeHolidayStatusComman
         }
 
         mapper.Map(request, holiday);
+        await holidayRepository.UpdateAsync(holiday);
         await holidayRepository.SaveChangesAsync();
         return Result.Success();
     }

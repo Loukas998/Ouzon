@@ -8,20 +8,21 @@ using Template.Domain.Repositories;
 namespace Template.Application.Kits.Commands.Update;
 
 public class UpdateKitCommandHandler(ILogger<UpdateKitCommandHandler> logger, IMapper mapper,
-	IKitRepository kitRepository) : IRequestHandler<UpdateKitCommand>
+    IKitRepository kitRepository) : IRequestHandler<UpdateKitCommand>
 {
-	public async Task Handle(UpdateKitCommand request, CancellationToken cancellationToken)
-	{
-		logger.LogInformation("Updating kit with id: {KitId}, the new product: {@Kit}",
-				request.KitId, request);
+    public async Task Handle(UpdateKitCommand request, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Updating kit with id: {KitId}, the new product: {@Kit}",
+                request.KitId, request);
 
-		var kit = await kitRepository.FindByIdAsync(request.KitId);
-		if (kit == null)
-		{
-			throw new NotFoundException(nameof(Kit), request.KitId.ToString());
-		}
+        var kit = await kitRepository.FindByIdAsync(request.KitId);
+        if (kit == null)
+        {
+            throw new NotFoundException(nameof(Kit), request.KitId.ToString());
+        }
 
-		mapper.Map(request, kit);
-		await kitRepository.SaveChangesAsync();
-	}
+        mapper.Map(request, kit);
+        await kitRepository.UpdateAsync(kit);
+        await kitRepository.SaveChangesAsync();
+    }
 }

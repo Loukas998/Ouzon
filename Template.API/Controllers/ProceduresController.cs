@@ -111,7 +111,7 @@ public class ProceduresController(IMediator mediator) : ControllerBase
         return Ok(result.Data);
     }
 
-    [HttpPatch("{id}/ChangeStatus")]
+    [HttpPatch("ChangeStatus")]
     public async Task<ActionResult<ProcedureDetailedDto>> ChangeProcedureStatus([FromBody] ChangeStatusCommand command)
     {
         return await mediator.Send(command);

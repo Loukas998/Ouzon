@@ -16,10 +16,9 @@ public class NotificationsController(IMediator mediator) : ControllerBase
     //    return Ok();
     //}
 
-    [HttpPatch("{id:int}")]
-    public async Task<IActionResult> ChangeDeviceNotificationStatus([FromRoute] int id, [FromBody] ChangeDeviceStatusCommand command)
+    [HttpPatch]
+    public async Task<IActionResult> ChangeDeviceNotificationStatus([FromBody] ChangeDeviceStatusCommand command)
     {
-        command.DeviceId = id;
         await mediator.Send(command);
         return Ok();
     }

@@ -53,7 +53,7 @@ public class AssignAssistantsToProcedureCommandHandler(IProcedureRepository proc
             foreach (var device in assistant.Devices)
             {
                 assistantNotification.DeviceId = device.Id;
-                await notificationService.SendNotificationAsync(assistantNotification);
+                // await notificationService.SendNotificationAsync(assistantNotification);
                 await notificationService.SaveNotificationAsync(assistantNotification);
             }
         }

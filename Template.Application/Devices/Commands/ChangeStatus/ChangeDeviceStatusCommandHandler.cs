@@ -14,6 +14,7 @@ public class ChangeDeviceStatusCommandHandler(IDeviceRepository deviceRepository
         }
 
         device.OptIn = request.OptIn;
+        await deviceRepository.UpdateAsync(device);
         await deviceRepository.SaveChangesAsync();
     }
 }

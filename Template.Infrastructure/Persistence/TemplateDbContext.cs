@@ -135,7 +135,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Holidays)
-            .WithOne()
+            .WithOne(h => h.User)
             .HasForeignKey(h => h.UserId);
 
         modelBuilder.Entity<User>()
@@ -145,7 +145,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
         modelBuilder.Entity<Device>()
             .HasMany(d => d.Notifications)
-            .WithOne()
+            .WithOne(n => n.Device)
             .HasForeignKey(n => n.DeviceId);
 
         modelBuilder.Entity<Device>()

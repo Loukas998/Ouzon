@@ -174,7 +174,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Implant", b =>
@@ -213,7 +213,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("KitId");
 
-                    b.ToTable("Implants");
+                    b.ToTable("Implants", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Kit", b =>
@@ -235,7 +235,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Kits");
+                    b.ToTable("Kits", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Materials.Tool", b =>
@@ -274,7 +274,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("KitId");
 
-                    b.ToTable("Tools");
+                    b.ToTable("Tools", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Notifications.Device", b =>
@@ -305,7 +305,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Devices");
+                    b.ToTable("Devices", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Notifications.Notification", b =>
@@ -332,7 +332,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.Procedure", b =>
@@ -365,7 +365,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Procedures");
+                    b.ToTable("Procedures", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureAssistant", b =>
@@ -389,7 +389,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("ProcedureAssistants");
+                    b.ToTable("ProcedureAssistants", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureImplant", b =>
@@ -412,7 +412,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("ProcedureImplants");
+                    b.ToTable("ProcedureImplants", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureImplantTool", b =>
@@ -440,7 +440,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ToolId");
 
-                    b.ToTable("ProcedureImplantTools");
+                    b.ToTable("ProcedureImplantTools", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureKit", b =>
@@ -463,7 +463,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("ProcedureKits");
+                    b.ToTable("ProcedureKits", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.ProcedureRelatedEntities.ProcedureTool", b =>
@@ -486,7 +486,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ToolId");
 
-                    b.ToTable("ProcedureTools");
+                    b.ToTable("ProcedureTools", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Schedule.Holiday", b =>
@@ -517,7 +517,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Holidays");
+                    b.ToTable("Holidays", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.User", b =>
@@ -624,7 +624,7 @@ namespace Template.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Clinics");
+                    b.ToTable("Clinics", (string)null);
                 });
 
             modelBuilder.Entity("Template.Domain.Entities.Users.Rating", b =>
@@ -658,7 +658,7 @@ namespace Template.Infrastructure.Migrations
 
                     b.HasIndex("ProcedureId");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Ratings", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

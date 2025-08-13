@@ -70,7 +70,6 @@ public class ImplantsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch]
-    [Route("{implantId:int}")]
     public async Task<IActionResult> UpdateImplant([FromRoute] int implantId, [FromBody] UpdateImplantCommand command)
     {
         command.ImplantId = implantId;
