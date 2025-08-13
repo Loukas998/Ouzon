@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template.Domain.Enums;
+﻿using Template.Domain.Enums;
 
 namespace Template.Domain.Entities.Schedule;
 
@@ -16,4 +11,5 @@ public class Holiday
     public HolidayStatus Status { get; set; }
 
     public string UserId { get; set; } = default!;
+    public User User { get; set; }
 }

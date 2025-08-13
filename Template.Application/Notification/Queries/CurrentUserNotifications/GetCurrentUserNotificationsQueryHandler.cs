@@ -10,7 +10,7 @@ public class GetCurrentUserNotificationsQueryHandler(INotificationService notifi
 {
     public async Task<IEnumerable<NotificationDto>> Handle(GetCurrentUserNotificationsQuery request, CancellationToken cancellationToken)
     {
-        var notifications = await notificationService.GetCurrentUserNotificationsAsync(request.DeviceId);
+        var notifications = await notificationService.GetCurrentUserNotificationsAsync(request.DeviceToken);
         var notificationsDtos = mapper.Map<IEnumerable<NotificationDto>>(notifications);
         return notificationsDtos;
     }

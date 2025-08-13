@@ -9,4 +9,5 @@ public class HolidayDto
     public DateTime? To { get; set; }
     public string? Note { get; set; }
     public HolidayStatus Status { get; set; }
+    public string? UserName { get; set; }
 }

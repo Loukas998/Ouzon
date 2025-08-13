@@ -9,7 +9,9 @@ public class HolidayProfile : Profile
 {
     public HolidayProfile()
     {
-        CreateMap<Holiday, HolidayDto>();
+        CreateMap<Holiday, HolidayDto>()
+            .ForMember(src => src.UserName, opt => opt.MapFrom(dst => dst.User.UserName));
+
         CreateMap<CreateHolidayCommand, Holiday>();
         CreateMap<ChangeHolidayStatusCommand, Holiday>();
     }

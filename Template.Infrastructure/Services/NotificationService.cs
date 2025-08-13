@@ -6,9 +6,9 @@ namespace Template.Infrastructure.Services;
 
 public class NotificationService(TemplateDbContext dbContext) : INotificationService
 {
-    public async Task<List<Domain.Entities.Notifications.Notification>> GetCurrentUserNotificationsAsync(int deviceId)
+    public async Task<List<Domain.Entities.Notifications.Notification>> GetCurrentUserNotificationsAsync(string deviceToken)
     {
-        return await dbContext.Notifications.Where(n => n.DeviceId == deviceId).ToListAsync();
+        return await dbContext.Notifications.Include(n => n.Device).Where(n => n.Device.DeviceToken.Equals(deviceToken)).ToListAsync();
     }
 
     public async Task SaveNotificationAsync(Domain.Entities.Notifications.Notification entity)

@@ -6,5 +6,6 @@ public class Notification
     public string? Title { get; set; }
     public string? Body { get; set; }
     public int? DeviceId { get; set; }
+    public Device Device { get; set; }
     public bool Read { get; set; }
 }
