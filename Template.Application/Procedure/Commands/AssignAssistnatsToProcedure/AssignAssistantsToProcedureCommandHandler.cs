@@ -41,17 +41,19 @@ public class AssignAssistantsToProcedureCommandHandler(IProcedureRepository proc
         await procedureRepository.UpdateAsync(procedure);
 
         //sending notification to each assigned assistant
-        var assistantNotification = new Domain.Entities.Notifications.Notification
-        {
-            Title = "New assignment",
-            Body = "New procedure has been assigned to you, please check the procedure's details",
-            Read = false,
-        };
+
         foreach (var assistantId in request.AssistantsIds)
         {
+
             var assistant = await accountRepository.GetUserWithDevicesAsync(assistantId);
             foreach (var device in assistant.Devices)
             {
+                var assistantNotification = new Domain.Entities.Notifications.Notification
+                {
+                    Title = "New assignment",
+                    Body = "New procedure has been assigned to you, please check the procedure's details",
+                    Read = false,
+                };
                 assistantNotification.DeviceId = device.Id;
                 // await notificationService.SendNotificationAsync(assistantNotification);
                 await notificationService.SaveNotificationAsync(assistantNotification);
