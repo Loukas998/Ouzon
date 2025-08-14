@@ -34,7 +34,7 @@ public class HolidayRepository : GenericRepository<Holiday>, IHolidayRepository
     }
     public async Task<List<Holiday>> GetAllHolidaysWithFilter(DateTime? FromDate, DateTime? ToDate, string? AssistantId)
     {
-        var query = dbContext.Holidays.AsQueryable();
+        var query = dbContext.Holidays.Include(h => h.User).AsQueryable();
         if (FromDate != null)
         {
             query = query.Where(h => h.From > FromDate);
