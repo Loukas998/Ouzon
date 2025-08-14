@@ -1,18 +1,15 @@
 ﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Template.Application.Abstraction.Queries;
 using Template.Application.Holidays.Dtos;
 using Template.Domain.Entities.ResponseEntity;
-using Template.Domain.Entities.Schedule;
-using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Holidays.Queries.GetById;
 
-public class GetHolidayByIdQueryHandler(ILogger<GetHolidayByIdQueryHandler> logger, IMapper mapper, 
-    IHolidayRepository holidayRepository) : IQueryHandler<GetHolidayByIdQuery, HolidayDto>
+public class GetHolidayByIdQueryHandler(ILogger<GetHolidayByIdQueryHandler> logger, IMapper mapper,
+    IHolidayRepository holidayRepository,
+    IAccountRepository accountRepository) : IQueryHandler<GetHolidayByIdQuery, HolidayDto>
 {
     public async Task<Result<HolidayDto>> Handle(GetHolidayByIdQuery request, CancellationToken cancellationToken)
     {
@@ -23,8 +20,9 @@ public class GetHolidayByIdQueryHandler(ILogger<GetHolidayByIdQueryHandler> logg
         {
             return Result.Failure<HolidayDto>(["Data not Found"]);
         }
-
+        var user = await accountRepository.GetUserAsync(holiday.UserId, true);
         var holidayDto = mapper.Map<HolidayDto>(holiday);
+        holidayDto.UserName = user.UserName.ToString();
         return Result.Success(holidayDto);
     }
 }
