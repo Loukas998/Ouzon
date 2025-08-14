@@ -12,6 +12,7 @@ namespace Template.Domain.Repositories
     {
         Task<string> CreateRefreshToken();
         Task<AuthResponse?> GenerateToken(string UserIdentifier);
+        string ReadInvalidToken(string token);
         Task TokenDelete(User user);
         Task<AuthResponse?> VerifyRefreshToken(RefreshTokenRequest request);
     }

@@ -42,13 +42,12 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     }
     [HttpPost]
     [Route("token/refresh")]
-    [Authorize]
     public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequestCommand request)
     {
         var response = await mediator.Send(request);
         if (response == null)
         {
-            return BadRequest();
+            return Unauthorized();
         }
         return Ok(response);
     }

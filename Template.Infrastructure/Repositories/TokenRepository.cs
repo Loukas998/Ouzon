@@ -95,4 +95,31 @@ public class TokenRepository(IConfiguration configuration, UserManager<User> use
         await userManager.RemoveAuthenticationTokenAsync(_user, _loginProvidor, _refreshToken);
         await userManager.UpdateSecurityStampAsync(_user);
     }
+    public string ReadInvalidToken(string token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = configuration["JwtSettings:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = configuration["JwtSettings:Audience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])),
+            ValidateLifetime = false
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        SecurityToken securityToken;
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+
+        var jwtToken = securityToken as JwtSecurityToken;
+        if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            throw new SecurityTokenException("Invalid token");
+
+        var userId = principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            return "NotFound";
+        }
+        return userId;
+    }
 }
