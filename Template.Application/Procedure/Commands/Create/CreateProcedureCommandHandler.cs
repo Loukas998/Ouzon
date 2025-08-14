@@ -66,7 +66,7 @@ namespace Template.Application.Procedure.Commands.Create
                         var kit = await kitRepository.FindByIdAsync(kitId);
                         if (kit == null)
                         {
-                            return Result.Failure<int>(["Tool not found"]);
+                            return Result.Failure<int>(["Kit not found"]);
                         }
                         else if (kit.IsMainKit)
                         {
@@ -90,7 +90,7 @@ namespace Template.Application.Procedure.Commands.Create
                         var implant = await implantRepository.FindByIdAsync(ImplantTool.ImplantId);
                         if (implant == null)
                         {
-                            return Result.Failure<int>(["Entity doesn't exist"]);
+                            return Result.Failure<int>(["Implant Not Found"]);
                         }
                         if (ImplantTool.ToolIds == null || ImplantTool.ToolIds.Count == 0)
                         {
@@ -106,7 +106,7 @@ namespace Template.Application.Procedure.Commands.Create
                                 var tool = await toolRepository.FindByIdAsync(toolId);
                                 if (tool == null)
                                 {
-                                    return Result.Failure<int>(["Entity doesn't exist"]);
+                                    return Result.Failure<int>(["Tool with Implant Not Found"]);
                                 }
                                 procedure.ProcedureImplantTools.Add(new ProcedureImplantTool()
                                 {

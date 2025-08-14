@@ -21,7 +21,7 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
         }
 
         procedure.Status = request.NewStatus;
-        await procedureRepository.UpdateAsync(procedure);
+        //await procedureRepository.UpdateAsync(procedure);
         await procedureRepository.SaveChangesAsync();
         var result = mapper.Map<ProcedureDto>(procedure);
         var detailedResult = new ProcedureDetailedDto()

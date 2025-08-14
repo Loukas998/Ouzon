@@ -20,7 +20,6 @@ public class ChangeHolidayStatusCommandHandler(ILogger<ChangeHolidayStatusComman
         }
 
         mapper.Map(request, holiday);
-        await holidayRepository.UpdateAsync(holiday);
         await holidayRepository.SaveChangesAsync();
         return Result.Success();
     }

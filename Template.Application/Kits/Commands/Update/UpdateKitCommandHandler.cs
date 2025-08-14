@@ -22,7 +22,6 @@ public class UpdateKitCommandHandler(ILogger<UpdateKitCommandHandler> logger, IM
         }
 
         mapper.Map(request, kit);
-        await kitRepository.UpdateAsync(kit);
         await kitRepository.SaveChangesAsync();
     }
 }

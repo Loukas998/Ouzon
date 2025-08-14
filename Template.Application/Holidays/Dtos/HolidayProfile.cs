@@ -13,6 +13,7 @@ public class HolidayProfile : Profile
             .ForMember(src => src.UserName, opt => opt.MapFrom(dst => dst.User.UserName));
 
         CreateMap<CreateHolidayCommand, Holiday>();
-        CreateMap<ChangeHolidayStatusCommand, Holiday>();
+        CreateMap<ChangeHolidayStatusCommand, Holiday>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(dst => dst.NewStatus));
     }
 }
