@@ -26,6 +26,12 @@ public class UserProfile : Profile
             .ForMember(dest => dest.Rate, opt => opt.Ignore())
             .ReverseMap();
 
+        CreateMap<(User user, string roleName), UserDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.user.Id))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.user.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.user.PhoneNumber))
+            .ForMember(dest => dest.Clinic, opt => opt.MapFrom(src => src.user.Clinic))
+            .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.roleName));
 
     }
 

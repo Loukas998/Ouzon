@@ -10,7 +10,7 @@ public interface IAccountRepository
     Task<User> GetUserAsync(string id, bool isAssistant);
     Task<User> GetUserDetails(string? id);
     Task<User> GetUserWithDevicesAsync(string id);
-    Task<List<User>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);
+    //Task<List<User>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);
     Task<AuthResponse>? LoginUser(string email, string password, string deviceToken);
     Task<int> NewUsersAfterMonth(int month, string roleId, int year);
     Task<int> NumberOfUsersInRole(string roleId);
@@ -19,4 +19,5 @@ public interface IAccountRepository
     Task UpdateUser(User user);
     Task<bool> UserInRoleAsync(string id, string roleName);
     Task<List<User>> GetAssistants(string? sortByRating);
+    Task<List<(User user, string? roleName)>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);
 }

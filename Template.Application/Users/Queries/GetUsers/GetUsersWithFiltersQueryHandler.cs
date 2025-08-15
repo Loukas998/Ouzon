@@ -16,7 +16,8 @@ namespace Template.Application.Users.Queries.GetUsers
             {
                 return Result.Failure<List<UserDto>>(["Entity not found"]);
             }
-            return Result.Success(mapper.Map<List<UserDto>>(users));
+            var userDtos = mapper.Map<List<UserDto>>(users);
+            return Result.Success(userDtos);
 
         }
     }

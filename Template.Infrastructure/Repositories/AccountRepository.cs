@@ -273,11 +273,12 @@ public class AccountRepository(UserManager<User> userManager,
         return await user.FirstOrDefaultAsync(u => u.Id.Equals(id));
 
     }
-    public async Task<List<User>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName)
+    public async Task<List<(User user, string? roleName)>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName)
     {
         var query = dbcontext.Users
             .Include(u => u.Clinic)
             .AsQueryable();
+
         if (!string.IsNullOrEmpty(email))
             query = query.Where(u => u.Email!.Contains(email));
 
@@ -289,21 +290,40 @@ public class AccountRepository(UserManager<User> userManager,
         if (!string.IsNullOrEmpty(clinicName))
             query = query.Where(u => u.Clinic!.Name.Contains(clinicName));
 
-        if (!string.IsNullOrEmpty(role))
-        {
-            query = from user in query
-                    join userRole in dbcontext.UserRoles on user.Id equals userRole.UserId
-                    join roleDb in dbcontext.Roles on userRole.RoleId equals roleDb.Id
-                    where roleDb.Name == role
-                    select user;
-        }
 
-        return await query.ToListAsync();
+        var result = await query
+    .Join(dbcontext.UserRoles,
+          u => u.Id,
+          ur => ur.UserId,
+          (u, ur) => new { u, ur })
+    .Join(dbcontext.Roles,
+          temp => temp.ur.RoleId,
+          r => r.Id,
+          (temp, r) => new
+          {
+              user = temp.u,
+              roleName = r.Name
+          })
+    .Where(x => string.IsNullOrEmpty(role) || x.roleName.Contains(role))
+
+    .ToListAsync();
+
+        return result.Select(x => (x.user, x.roleName)).ToList();
     }
 
     public Task<List<User>> GetAssistants(string? sortByRating)
     {
         throw new NotImplementedException();
+    }
+    public async Task<string> GetRoleOfUser(string userId)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return "";
+        }
+        var role = await userManager.GetRolesAsync(user);
+        return role.First();
     }
 }
 //public async Task<bool> Verify(string verficationToken)

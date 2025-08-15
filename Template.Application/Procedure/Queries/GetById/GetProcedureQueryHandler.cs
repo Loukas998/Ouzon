@@ -6,6 +6,7 @@ using Template.Application.Procedure.Dtos;
 using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Application.Tools.Dtos;
 using Template.Domain.Entities.ResponseEntity;
+using Template.Domain.Enums;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Procedure.Queries.GetById
@@ -28,6 +29,7 @@ namespace Template.Application.Procedure.Queries.GetById
                     Id = result.Id,
                     DoctorId = result.DoctorId,
                     CategoryId = result.CategoryId,
+                    NumberOfAsisstants = result.NumberOfAsisstants,
                     Date = result.Date,
                     SurgicalKits = result.Kits.Where(kit => kit.IsMainKit).ToList(),
                     ImplantKits = mapper.Map<List<ProcedureImplantToolsDetailsDto>>(result.Kits.Where(kit => kit.Implants.Any() && !kit.IsMainKit)),
@@ -55,7 +57,10 @@ namespace Template.Application.Procedure.Queries.GetById
                     Implant = imp,
                     ToolsWithImplant = []
                 }));
-
+                foreach (var assistant in detailedResult.Assistants)
+                {
+                    assistant.Role = nameof(EnumRoleNames.AssistantDoctor);
+                }
                 return Result.Success(detailedResult);
             }
             catch (Exception ex)
