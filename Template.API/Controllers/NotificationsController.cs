@@ -25,9 +25,9 @@ public class NotificationsController(IMediator mediator) : ControllerBase
 
     // 1- GetCurrentUserNotifications
     [HttpGet("CurrnetUserNotifications")]
-    public async Task<IActionResult> GetCurrentUserNotifications([FromBody] string deviceToken)
+    public async Task<IActionResult> GetCurrentUserNotifications([FromBody] GetCurrentUserNotificationsQuery query)
     {
-        return Ok(await mediator.Send(new GetCurrentUserNotificationsQuery(deviceToken)));
+        return Ok(await mediator.Send(query));
     }
     // 2- SetNotificationsAsRead
     //[HttpGet("{id}/SetNotificationsAsRead")]

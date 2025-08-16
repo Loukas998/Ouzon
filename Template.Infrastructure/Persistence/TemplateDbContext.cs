@@ -69,19 +69,19 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .HasForeignKey(tp => tp.ToolId);
 
         modelBuilder.Entity<Tool>()
-        .HasMany(t => t.ProcedureImplantTools)
-        .WithOne(tp => tp.Tool)
-        .HasForeignKey(tp => tp.ToolId);
+            .HasMany(t => t.ProcedureImplantTools)
+            .WithOne(tp => tp.Tool)
+            .HasForeignKey(tp => tp.ToolId);
 
         modelBuilder.Entity<Implant>()
-        .HasMany(t => t.ProcedureImplantTools)
-        .WithOne(tp => tp.Implant)
-        .HasForeignKey(tp => tp.ImplantId);
+            .HasMany(t => t.ProcedureImplantTools)
+            .WithOne(tp => tp.Implant)
+            .HasForeignKey(tp => tp.ImplantId);
 
         modelBuilder.Entity<Implant>()
-    .HasMany(t => t.ProcedureImplants)
-    .WithOne(tp => tp.Implant)
-    .HasForeignKey(tp => tp.ImplantId);
+            .HasMany(t => t.ProcedureImplants)
+            .WithOne(tp => tp.Implant)
+            .HasForeignKey(tp => tp.ImplantId);
 
 
         modelBuilder.Entity<Category>()
@@ -125,13 +125,14 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
 
         modelBuilder.Entity<Procedure>()
-        .HasMany(t => t.ProcedureImplantTools)
-        .WithOne(tp => tp.Procedure)
-        .HasForeignKey(tp => tp.ProcedureId);
+            .HasMany(t => t.ProcedureImplantTools)
+            .WithOne(tp => tp.Procedure)
+            .HasForeignKey(tp => tp.ProcedureId);
+
         modelBuilder.Entity<Procedure>()
-    .HasMany(t => t.ProcedureImplants)
-    .WithOne(tp => tp.Procedure)
-    .HasForeignKey(tp => tp.ProcedureId);
+            .HasMany(t => t.ProcedureImplants)
+            .WithOne(tp => tp.Procedure)
+            .HasForeignKey(tp => tp.ProcedureId);
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Holidays)

@@ -7,7 +7,7 @@ public class ChangeDeviceStatusCommandHandler(IDeviceRepository deviceRepository
 {
     public async Task Handle(ChangeDeviceStatusCommand request, CancellationToken cancellationToken)
     {
-        var device = await deviceRepository.FindByIdAsync(request.DeviceId);
+        var device = await deviceRepository.GetDeviceByToken(request.DeviceToken, null);
         if (device == null)
         {
             throw new InvalidOperationException();

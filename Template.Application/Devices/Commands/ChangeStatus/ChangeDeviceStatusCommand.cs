@@ -3,6 +3,6 @@ namespace Template.Application.Devices.Commands.ChangeStatus;
 
 public class ChangeDeviceStatusCommand : IRequest
 {
-    public int DeviceId { get; set; }
+    public string DeviceToken { get; set; } = default!;
     public bool OptIn { get; set; }
 }
