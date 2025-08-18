@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("TemplateDb");
-        services.AddDbContext<TemplateDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=OuzonDb;Trusted_Connection=True;"));
+        services.AddDbContext<TemplateDbContext>(options => options.UseSqlServer("Server=ouzondb.mssql.somee.com;Database=ouzondb;User Id=majdlouka_SQLLogin_1;Password=majd2003;TrustServerCertificate=True;MultipleActiveResultSets=True;"));
 
         //this for identity and jwt when needed
         services.AddIdentityCore<User>()

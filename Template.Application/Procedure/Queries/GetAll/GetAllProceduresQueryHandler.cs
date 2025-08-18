@@ -19,7 +19,7 @@ namespace Template.Application.Procedure.Queries.GetAll
             string isDoctorAuthenticated = "";
             string isAssistantAuthenticated = "";
 
-            if (currentUser.Roles.Any() && currentUser.Roles.Contains("User"))
+            if (currentUser != null && currentUser.Roles.Any() && currentUser.Roles.Contains("User"))
             {
                 isDoctorAuthenticated = currentUser.Id;
             }
