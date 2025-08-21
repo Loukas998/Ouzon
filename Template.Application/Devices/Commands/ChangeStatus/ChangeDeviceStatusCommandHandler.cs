@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Template.Domain.Entities.Materials;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Devices.Commands.ChangeStatus;
@@ -10,7 +12,7 @@ public class ChangeDeviceStatusCommandHandler(IDeviceRepository deviceRepository
         var device = await deviceRepository.GetDeviceByToken(request.DeviceToken, null);
         if (device == null)
         {
-            throw new InvalidOperationException();
+            throw new NotFoundException(nameof(Kit), request.DeviceToken);
         }
 
         device.OptIn = request.OptIn;

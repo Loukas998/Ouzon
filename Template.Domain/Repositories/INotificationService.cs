@@ -1,12 +1,11 @@
 ﻿using Template.Domain.Entities.Notifications;
-
 namespace Template.Domain.Repositories;
 
 public interface INotificationService
 {
     public Task SaveNotificationAsync(Notification entity);
     public Task SendNotificationAsync(Notification entity);
-    public Task<List<Notification>> GetCurrentUserNotificationsAsync(string deviceToken);
+    public Task<List<GroupedNotification>> GetCurrentUserNotificationsAsync(string deviceToken);
     public Task SendTestNotificationAsync(string fcmToken);
     public Task SaveTestNotification(string fcmToken);
 }

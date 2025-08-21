@@ -34,15 +34,8 @@ public class NotificationsController(IMediator mediator, INotificationService no
     [HttpPost("SendNotification")]
     public async Task<IActionResult> SendTestNotification([FromBody] string fcmToken)
     {
-        try
-        {
-            await notificationService.SendTestNotificationAsync(fcmToken);
-            await notificationService.SaveTestNotification(fcmToken);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        await notificationService.SendTestNotificationAsync(fcmToken);
+        await notificationService.SaveTestNotification(fcmToken);
         return Ok();
     }
 

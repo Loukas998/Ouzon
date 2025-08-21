@@ -7,4 +7,5 @@ public class NotificationDto
     public string? Body { get; set; }
     public int? DeviceId { get; set; }
     public bool Read { get; set; }
+    public DateTime? CreatedAt { get; set; }
 }

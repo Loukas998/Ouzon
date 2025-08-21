@@ -7,12 +7,28 @@ namespace Template.Infrastructure.Services;
 
 public class NotificationService(TemplateDbContext dbContext, IDeviceRepository deviceRepository) : INotificationService
 {
-    public async Task<List<Domain.Entities.Notifications.Notification>> GetCurrentUserNotificationsAsync(string deviceToken)
+    public async Task<List<GroupedNotification>> GetCurrentUserNotificationsAsync(string deviceToken)
     {
-        return await dbContext.Notifications.Include(n => n.Device)
-            .Where(n => n.Device.DeviceToken.Equals(deviceToken))
-            .OrderBy(n => n.CreatedAt)
+        var grouped = await dbContext.Notifications
+            .Include(n => n.Device)
+            .Where(n => n.Device.DeviceToken == deviceToken)
+            .GroupBy(n => n.CreatedAt!.Value.Date)
+            .Select(g => new GroupedNotification
+            {
+                CreatedAt = g.Key,
+                Notifications = g.Select(n => new Template.Domain.Entities.Notifications.NotificationDto
+                {
+                    Id = n.Id,
+                    CreatedAt = n.CreatedAt,
+                    Title = n.Title,
+                    Body = n.Body,
+                    DeviceId = n.DeviceId,
+                    Read = true
+                }).ToList()
+            })
             .ToListAsync();
+
+        return grouped;
     }
 
     public async Task SaveNotificationAsync(Domain.Entities.Notifications.Notification entity)
@@ -93,10 +109,11 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
                 DeviceToken = fcmToken,
                 OptIn = true,
                 LastLoggedInAt = DateTime.UtcNow,
-                UserId = "Fake"
+                UserId = null
             };
 
             await deviceRepository.AddAsync(deviceExist);
+            await dbContext.SaveChangesAsync();
         }
 
         deviceExist.Notifications.Add(notification);
