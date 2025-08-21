@@ -17,7 +17,8 @@ public class SendNotificationCommandHandler(IMapper mapper, ILogger<SendNotifica
             Title = request.Title,
             Body = request.Body,
             DeviceId = request.DeviceId,
-            Read = false
+            Read = false,
+            CreatedAt = DateTime.UtcNow,
         };
 
         await notificationService.SendNotificationAsync(notification);

@@ -126,7 +126,8 @@ namespace Template.Application.Procedure.Commands.Create
                     Title = "New procedure",
                     Body = $"New procedure has been submitted by Dr.{userId.Email}",
                     Read = false,
-                    DeviceId = null
+                    DeviceId = null,
+                    CreatedAt = DateTime.UtcNow
                 };
                 await notificationService.SaveNotificationAsync(adminNotification);
 

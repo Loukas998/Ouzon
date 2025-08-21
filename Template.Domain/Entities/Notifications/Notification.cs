@@ -8,4 +8,6 @@ public class Notification
     public int? DeviceId { get; set; }
     public Device Device { get; set; }
     public bool Read { get; set; }
+    public DateTime? CreatedAt { get; set; }
+
 }

@@ -4,6 +4,7 @@ using Template.Application.Implants.Dtos;
 using Template.Application.Procedure.Dtos;
 using Template.Application.Procedure.Dtos.MainProcedure;
 using Template.Application.Tools.Dtos;
+using Template.Domain.Enums;
 using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
@@ -58,14 +59,15 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
         }));
 
         //sending notification to admin 
-        if (request.NewStatus.Equals(3))
+        if (request.NewStatus == EnumProcedureStatus.DONE)
         {
             var adminNotification = new Domain.Entities.Notifications.Notification
             {
                 Title = "Done",
                 Body = "The procedure assist has been done",
                 Read = false,
-                DeviceId = null
+                DeviceId = null,
+                CreatedAt = DateTime.UtcNow,
             };
             await notificationService.SaveNotificationAsync(adminNotification);
         }
@@ -73,17 +75,19 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
         {
             //sending notification to doctor
             var doctor = await accountRepository.GetUserWithDevicesAsync(procedure.DoctorId);
-            var doctorNotification = new Domain.Entities.Notifications.Notification
-            {
-                Title = "Status changed",
-                Body = $"Procedure's status has been changed from: {procedure.Status}, to: {request.NewStatus}",
-                Read = false,
-            };
+
             foreach (var device in doctor.Devices)
             {
-                doctorNotification.DeviceId = device.Id;
+                var doctorNotification = new Domain.Entities.Notifications.Notification
+                {
+                    Title = "Status changed",
+                    Body = $"Procedure's status has been changed from: {procedure.Status}, to: {request.NewStatus}",
+                    Read = false,
+                    CreatedAt = DateTime.UtcNow,
+                    DeviceId = device.Id
+                };
                 await notificationService.SaveNotificationAsync(doctorNotification);
-                // await notificationService.SendNotificationAsync(doctorNotification);
+                await notificationService.SendNotificationAsync(doctorNotification);
             }
 
         }

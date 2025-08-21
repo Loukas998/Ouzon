@@ -24,7 +24,7 @@ namespace Template.Application.Procedure.Queries.GetAll
                 isDoctorAuthenticated = currentUser.Id;
             }
 
-            if (currentUser.Roles.Any() && currentUser.Roles.Contains("AssistantDoctor"))
+            if (currentUser != null && currentUser.Roles.Any() && currentUser.Roles.Contains("AssistantDoctor"))
             {
                 isAssistantAuthenticated = currentUser.Id;
             }
