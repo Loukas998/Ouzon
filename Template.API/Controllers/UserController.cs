@@ -8,6 +8,8 @@ using Template.Application.Procedure.Queries.AssistantProcedures;
 using Template.Application.Tokens.Commands;
 using Template.Application.Users;
 using Template.Application.Users.Commands;
+using Template.Application.Users.Commands.DeleteAccount;
+using Template.Application.Users.Commands.EditProfile;
 using Template.Application.Users.Dtos;
 using Template.Application.Users.Queries.CurrentUser;
 using Template.Application.Users.Queries.GetUsers;
@@ -96,7 +98,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         return Ok(holidays.Data);
     }
     [HttpGet("procedures")]
-    [Authorize(Roles = nameof(EnumRoleNames.AssistantDoctor))]
+    [Authorize(Roles = nameof(EnumRoleNames.User))]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAssistantProcedures()
     {
         var result = await mediator.Send(new GetAssistantProceduresQuery());
@@ -115,5 +117,33 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
             return BadRequest(result.Errors);
         }
         return Ok(result.Data);
+    }
+
+    [HttpDelete("DeleteCurrentUserAccount")]
+    public async Task<IActionResult> DeleteCurrentUserAccount()
+    {
+        try
+        {
+            await mediator.Send(new DeleteAccountCommand());
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("UpdateCurrentUserProfile")]
+    public async Task<IActionResult> UpdateCurrentUserProfile([FromBody] EditProfileCommand command)
+    {
+        try
+        {
+            var result = await mediator.Send(command);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

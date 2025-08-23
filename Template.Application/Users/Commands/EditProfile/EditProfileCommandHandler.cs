@@ -1,0 +1,37 @@
+﻿using AutoMapper;
+using MediatR;
+using Template.Application.Users.Dtos;
+using Template.Domain.Entities;
+using Template.Domain.Exceptions;
+using Template.Domain.Repositories;
+
+namespace Template.Application.Users.Commands.EditProfile;
+
+public class EditProfileCommandHandler(IUserContext userContext, IAccountRepository accountRepository, IMapper mapper)
+    : IRequestHandler<EditProfileCommand, UserDto>
+{
+    public async Task<UserDto> Handle(EditProfileCommand request, CancellationToken cancellationToken)
+    {
+        var currentUser = userContext.GetCurrentUser();
+        var user = await accountRepository.GetUserAsync(currentUser.Id, currentUser.Roles.ElementAt(0).Equals("AssistantDoctor"));
+        if (user == null)
+        {
+            throw new NotFoundException(nameof(User), currentUser.Id);
+        }
+
+        user.UserName = request.UserName ?? user.UserName;
+        user.Email = request.Email ?? user.Email;
+        user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
+        if (currentUser.Roles.Contains("User"))
+        {
+            user.Clinic.Address = request.Address ?? user.Clinic.Address;
+            user.Clinic.Latitude = request.Latitude != 0 ? request.Latitude : user.Clinic.Latitude;
+            user.Clinic.Longtitude = request.Longtitude != 0 ? request.Longtitude : user.Clinic.Longtitude;
+            user.Clinic.Name = request.Name ?? user.Clinic.Name;
+        }
+
+        var updated = await accountRepository.UpdateUserAsync(user);
+        var result = mapper.Map<UserDto>(updated);
+        return result;
+    }
+}

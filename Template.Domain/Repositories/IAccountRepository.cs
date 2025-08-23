@@ -19,5 +19,7 @@ public interface IAccountRepository
     Task UpdateUser(User user);
     Task<bool> UserInRoleAsync(string id, string roleName);
     Task<List<User>> GetAssistants(string? sortByRating);
+    public Task DeleteAccount(string userId);
+    Task<User> UpdateUserAsync(User user);
     Task<List<(User user, string? roleName)>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);
 }

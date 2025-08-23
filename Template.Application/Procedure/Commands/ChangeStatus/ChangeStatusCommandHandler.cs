@@ -86,8 +86,8 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
                     CreatedAt = DateTime.UtcNow,
                     DeviceId = device.Id
                 };
-                await notificationService.SaveNotificationAsync(doctorNotification);
                 await notificationService.SendNotificationAsync(doctorNotification);
+                await notificationService.SaveNotificationAsync(doctorNotification);
             }
 
         }

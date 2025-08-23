@@ -41,28 +41,32 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
     {
         var device = await dbContext.Devices.FindAsync(entity.DeviceId);
 
-        var message = new Message()
+        if (device != null && device.DeviceToken != null && device.DeviceToken.Length > 0)
         {
-            Notification = new FirebaseAdmin.Messaging.Notification()
+            var message = new Message()
             {
-                Title = entity.Title,
-                Body = entity.Body,
-            },
-            Token = device.DeviceToken
-        };
+                Notification = new FirebaseAdmin.Messaging.Notification()
+                {
+                    Title = entity.Title,
+                    Body = entity.Body,
+                },
+                Token = device.DeviceToken
+            };
 
-        var messaging = FirebaseMessaging.DefaultInstance;
-        var result = await messaging.SendAsync(message);
+            var messaging = FirebaseMessaging.DefaultInstance;
+            var result = await messaging.SendAsync(message);
 
-        if (!string.IsNullOrEmpty(result))
-        {
-            // Message was sent successfully
+            if (!string.IsNullOrEmpty(result))
+            {
+                // Message was sent successfully
+            }
+            else
+            {
+                // There was an error sending the message
+                throw new Exception("Error sending the message.");
+            }
         }
-        else
-        {
-            // There was an error sending the message
-            throw new Exception("Error sending the message.");
-        }
+
     }
 
     public async Task SendTestNotificationAsync(string fcmToken)

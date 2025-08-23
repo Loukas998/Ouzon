@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Template.Domain.Entities;
 using Template.Domain.Entities.AuthEntities;
 using Template.Domain.Entities.Notifications;
+using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -22,7 +23,7 @@ public class AccountRepository(UserManager<User> userManager,
         if (isAssistant)
             return await dbcontext.Users.Include(u => u.RatingsReceived).FirstOrDefaultAsync(u => u.Id.Equals(id));
 
-        return await userManager.FindByIdAsync(id);
+        return await dbcontext.Users.Include(u => u.Clinic).FirstOrDefaultAsync(u => u.Id.Equals(id));
     }
 
     public async Task<User> GetUserWithDevicesAsync(string id)
@@ -134,6 +135,18 @@ public class AccountRepository(UserManager<User> userManager,
     public async Task UpdateUser(User user)
     {
         await userManager.UpdateAsync(user);
+        await dbcontext.SaveChangesAsync();
+    }
+
+    public async Task DeleteAccount(string userId)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            throw new NotFoundException(nameof(User), userId);
+        }
+
+        await userManager.DeleteAsync(user);
         await dbcontext.SaveChangesAsync();
     }
     //private async Task SendEmailForVerification(string userEmail, string code, string verifyUrl)
@@ -324,6 +337,12 @@ public class AccountRepository(UserManager<User> userManager,
         }
         var role = await userManager.GetRolesAsync(user);
         return role.First();
+    }
+
+    public async Task<User> UpdateUserAsync(User user)
+    {
+        await userManager.UpdateAsync(user);
+        return user;
     }
 }
 //public async Task<bool> Verify(string verficationToken)
