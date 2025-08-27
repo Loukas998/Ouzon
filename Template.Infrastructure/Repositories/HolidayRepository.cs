@@ -30,6 +30,7 @@ public class HolidayRepository : GenericRepository<Holiday>, IHolidayRepository
         return await query
             .Skip((pageNum - 1) * pageSize)
             .Take(pageSize)
+            .OrderByDescending(h => h.CreatedAt)
             .ToListAsync();
     }
     public async Task<List<Holiday>> GetAllHolidaysWithFilter(DateTime? FromDate, DateTime? ToDate, string? AssistantId)
@@ -48,6 +49,7 @@ public class HolidayRepository : GenericRepository<Holiday>, IHolidayRepository
             query = query.Where(h => h.UserId == AssistantId);
         }
         return await query
+            .OrderByDescending(h => h.CreatedAt)
             .ToListAsync();
     }
 }

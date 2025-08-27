@@ -134,7 +134,7 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
             .Include(pro => pro.AssistantsInProcedure!)
                 .ThenInclude(asp => asp.Asisstant)
                 .AsSplitQuery();
-        var procedures = await query.ToListAsync();
+        var procedures = await query.OrderByDescending(p => p.Date).ToListAsync();
         return procedures;
     }
     public async Task<int> AddProcedureAssistant(ProcedureAssistant entity)
@@ -253,7 +253,7 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
                 .ThenInclude(asp => asp.Asisstant)
                 .AsSplitQuery();
 
-        var procedures = await query.ToListAsync();
+        var procedures = await query.OrderByDescending(p => p.Date).ToListAsync();
         return procedures;
     }
 
