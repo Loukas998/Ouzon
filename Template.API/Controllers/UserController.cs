@@ -23,7 +23,7 @@ namespace Template.API.Controllers;
 public class UserController(IMediator mediator, IUserContext userContext) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser(RegisterUserCommand request)
+    public async Task<IActionResult> RegisterUser([FromForm] RegisterUserCommand request)
     {
         var result = await mediator.Send(request);
         if (result.Any())
@@ -98,7 +98,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         return Ok(holidays.Data);
     }
     [HttpGet("procedures")]
-    [Authorize(Roles = nameof(EnumRoleNames.User))]
+    [Authorize(Roles = $"{nameof(EnumRoleNames.User)},{nameof(EnumRoleNames.AssistantDoctor)}")]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAssistantProcedures()
     {
         var result = await mediator.Send(new GetAssistantProceduresQuery());

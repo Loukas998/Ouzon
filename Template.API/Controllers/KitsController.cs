@@ -14,7 +14,7 @@ namespace Template.API.Controllers;
 public class KitsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateKit([FromBody] CreateKitCommand command)
+    public async Task<IActionResult> CreateKit([FromForm] CreateKitCommand command)
     {
         var res = await mediator.Send(command);
         if (!res.SuccessStatus)

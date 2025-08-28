@@ -15,7 +15,7 @@ namespace Template.API.Controllers;
 public class ImplantsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateImplant([FromBody] CreateImplantCommand command)
+    public async Task<IActionResult> CreateImplant([FromForm] CreateImplantCommand command)
     {
         var res = await mediator.Send(command);
         if (!res.SuccessStatus)

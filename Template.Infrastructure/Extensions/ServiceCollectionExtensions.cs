@@ -45,6 +45,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IHolidayRepository, HolidayRepository>();
         services.AddScoped<IRatingsRepository, RatingRepository>();
         services.AddTransient<INotificationService, NotificationService>();
+        services.AddScoped<IFileService, FileService>();
 
         var fileName = "ouzon-2ce7d-firebase-adminsdk-fbsvc-ec2f64d95b.json";
 

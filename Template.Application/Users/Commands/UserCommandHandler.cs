@@ -2,15 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Template.Application.Abstraction.Commands;
 using Template.Domain.Entities;
 using Template.Domain.Entities.AuthEntities;
-using Template.Domain.Entities.Notifications;
 using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Enums;
 using Template.Domain.Repositories;
@@ -18,7 +12,7 @@ using Template.Domain.Repositories;
 namespace Template.Application.Users.Commands;
 
 public class RegisterUserCommandHandler(IMapper mapper,
-        IAccountRepository accountRepository) : IRequestHandler<RegisterUserCommand, IEnumerable<IdentityError>>
+        IAccountRepository accountRepository, IFileService fileService) : IRequestHandler<RegisterUserCommand, IEnumerable<IdentityError>>
 {
     public async Task<IEnumerable<IdentityError>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
@@ -35,7 +29,13 @@ public class RegisterUserCommandHandler(IMapper mapper,
 
             };
         }
-        var errors = await accountRepository.Register(user, request.Password,request.Role);
+
+        if (request.ProfilePicture != null)
+        {
+            user.ProfileImagePath = fileService.SaveFile(request.ProfilePicture, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
+        }
+
+        var errors = await accountRepository.Register(user, request.Password, request.Role);
         return errors;
     }
 }
@@ -47,8 +47,8 @@ public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,
     public async Task<Result<AuthResponse?>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("looking for user with email: {Email}", request.Email);
-       var tokenResponse = await accountRepository.LoginUser(request.Email, request.Password,request.DeviceToken);
-        if(tokenResponse != null)
+        var tokenResponse = await accountRepository.LoginUser(request.Email, request.Password, request.DeviceToken);
+        if (tokenResponse != null)
         {
             return Result.Success(tokenResponse);
         }

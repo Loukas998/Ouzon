@@ -37,7 +37,7 @@ public class KitRepository : GenericRepository<Kit>, IKitRepository
             .ToListAsync();
         return result;
     }
-    public async Task<List<(int Id, string? Name, bool IsMainKit, int ImplantCount, int ToolCount)>> GetKitsWithToolsAndImplantsCount()
+    public async Task<List<(int Id, string? Name, bool IsMainKit, int ImplantCount, int ToolCount, string ImagePath)>> GetKitsWithToolsAndImplantsCount()
     {
         var kits = await dbContext.Kits.Select(k => new KitDto()
         {
@@ -45,11 +45,12 @@ public class KitRepository : GenericRepository<Kit>, IKitRepository
             Name = k.Name,
             IsMainKit = k.IsMainKit,
             ImplantCount = k.Implants.Count(),
-            ToolCount = k.Tools.Count()
+            ToolCount = k.Tools.Count(),
+            ImagePath = k.ImagePath
         })
             .ToListAsync();
 
-        return kits.Select(x => (x.Id, x.Name, x.IsMainKit, x.ImplantCount, x.ToolCount))
+        return kits.Select(x => (x.Id, x.Name, x.IsMainKit, x.ImplantCount, x.ToolCount, x.ImagePath))
             .ToList(); ;
     }
     public async Task<Kit> GetKitDetails(int Id)

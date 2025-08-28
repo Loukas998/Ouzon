@@ -7,11 +7,12 @@ namespace Template.Application.Implants.Dtos;
 
 public class ImplantsProfile : Profile
 {
-	public ImplantsProfile()
-	{
-		CreateMap<CreateImplantCommand, Implant>();
-		CreateMap<UpdateImplantCommand, Implant>();	
+    public ImplantsProfile()
+    {
+        CreateMap<CreateImplantCommand, Implant>();
+        CreateMap<UpdateImplantCommand, Implant>();
 
-		CreateMap<Implant, ImplantDto>();
-	}
+        CreateMap<Implant, ImplantDto>()
+            .ForMember(dest => dest.ImagePath, opt => opt.MapFrom<ImplantImageUrlResolver>());
+    }
 }

@@ -15,6 +15,7 @@ public class UserProfile : Profile
         CreateMap<User, UserDto>()
             .ForMember(dest => dest.Clinic, opt => opt.MapFrom(src => src.Clinic))
             .ForMember(dest => dest.Rate, opt => opt.Ignore())
+            .ForMember(dest => dest.ProfileImagePath, opt => opt.MapFrom<UserImageUrlResolver>())
             .ReverseMap();
 
 
@@ -24,6 +25,7 @@ public class UserProfile : Profile
             .ForMember(dest => dest.ProcedureFrom, opt => opt.MapFrom(src => src.ProcedureFrom))
             .ForMember(dest => dest.Devices, opt => opt.MapFrom(src => src.Devices))
             .ForMember(dest => dest.Rate, opt => opt.Ignore())
+            .ForMember(dest => dest.ProfileImagePath, opt => opt.MapFrom<DetailedUserImageUrlResolver>())
             .ReverseMap();
 
         CreateMap<(User user, string roleName), UserDto>()
@@ -32,7 +34,6 @@ public class UserProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.user.PhoneNumber))
             .ForMember(dest => dest.Clinic, opt => opt.MapFrom(src => src.user.Clinic))
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.roleName));
-
     }
 
 }

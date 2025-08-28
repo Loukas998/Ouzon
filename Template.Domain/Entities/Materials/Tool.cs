@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Template.Domain.Entities.ProcedureRelatedEntities;
 
 namespace Template.Domain.Entities.Materials;
@@ -20,6 +15,7 @@ public class Tool
     public int Quantity { get; set; }
     public int? KitId { get; set; }
     public int? CategoryId { get; set; }
+    public string? ImagePath { get; set; }
 
     public Kit? Kit { get; set; }
     public Category? Category { get; set; }

@@ -9,6 +9,7 @@
         public string Role { get; set; } = "User";
         public ClinicDto Clinic { get; set; }
         public int Rate { get; set; }
+        public string? ProfileImagePath { get; set; }
 
     }
 }

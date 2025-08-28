@@ -10,6 +10,7 @@ public class KitDto
     public bool IsMainKit { get; set; }
     public int ImplantCount { get; set; }
     public int ToolCount { get; set; }
+    public string? ImagePath { get; set; }
     public List<ImplantDto>? Implants { get; set; } = [];
 
     public List<ToolDto>? Tools { get; set; } = [];

@@ -15,7 +15,7 @@ namespace Template.API.Controllers
     public class ToolController(IMediator mediator) : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult> CreateTool([FromBody] CreateToolCommand request)
+        public async Task<ActionResult> CreateTool([FromForm] CreateToolCommand request)
         {
             var res = await mediator.Send(request);
             if (!res.SuccessStatus)
