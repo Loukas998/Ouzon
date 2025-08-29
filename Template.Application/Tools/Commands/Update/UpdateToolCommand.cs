@@ -1,15 +1,9 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 using Template.Application.Abstraction.Commands;
-using Template.Application.Tools.Dtos;
 
 namespace Template.Application.Tools.Commands.Update;
 
-public class UpdateToolCommand :ICommand
+public class UpdateToolCommand : ICommand
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -19,4 +13,5 @@ public class UpdateToolCommand :ICommand
     public int Quantity { get; set; }
     public int? KitId { get; set; }
     public int? CategoryId { get; set; }
+    public IFormFile? Image { get; set; }
 }

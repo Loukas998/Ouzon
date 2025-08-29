@@ -10,7 +10,8 @@ public class ImplantsProfile : Profile
     public ImplantsProfile()
     {
         CreateMap<CreateImplantCommand, Implant>();
-        CreateMap<UpdateImplantCommand, Implant>();
+        CreateMap<UpdateImplantCommand, Implant>()
+            .ForMember(dest => dest.ImagePath, opt => opt.Ignore());
 
         CreateMap<Implant, ImplantDto>()
             .ForMember(dest => dest.ImagePath, opt => opt.MapFrom<ImplantImageUrlResolver>());

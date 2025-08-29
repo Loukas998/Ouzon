@@ -7,7 +7,8 @@ using Template.Domain.Repositories;
 
 namespace Template.Application.Users.Commands.EditProfile;
 
-public class EditProfileCommandHandler(IUserContext userContext, IAccountRepository accountRepository, IMapper mapper)
+public class EditProfileCommandHandler(IUserContext userContext,
+    IAccountRepository accountRepository, IMapper mapper, IFileService fileService)
     : IRequestHandler<EditProfileCommand, UserDto>
 {
     public async Task<UserDto> Handle(EditProfileCommand request, CancellationToken cancellationToken)
@@ -28,6 +29,14 @@ public class EditProfileCommandHandler(IUserContext userContext, IAccountReposit
             user.Clinic.Latitude = request.Latitude != 0 ? request.Latitude : user.Clinic.Latitude;
             user.Clinic.Longtitude = request.Longtitude != 0 ? request.Longtitude : user.Clinic.Longtitude;
             user.Clinic.Name = request.Name ?? user.Clinic.Name;
+        }
+        if (request.Image != null)
+        {
+            if (user.ProfileImagePath != null)
+            {
+                fileService.DeleteFile(user.ProfileImagePath);
+            }
+            user.ProfileImagePath = fileService.SaveFile(request.Image, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
         }
 
         var updated = await accountRepository.UpdateUserAsync(user);

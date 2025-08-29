@@ -25,10 +25,10 @@ public class DeleteKitCommandHandler(ILogger<DeleteKitCommandHandler> logger,
             return Result.Failure(["You should delete the tools in kit, then delete the kit"]);
         }
 
-        if (kit.Implants != null || kit.Implants.Count() > 0)
+        if (kit.Implants.Count() > 0)
         {
             logger.LogError("You should delete the implants in kit, then delete the kit");
-            return Result.Failure(["You should delete the tools in kit, then delete the kit"]);
+            return Result.Failure(["You should delete the implants in kit, then delete the kit"]);
         }
 
         await kitRepository.DeleteAsync(kit);

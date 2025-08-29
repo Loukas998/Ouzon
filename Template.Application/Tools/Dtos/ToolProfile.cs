@@ -14,6 +14,7 @@ public class ToolProfile : Profile
             .ReverseMap();
 
         CreateMap<CreateToolCommand, Tool>().ReverseMap();
-        CreateMap<UpdateToolCommand, Tool>().ReverseMap();
+        CreateMap<UpdateToolCommand, Tool>()
+            .ForMember(dest => dest.ImagePath, opt => opt.Ignore());
     }
 }

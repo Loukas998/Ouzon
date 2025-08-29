@@ -204,7 +204,12 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
         }
         if (!string.IsNullOrEmpty(AssistantId))
         {
-            query = query.Where(p => p.AssistantsInProcedure.Any(x => x.AsisstantId == AssistantId));
+            query = query
+                .Where(p => p.Status == EnumProcedureStatus.CANCELLED)
+                .Where(p => p.Status == EnumProcedureStatus.DECLINED)
+                .Where(p => p.Status == EnumProcedureStatus.IN_PROGRESS)
+                .Where(p => p.Status == EnumProcedureStatus.DONE)
+                .Where(p => p.AssistantsInProcedure.Any(x => x.AsisstantId == AssistantId));
         }
         if (from != null)
         {

@@ -21,7 +21,9 @@ public class AccountRepository(UserManager<User> userManager,
     public async Task<User> GetUserAsync(string id, bool isAssistant)
     {
         if (isAssistant)
-            return await dbcontext.Users.Include(u => u.RatingsReceived).FirstOrDefaultAsync(u => u.Id.Equals(id));
+            return await dbcontext.Users
+                .Include(u => u.RatingsReceived)
+                .FirstOrDefaultAsync(u => u.Id.Equals(id));
 
         return await dbcontext.Users.Include(u => u.Clinic).FirstOrDefaultAsync(u => u.Id.Equals(id));
     }

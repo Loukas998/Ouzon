@@ -38,7 +38,7 @@ namespace Template.API.Controllers
             return Ok(res.Data);
         }
         [HttpPatch]
-        public async Task<ActionResult> UpdateTool(UpdateToolCommand request)
+        public async Task<ActionResult> UpdateTool([FromForm] UpdateToolCommand request)
         {
             var res = await mediator.Send(request);
             if (!res.SuccessStatus)

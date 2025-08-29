@@ -134,7 +134,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     }
 
     [HttpPut("UpdateCurrentUserProfile")]
-    public async Task<IActionResult> UpdateCurrentUserProfile([FromBody] EditProfileCommand command)
+    public async Task<IActionResult> UpdateCurrentUserProfile([FromForm] EditProfileCommand command)
     {
         try
         {

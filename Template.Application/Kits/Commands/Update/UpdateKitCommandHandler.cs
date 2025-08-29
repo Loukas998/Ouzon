@@ -8,7 +8,7 @@ using Template.Domain.Repositories;
 namespace Template.Application.Kits.Commands.Update;
 
 public class UpdateKitCommandHandler(ILogger<UpdateKitCommandHandler> logger, IMapper mapper,
-    IKitRepository kitRepository) : IRequestHandler<UpdateKitCommand>
+    IKitRepository kitRepository, IFileService fileService) : IRequestHandler<UpdateKitCommand>
 {
     public async Task Handle(UpdateKitCommand request, CancellationToken cancellationToken)
     {
@@ -22,6 +22,14 @@ public class UpdateKitCommandHandler(ILogger<UpdateKitCommandHandler> logger, IM
         }
 
         mapper.Map(request, kit);
+        if (request.Image != null)
+        {
+            if (kit.ImagePath != null)
+            {
+                fileService.DeleteFile(kit.ImagePath);
+            }
+            kit.ImagePath = fileService.SaveFile(request.Image, "Images/Kits", [".jpg", ".png", ".webp", ".jpeg"]);
+        }
         await kitRepository.SaveChangesAsync();
     }
 }
