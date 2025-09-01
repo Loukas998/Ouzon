@@ -42,6 +42,9 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .HasIndex(u => u.Email)
             .IsUnique();
         modelBuilder.Entity<User>()
+        .HasIndex(u => u.NormalizedEmail)
+        .IsUnique();
+        modelBuilder.Entity<User>()
             .HasOne(u => u.Clinic)
             .WithOne(c => c.User)
             .HasForeignKey<Clinic>(c => c.UserId);
