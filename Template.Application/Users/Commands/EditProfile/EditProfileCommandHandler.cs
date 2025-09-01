@@ -56,7 +56,7 @@ public class EditProfileCommandHandler(IUserContext userContext, ILogger<EditPro
             }
 
 
-            user.ProfileImagePath = fileService.SaveFile(request.Image, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
+            user.ProfileImagePath = await fileService.SaveFileAsync(request.Image, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
 
             //catch (Exception ex)
             //{
