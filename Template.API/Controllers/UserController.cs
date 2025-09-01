@@ -8,6 +8,7 @@ using Template.Application.Procedure.Queries.AssistantProcedures;
 using Template.Application.Tokens.Commands;
 using Template.Application.Users;
 using Template.Application.Users.Commands;
+using Template.Application.Users.Commands.ChangePassword;
 using Template.Application.Users.Commands.DeleteAccount;
 using Template.Application.Users.Commands.EditProfile;
 using Template.Application.Users.Dtos;
@@ -140,6 +141,21 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         {
             var result = await mediator.Send(command);
             return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpPut("ChangePassword")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+    {
+        try
+        {
+            await mediator.Send(command);
+            return NoContent();
         }
         catch (Exception ex)
         {

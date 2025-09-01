@@ -118,6 +118,7 @@ namespace Template.Application.Procedure.Commands.Create
                         }
                     }
                 }
+                procedure.Status = Domain.Enums.EnumProcedureStatus.REQUEST_SENT;
                 var procedureId = await procedureRepository.AddAsync(procedure);
 
                 //sending notification to the admin

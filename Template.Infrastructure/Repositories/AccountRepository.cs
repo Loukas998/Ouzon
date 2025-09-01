@@ -353,6 +353,16 @@ public class AccountRepository(UserManager<User> userManager,
         await userManager.UpdateAsync(user);
         return user;
     }
+
+    public async Task<bool> UpdatePassword(User user, string oldPassword, string newPassword)
+    {
+        var result = await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        if (result.Succeeded)
+        {
+            return result.Succeeded;
+        }
+        return false;
+    }
 }
 //public async Task<bool> Verify(string verficationToken)
 //{

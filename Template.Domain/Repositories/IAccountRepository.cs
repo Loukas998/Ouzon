@@ -24,4 +24,5 @@ public interface IAccountRepository
     public Task DeleteAccount(string userId);
     Task<User> UpdateUserAsync(User user);
     Task<List<(User user, string? roleName)>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);
+    Task<bool> UpdatePassword(User user, string oldPassword, string newPassword);
 }
