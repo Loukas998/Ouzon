@@ -56,26 +56,21 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
         var filePath = Path.Combine(environment.ContentRootPath, path, fileName);
 
-        try
+        using (var stream = new FileStream(filePath, FileMode.Create))
         {
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                file.CopyToAsync(stream);
-            }
-            var finalFilePath = Path.Combine(path, fileName);
-            var fileInfo = new FileInfo(finalFilePath);
-            if (fileInfo.Length != file.Length)
-            {
-                if (System.IO.File.Exists(finalFilePath))
-                    System.IO.File.Delete(finalFilePath);
-                throw new IOException($"File with path {finalFilePath} couldn't be saved");
-            }
-            return finalFilePath;
+            file.CopyToAsync(stream);
         }
-        catch (Exception ex)
+        var finalFilePath = Path.Combine(path, fileName);
+        var fileInfo = new FileInfo(finalFilePath);
+        if (fileInfo.Length != file.Length)
         {
-            throw;
+            if (System.IO.File.Exists(finalFilePath))
+                System.IO.File.Delete(finalFilePath);
+            return null;
+
         }
+        return finalFilePath;
+
 
     }
 

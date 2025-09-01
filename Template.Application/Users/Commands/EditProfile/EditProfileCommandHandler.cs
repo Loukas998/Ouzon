@@ -54,15 +54,15 @@ public class EditProfileCommandHandler(IUserContext userContext, ILogger<EditPro
                 fileService.DeleteFile(user.ProfileImagePath);
                 user.ProfileImagePath = null;
             }
-            try
-            {
-                user.ProfileImagePath = fileService.SaveFile(request.Image, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, ex.Message);
-                return Result.Failure<UserDto>([ex.Message]);
-            }
+
+
+            user.ProfileImagePath = fileService.SaveFile(request.Image, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
+
+            //catch (Exception ex)
+            //{
+            //    logger.LogError(ex, ex.Message);
+            //    return Result.Failure<UserDto>([ex.Message]);
+            //}
         }
 
         var updated = await accountRepository.UpdateUserAsync(user);
