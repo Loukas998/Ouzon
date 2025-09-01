@@ -28,7 +28,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         var result = await mediator.Send(request);
         if (result.Data != null && result.Data.Any())
         {
-            return BadRequest(result);
+            return BadRequest(result.Data);
         }
         return Ok();
     }

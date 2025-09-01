@@ -15,7 +15,7 @@ public class AssignAssistantsToProcedureCommandHandler(IProcedureRepository proc
         {
             return Result.Failure(["Entity not Found"]);
         }
-        if (request.AssistantsIds.Count > procedure.NumberOfAsisstants)
+        if (request.AssistantsIds.Count != procedure.NumberOfAsisstants)
         {
             return Result.Failure(["You are putting more Assistants than allowed"]);
         }
