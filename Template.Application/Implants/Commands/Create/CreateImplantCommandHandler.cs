@@ -17,7 +17,15 @@ public class CreateImplantCommandHandler(ILogger<CreateImplantCommandHandler> lo
         var implant = mapper.Map<Implant>(request);
         if (request.Image != null)
         {
-            implant.ImagePath = await fileService.SaveFileAsync(request.Image, "Images/Implants/", [".jpg", ".png", ".webp", ".jpeg"]);
+            try
+            {
+                implant.ImagePath = await fileService.SaveFileAsync(request.Image, "Images/Implants/", [".jpg", ".png", ".webp", ".jpeg"]);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return Result.Failure<int>([ex.Message]);
+            }
         }
 
         var result = await implantRepository.AddAsync(implant);

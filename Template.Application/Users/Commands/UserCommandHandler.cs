@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Template.Application.Abstraction.Commands;
@@ -12,9 +11,11 @@ using Template.Domain.Repositories;
 namespace Template.Application.Users.Commands;
 
 public class RegisterUserCommandHandler(IMapper mapper,
-        IAccountRepository accountRepository, IFileService fileService) : IRequestHandler<RegisterUserCommand, IEnumerable<IdentityError>>
+        ILogger<RegisterUserCommandHandler> logger,
+        IAccountRepository accountRepository,
+        IFileService fileService) : ICommandHandler<RegisterUserCommand, IEnumerable<IdentityError>>
 {
-    public async Task<IEnumerable<IdentityError>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<IdentityError>>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var user = mapper.Map<User>(request);
         user.UserName = request.UserName;
@@ -32,11 +33,19 @@ public class RegisterUserCommandHandler(IMapper mapper,
 
         if (request.ProfilePicture != null)
         {
-            user.ProfileImagePath = fileService.SaveFile(request.ProfilePicture, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
+            try
+            {
+                user.ProfileImagePath = fileService.SaveFile(request.ProfilePicture, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return Result.Failure<IEnumerable<IdentityError>>([ex.Message]);
+            }
         }
 
         var errors = await accountRepository.Register(user, request.Password, request.Role);
-        return errors;
+        return Result.Success(errors);
     }
 }
 public class LoginUserCommandHandler(ILogger<LoginUserCommandHandler> logger,

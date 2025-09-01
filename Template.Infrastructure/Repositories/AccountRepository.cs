@@ -27,7 +27,10 @@ public class AccountRepository(UserManager<User> userManager,
 
         return await dbcontext.Users.Include(u => u.Clinic).FirstOrDefaultAsync(u => u.Id.Equals(id));
     }
-
+    public async Task<User> FindUserByEmail(string email)
+    {
+        return await userManager.FindByEmailAsync(email);
+    }
     public async Task<User> GetUserWithDevicesAsync(string id)
     {
         return await dbcontext.Users.Include(u => u.Devices).FirstOrDefaultAsync(u => u.Id.Equals(id));

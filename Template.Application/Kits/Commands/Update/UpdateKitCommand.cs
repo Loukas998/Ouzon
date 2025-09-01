@@ -1,9 +1,9 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Template.Application.Abstraction.Commands;
 
 namespace Template.Application.Kits.Commands.Update;
 
-public class UpdateKitCommand(int kitId) : IRequest
+public class UpdateKitCommand(int kitId) : ICommand
 {
     public int KitId { get; } = kitId;
     public string? Name { get; set; }

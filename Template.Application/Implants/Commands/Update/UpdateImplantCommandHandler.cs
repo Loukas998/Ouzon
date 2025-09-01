@@ -27,7 +27,15 @@ public class UpdateImplantCommandHandler(ILogger<UpdateImplantCommandHandler> lo
             {
                 fileService.DeleteFile(implant.ImagePath);
             }
-            implant.ImagePath = fileService.SaveFile(request.Image, "Images/Implants", [".jpg", ".png", ".webp", ".jpeg"]);
+            try
+            {
+                implant.ImagePath = fileService.SaveFile(request.Image, "Images/Implants", [".jpg", ".png", ".webp", ".jpeg"]);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return Result.Failure([ex.Message]);
+            }
         }
         await implantRepository.UpdateAsync(implant);
         return Result.Success();

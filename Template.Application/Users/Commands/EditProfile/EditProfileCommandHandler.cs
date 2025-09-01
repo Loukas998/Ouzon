@@ -1,17 +1,19 @@
 ﻿using AutoMapper;
-using MediatR;
+using Microsoft.Extensions.Logging;
+using Template.Application.Abstraction.Commands;
 using Template.Application.Users.Dtos;
 using Template.Domain.Entities;
+using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Exceptions;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Users.Commands.EditProfile;
 
-public class EditProfileCommandHandler(IUserContext userContext,
+public class EditProfileCommandHandler(IUserContext userContext, ILogger<EditProfileCommandHandler> logger,
     IAccountRepository accountRepository, IMapper mapper, IFileService fileService)
-    : IRequestHandler<EditProfileCommand, UserDto>
+    : ICommandHandler<EditProfileCommand, UserDto>
 {
-    public async Task<UserDto> Handle(EditProfileCommand request, CancellationToken cancellationToken)
+    public async Task<Result<UserDto>> Handle(EditProfileCommand request, CancellationToken cancellationToken)
     {
         var currentUser = userContext.GetCurrentUser();
         var user = await accountRepository.GetUserAsync(currentUser.Id, currentUser.Roles.ElementAt(0).Equals("AssistantDoctor"));
@@ -19,7 +21,14 @@ public class EditProfileCommandHandler(IUserContext userContext,
         {
             throw new NotFoundException(nameof(User), currentUser.Id);
         }
-
+        if (request.Email != null)
+        {
+            var existsWithSameEmail = await accountRepository.FindUserByEmail(request.Email);
+            if (existsWithSameEmail != null)
+            {
+                throw new InvalidOperationException($"User with The Email {request.Email} already Exists");
+            }
+        }
         user.UserName = request.UserName ?? user.UserName;
         user.Email = request.Email ?? user.Email;
         user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
@@ -36,11 +45,19 @@ public class EditProfileCommandHandler(IUserContext userContext,
             {
                 fileService.DeleteFile(user.ProfileImagePath);
             }
-            user.ProfileImagePath = fileService.SaveFile(request.Image, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
+            try
+            {
+                user.ProfileImagePath = fileService.SaveFile(request.Image, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return Result.Failure<UserDto>([ex.Message]);
+            }
         }
 
         var updated = await accountRepository.UpdateUserAsync(user);
         var result = mapper.Map<UserDto>(updated);
-        return result;
+        return Result.Success(result);
     }
 }

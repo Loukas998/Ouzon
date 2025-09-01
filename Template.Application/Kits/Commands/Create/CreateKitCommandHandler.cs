@@ -16,7 +16,15 @@ public class CreateKitCommandHandler(IKitRepository kitRepository, IMapper mappe
         var kit = mapper.Map<Kit>(request);
         if (request.Image != null)
         {
-            kit.ImagePath = fileService.SaveFile(request.Image, "Images/Kits/", [".jpg", ".png", ".webp", ".jpeg"]);
+            try
+            {
+                kit.ImagePath = fileService.SaveFile(request.Image, "Images/Kits/", [".jpg", ".png", ".webp", ".jpeg"]);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return Result.Failure<int>([ex.Message]);
+            }
         }
 
         var result = await kitRepository.AddAsync(kit);

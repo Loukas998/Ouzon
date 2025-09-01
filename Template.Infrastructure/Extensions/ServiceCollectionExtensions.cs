@@ -22,7 +22,10 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<TemplateDbContext>(options => options.UseSqlServer("Server=ouzondb.mssql.somee.com;Database=ouzondb;User Id=majdlouka_SQLLogin_1;Password=majd2003;TrustServerCertificate=True;MultipleActiveResultSets=True;"));
 
         //this for identity and jwt when needed
-        services.AddIdentityCore<User>()
+        services.AddIdentityCore<User>(options =>
+        {
+            options.User.RequireUniqueEmail = true;
+        })
             .AddRoles<IdentityRole>()
             .AddTokenProvider<DataProtectorTokenProvider<User>>("TemplateTokenProvidor")
             .AddEntityFrameworkStores<TemplateDbContext>()

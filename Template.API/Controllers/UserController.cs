@@ -26,7 +26,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     public async Task<IActionResult> RegisterUser([FromForm] RegisterUserCommand request)
     {
         var result = await mediator.Send(request);
-        if (result.Any())
+        if (result.Data != null && result.Data.Any())
         {
             return BadRequest(result);
         }

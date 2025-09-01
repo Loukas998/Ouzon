@@ -56,14 +56,27 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
         var filePath = Path.Combine(environment.ContentRootPath, path, fileName);
 
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        try
         {
-            file.CopyToAsync(stream);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyToAsync(stream);
+            }
+            var finalFilePath = Path.Combine(path, fileName);
+            var fileInfo = new FileInfo(finalFilePath);
+            if (fileInfo.Length != file.Length)
+            {
+                if (System.IO.File.Exists(finalFilePath))
+                    System.IO.File.Delete(finalFilePath);
+                throw new IOException($"File with path {finalFilePath} couldn't be saved");
+            }
+            return finalFilePath;
+        }
+        catch (Exception ex)
+        {
+            throw;
         }
 
-        var finalfilePaths = Path.Combine(path, fileName);
-
-        return finalfilePaths;
     }
 
     public async Task<string> SaveFileAsync(IFormFile file, string path, string[] allowedFileExtensions)
@@ -80,13 +93,27 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         var filePath = Path.Combine(environment.ContentRootPath, path, fileName);
 
         // Open a file stream and copy the contents asynchronously
-        await using (var stream = new FileStream(filePath, FileMode.Create))
+        try
         {
-            await file.CopyToAsync(stream);
+            await using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            var finalFilePath = Path.Combine(path, fileName);
+            var fileInfo = new FileInfo(finalFilePath);
+            if (fileInfo.Length != file.Length)
+            {
+                if (System.IO.File.Exists(finalFilePath))
+                    System.IO.File.Delete(finalFilePath);
+                throw new IOException($"File with path {finalFilePath} couldn't be saved");
+            }
+            return finalFilePath;
+        }
+        catch (Exception ex)
+        {
+            throw;
         }
 
-        var finalFilePath = Path.Combine(path, fileName);
-        return finalFilePath;
     }
 
     public void DeleteFile(string path)

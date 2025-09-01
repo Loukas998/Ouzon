@@ -24,7 +24,15 @@ public class UpdateToolCommandHandler(IToolRepository toolRepository, IMapper ma
             {
                 fileService.DeleteFile(tool.ImagePath);
             }
-            tool.ImagePath = fileService.SaveFile(request.Image, "Images/Tools", [".jpg", ".png", ".webp", ".jpeg"]);
+            try
+            {
+                tool.ImagePath = fileService.SaveFile(request.Image, "Images/Tools", [".jpg", ".png", ".webp", ".jpeg"]);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return Result.Failure([ex.Message]);
+            }
         }
         await toolRepository.UpdateAsync(tool);
         return Result.Success();
