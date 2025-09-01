@@ -12,7 +12,7 @@ using Template.Infrastructure.Persistence;
 namespace Template.Infrastructure.Migrations
 {
     [DbContext(typeof(TemplateDbContext))]
-    [Migration("20250901112042_UniqueEmail")]
+    [Migration("20250901161633_UniqueEmail")]
     partial class UniqueEmail
     {
         /// <inheritdoc />
@@ -593,6 +593,10 @@ namespace Template.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");

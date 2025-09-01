@@ -38,7 +38,9 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
         //relationships between the tables
 
         //user has one or more clinics
-
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
         modelBuilder.Entity<User>()
             .HasOne(u => u.Clinic)
             .WithOne(c => c.User)
