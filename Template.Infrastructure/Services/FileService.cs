@@ -47,7 +47,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         //var prefixedPath = $"Images/{path}";
 
-        if (file == null) throw new ArgumentNullException(nameof(file));
+        if (file == null || file.Length == 0) throw new ArgumentNullException(nameof(file));
         var extension = Path.GetExtension(file.FileName);
 
         if (!allowedFileExtensions.Contains(extension))
@@ -61,14 +61,6 @@ public class FileService(IWebHostEnvironment environment) : IFileService
             file.CopyToAsync(stream);
         }
         var finalFilePath = Path.Combine(path, fileName);
-        var fileInfo = new FileInfo(finalFilePath);
-        if (fileInfo.Length != file.Length)
-        {
-            if (System.IO.File.Exists(finalFilePath))
-                System.IO.File.Delete(finalFilePath);
-            return null;
-
-        }
         return finalFilePath;
 
 
@@ -78,7 +70,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-        if (file == null) throw new ArgumentNullException(nameof(file));
+        if (file == null || file.Length == 0) throw new ArgumentNullException(nameof(file));
         var extension = Path.GetExtension(file.FileName);
 
         if (!allowedFileExtensions.Contains(extension))
@@ -88,26 +80,13 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         var filePath = Path.Combine(environment.ContentRootPath, path, fileName);
 
         // Open a file stream and copy the contents asynchronously
-        try
+        await using (var stream = new FileStream(filePath, FileMode.Create))
         {
-            await using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            var finalFilePath = Path.Combine(path, fileName);
-            var fileInfo = new FileInfo(finalFilePath);
-            if (fileInfo.Length != file.Length)
-            {
-                if (System.IO.File.Exists(finalFilePath))
-                    System.IO.File.Delete(finalFilePath);
-                throw new IOException($"File with path {finalFilePath} couldn't be saved");
-            }
-            return finalFilePath;
+            await file.CopyToAsync(stream);
         }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        var finalFilePath = Path.Combine(path, fileName);
+        return finalFilePath;
+
 
     }
 
