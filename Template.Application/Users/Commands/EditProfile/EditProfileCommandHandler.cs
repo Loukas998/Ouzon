@@ -29,6 +29,14 @@ public class EditProfileCommandHandler(IUserContext userContext, ILogger<EditPro
                 throw new InvalidOperationException($"User with The Email {request.Email} already Exists");
             }
         }
+        if (request.UserName != null)
+        {
+            var existsWithSameUserName = await accountRepository.FindUserByUserName(request.UserName);
+            if (existsWithSameUserName != null)
+            {
+                throw new InvalidOperationException($"User with The username {request.UserName} already Exists");
+            }
+        }
         user.UserName = request.UserName ?? user.UserName;
         user.Email = request.Email ?? user.Email;
         user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
