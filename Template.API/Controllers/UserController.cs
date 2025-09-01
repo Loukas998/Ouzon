@@ -133,14 +133,18 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
             return BadRequest(ex.Message);
         }
     }
-
+    [Authorize]
     [HttpPut("UpdateCurrentUserProfile")]
     public async Task<IActionResult> UpdateCurrentUserProfile([FromForm] EditProfileCommand command)
     {
         try
         {
             var result = await mediator.Send(command);
-            return Ok(result);
+            if (!result.SuccessStatus)
+            {
+                return BadRequest(result.Errors);
+            }
+            return Ok(result.Data);
         }
         catch (Exception ex)
         {

@@ -52,6 +52,7 @@ public class EditProfileCommandHandler(IUserContext userContext, ILogger<EditPro
             if (user.ProfileImagePath != null)
             {
                 fileService.DeleteFile(user.ProfileImagePath);
+                user.ProfileImagePath = null;
             }
             try
             {
