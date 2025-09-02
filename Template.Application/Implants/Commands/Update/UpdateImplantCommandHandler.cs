@@ -29,7 +29,7 @@ public class UpdateImplantCommandHandler(ILogger<UpdateImplantCommandHandler> lo
             }
             try
             {
-                implant.ImagePath = fileService.SaveFile(request.Image, "Images/Implants", [".jpg", ".png", ".webp", ".jpeg"]);
+                implant.ImagePath = await fileService.SaveFileAsync(request.Image, "Images/Implants", [".jpg", ".png", ".webp", ".jpeg"]);
             }
             catch (Exception ex)
             {

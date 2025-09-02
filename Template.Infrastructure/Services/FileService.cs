@@ -11,7 +11,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
     ///     Note::
     ///     path: The relative path to Images/{path}
     /// </summary>
-    public List<string> SaveFiles(List<IFormFile> files, string path, string[] allowedFileExtensions)
+    public async Task<List<string>> SaveFiles(List<IFormFile> files, string path, string[] allowedFileExtensions)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
         //var prefixedPath = $"Images/{path}";
@@ -33,7 +33,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                file.CopyToAsync(stream);
+                await file.CopyToAsync(stream);
             }
 
             filesPaths.Add(Path.Combine(path, fileName));

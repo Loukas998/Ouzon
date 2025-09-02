@@ -18,7 +18,7 @@ public class CreateKitCommandHandler(IKitRepository kitRepository, IMapper mappe
         {
             try
             {
-                kit.ImagePath = fileService.SaveFile(request.Image, "Images/Kits/", [".jpg", ".png", ".webp", ".jpeg"]);
+                kit.ImagePath = await fileService.SaveFileAsync(request.Image, "Images/Kits/", [".jpg", ".png", ".webp", ".jpeg"]);
             }
             catch (Exception ex)
             {

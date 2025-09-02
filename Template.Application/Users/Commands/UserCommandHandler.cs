@@ -35,7 +35,7 @@ public class RegisterUserCommandHandler(IMapper mapper,
         {
             try
             {
-                user.ProfileImagePath = fileService.SaveFile(request.ProfilePicture, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
+                user.ProfileImagePath = await fileService.SaveFileAsync(request.ProfilePicture, "Images/Users", [".jpg", ".png", ".webp", ".jpeg"]);
             }
             catch (Exception ex)
             {

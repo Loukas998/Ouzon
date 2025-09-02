@@ -31,7 +31,7 @@ public class UpdateKitCommandHandler(ILogger<UpdateKitCommandHandler> logger, IM
             }
             try
             {
-                kit.ImagePath = fileService.SaveFile(request.Image, "Images/Kits", [".jpg", ".png", ".webp", ".jpeg"]);
+                kit.ImagePath = await fileService.SaveFileAsync(request.Image, "Images/Kits", [".jpg", ".png", ".webp", ".jpeg"]);
             }
             catch (Exception ex)
             {

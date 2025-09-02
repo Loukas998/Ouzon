@@ -31,6 +31,10 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         {
             return BadRequest(result.Data);
         }
+        if (!result.SuccessStatus)
+        {
+            return BadRequest(result.Errors);
+        }
         return Ok();
     }
     [HttpPost("login")]

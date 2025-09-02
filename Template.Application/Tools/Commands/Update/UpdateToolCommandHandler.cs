@@ -26,7 +26,7 @@ public class UpdateToolCommandHandler(IToolRepository toolRepository, IMapper ma
             }
             try
             {
-                tool.ImagePath = fileService.SaveFile(request.Image, "Images/Tools", [".jpg", ".png", ".webp", ".jpeg"]);
+                tool.ImagePath = await fileService.SaveFileAsync(request.Image, "Images/Tools", [".jpg", ".png", ".webp", ".jpeg"]);
             }
             catch (Exception ex)
             {
