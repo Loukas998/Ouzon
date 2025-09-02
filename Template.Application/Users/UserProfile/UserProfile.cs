@@ -32,7 +32,7 @@ public class UserProfile : Profile
 
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.user.Id))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.user.UserName))
-            .ForMember(dest => dest.ProfileImagePath, opt => opt.MapFrom(src => src.user.ProfileImagePath))
+            .ForMember(dest => dest.ProfileImagePath, opt => opt.MapFrom<UserRoleImageUrlResolver>())
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.user.Email))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.user.PhoneNumber))
             .ForMember(dest => dest.Clinic, opt => opt.MapFrom(src => src.user.Clinic))

@@ -23,5 +23,7 @@ namespace Template.Domain.Entities
 
         // Ratings received by the assistant
         public List<Rating> RatingsReceived { get; set; } = [];
+        public string? Otp { get; set; }
+        public DateTime? ExpiryOtpDate { get; set; }
     }
 }

@@ -1,15 +1,14 @@
 ﻿using MediatR;
 using System.ComponentModel.DataAnnotations;
 
-namespace Template.Application.Users.Commands.ChangePassword;
+namespace Template.Application.Users.Commands.ResetPassword;
 
-public class ChangePasswordCommand : IRequest<bool>
+public class ResetPasswordCommand : IRequest
 {
     [Required]
     public string NewPassword { get; set; } = default!;
     [Required]
     [Compare("NewPassword", ErrorMessage = "Password do not match")]
     public string ConfirmNewPassword { get; set; } = default!;
-    [Required]
-    public string OldPassword { get; set; } = default!;
+    public string Email { get; set; } = default!;
 }

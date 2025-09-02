@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using MimeKit;
+using MimeKit.Text;
 using Template.Domain.Entities;
 using Template.Domain.Entities.AuthEntities;
 using Template.Domain.Entities.Notifications;
@@ -158,28 +161,23 @@ public class AccountRepository(UserManager<User> userManager,
         await userManager.DeleteAsync(user);
         await dbcontext.SaveChangesAsync();
     }
-    //private async Task SendEmailForVerification(string userEmail, string code, string verifyUrl)
-    //{
-    //    var emailMessage = new MimeMessage();
-    //    emailMessage.From.Add(MailboxAddress.Parse("eldon.reilly25@ethereal.email"));
-    //    emailMessage.To.Add(MailboxAddress.Parse(userEmail));
-    //    emailMessage.Subject = "Code for Verification";
-    //    string fullUrl = verifyUrl + code;
-    //    string account = "Account";
-    //    string verify = "Verify";
-    //    emailMessage.Body = new TextPart(TextFormat.Html)
-    //    {
-    //        Text = $"To Verify Your Account Press this Link <a href ={fullUrl}> Click here </a>"
-    //        //"To Verify Your Account Press this Link <a href=\"fullUrl\"> Click here </a>"
-    //        //To Verify Your Account Press this Link < a href = { fullUrl }> Click here </ a >
-    //    };
-    //    using var smtp = new SmtpClient();
-    //    await smtp.ConnectAsync("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
-    //    smtp.Authenticate("eldon.reilly25@ethereal.email", "1xyrdZx7msYpj4KPgJ");
-    //    smtp.Send(emailMessage);
-    //    await smtp.DisconnectAsync(true);
-    //    return;
-    //}
+    public async Task SendEmail(string userEmail, string code)
+    {
+        var emailMessage = new MimeMessage();
+        emailMessage.From.Add(MailboxAddress.Parse("jane.kunze@ethereal.email"));
+        emailMessage.To.Add(MailboxAddress.Parse(userEmail));
+        emailMessage.Subject = "Forgot password OTP";
+        emailMessage.Body = new TextPart(TextFormat.Html)
+        {
+            Text = $"Your forgot-password code is: {code}"
+        };
+        using var smtp = new SmtpClient();
+        await smtp.ConnectAsync("smtp.ethereal.email", 587, MailKit.Security.SecureSocketOptions.StartTls);
+        smtp.Authenticate("jane.kunze@ethereal.email", "c2ArTkEFyuqHWeCf39");
+        smtp.Send(emailMessage);
+        await smtp.DisconnectAsync(true);
+        return;
+    }
 
     public async Task<string> SaveUserProfileAsync(IFormFile userImage)
     {
@@ -362,6 +360,36 @@ public class AccountRepository(UserManager<User> userManager,
             return result.Succeeded;
         }
         return false;
+    }
+
+    public async Task ResetPassword(string email, string newPassword)
+    {
+        var existingUser = await userManager.FindByEmailAsync(email);
+
+        if (existingUser != null)
+        {
+            var token = await userManager.GeneratePasswordResetTokenAsync(existingUser);
+            var result = await userManager.ResetPasswordAsync(existingUser, token, newPassword);
+
+            if (result.Succeeded)
+            {
+                existingUser.Otp = null;
+                existingUser.ExpiryOtpDate = null;
+                await userManager.UpdateAsync(existingUser);
+            }
+        }
+
+    }
+
+    public async Task<bool> VerifyForgotPasswordOtp(string code)
+    {
+        var existingUser = await dbcontext.Users
+            .FirstOrDefaultAsync(u => u.Otp == code);
+
+        if (existingUser == null)
+            return false;
+
+        return existingUser.ExpiryOtpDate > DateTime.UtcNow;
     }
 }
 //public async Task<bool> Verify(string verficationToken)

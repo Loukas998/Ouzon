@@ -11,6 +11,9 @@ using Template.Application.Users.Commands;
 using Template.Application.Users.Commands.ChangePassword;
 using Template.Application.Users.Commands.DeleteAccount;
 using Template.Application.Users.Commands.EditProfile;
+using Template.Application.Users.Commands.ForgotPassword;
+using Template.Application.Users.Commands.ResetPassword;
+using Template.Application.Users.Commands.VerifyForgotPasswordOtp;
 using Template.Application.Users.Dtos;
 using Template.Application.Users.Queries.CurrentUser;
 using Template.Application.Users.Queries.GetUsers;
@@ -169,5 +172,34 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         {
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpPost("ForgotPassword")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand command)
+    {
+        try
+        {
+            await mediator.Send(command);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    [HttpPost("VerifyForgotPasswordOtp")]
+    public async Task<IActionResult> VerifyForgotPasswordOtp([FromBody] VerifyForgotPasswordOtpCommand command)
+    {
+        var success = await mediator.Send(command);
+        if (success) return Ok(new { Success = success });
+        return BadRequest(new { Success = success });
+    }
+
+    [HttpPost("ResetPassword")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+    {
+        await mediator.Send(command);
+        return Ok();
     }
 }
