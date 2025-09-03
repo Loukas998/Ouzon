@@ -374,6 +374,7 @@ public class AccountRepository(UserManager<User> userManager,
         {
             existingUser.Otp = null;
             existingUser.ExpiryOtpDate = null;
+            existingUser.ForgotPasswordToken = null;
             await userManager.UpdateAsync(existingUser);
         }
         return result.Errors;
