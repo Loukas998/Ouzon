@@ -12,7 +12,6 @@ using Template.Application.Users.Commands.ChangePassword;
 using Template.Application.Users.Commands.DeleteAccount;
 using Template.Application.Users.Commands.EditProfile;
 using Template.Application.Users.Commands.ForgotPassword;
-using Template.Application.Users.Commands.Logout;
 using Template.Application.Users.Commands.ResetPassword;
 using Template.Application.Users.Commands.VerifyForgotPasswordOtp;
 using Template.Application.Users.Dtos;
@@ -207,15 +206,15 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         }
         return Ok();
     }
-    [HttpPost("logout")]
-    [Authorize]
-    public async Task<ActionResult> LogOutUser()
-    {
-        var result = await mediator.Send(new LogoutCommand());
-        if (!result.SuccessStatus)
-        {
-            return BadRequest(result.Errors);
-        }
-        return Ok();
-    }
+    //[HttpPost("logout")]
+    //[Authorize]
+    //public async Task<ActionResult> LogOutUser()
+    //{
+    //    var result = await mediator.Send(new LogoutCommand());
+    //    if (!result.SuccessStatus)
+    //    {
+    //        return BadRequest(result.Errors);
+    //    }
+    //    return Ok();
+    //}
 }
