@@ -401,7 +401,22 @@ public class AccountRepository(UserManager<User> userManager,
 
         return existingUser.ExpiryOtpDate > DateTime.UtcNow;
     }
+    public async Task<IdentityResult> UpdateSecurityStampAsync(string userId)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user != null)
+        {
+            var result = await userManager.UpdateSecurityStampAsync(user);
+            return result;
+        }
+        return IdentityResult.Failed(new IdentityError()
+        {
+            Code = "User doesn't exist",
+            Description = "User Doesn't exist"
+        });
+    }
 }
+
 //public async Task<bool> Verify(string verficationToken)
 //{
 //    var user = await dbcontext.Users.FirstOrDefaultAsync(u => u.VerificationToken == verficationToken);

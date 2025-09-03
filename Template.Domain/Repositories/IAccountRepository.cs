@@ -28,4 +28,5 @@ public interface IAccountRepository
     Task SendEmail(string userEmail, string code);
     Task<IEnumerable<IdentityError>> ResetPassword(string email, string newPassword);
     Task<bool> VerifyForgotPasswordOtp(string code);
+    Task<IdentityResult> UpdateSecurityStampAsync(string userId);
 }
