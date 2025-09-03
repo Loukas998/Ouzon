@@ -2,7 +2,7 @@
 
 namespace Template.Domain.Entities.Users
 {
-    public class Rating
+    public class Rating : BaseEntity
 
     {
         public int Id { get; set; }

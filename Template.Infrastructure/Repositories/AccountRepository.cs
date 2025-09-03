@@ -362,7 +362,7 @@ public class AccountRepository(UserManager<User> userManager,
         return false;
     }
 
-    public async Task ResetPassword(string email, string newPassword)
+    public async Task<IEnumerable<IdentityError>> ResetPassword(string email, string newPassword)
     {
         var existingUser = await userManager.FindByEmailAsync(email);
 
@@ -377,7 +377,17 @@ public class AccountRepository(UserManager<User> userManager,
                 existingUser.ExpiryOtpDate = null;
                 await userManager.UpdateAsync(existingUser);
             }
+            return result.Errors;
         }
+        var errorList = new List<IdentityError>()
+        {
+            new()
+            {
+            Code = "User Doesnt't Exist",
+            Description = "Couldn't Find User by Email",
+            }
+        };
+        return errorList;
 
     }
 

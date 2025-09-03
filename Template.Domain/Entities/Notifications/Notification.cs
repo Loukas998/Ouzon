@@ -1,6 +1,6 @@
 ﻿namespace Template.Domain.Entities.Notifications;
 
-public class Notification
+public class Notification : BaseEntity
 {
     public int Id { get; set; }
     public string? Title { get; set; }

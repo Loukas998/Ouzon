@@ -199,7 +199,11 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     [HttpPost("ResetPassword")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
     {
-        await mediator.Send(command);
+        var errors = await mediator.Send(command);
+        if (errors.Any())
+        {
+            return BadRequest(errors);
+        }
         return Ok();
     }
 }

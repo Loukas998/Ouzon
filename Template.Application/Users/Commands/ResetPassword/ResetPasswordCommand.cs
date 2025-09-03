@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace Template.Application.Users.Commands.ResetPassword;
 
-public class ResetPasswordCommand : IRequest
+public class ResetPasswordCommand : IRequest<IEnumerable<IdentityError>>
 {
     [Required]
     public string NewPassword { get; set; } = default!;
@@ -11,4 +12,5 @@ public class ResetPasswordCommand : IRequest
     [Compare("NewPassword", ErrorMessage = "Password do not match")]
     public string ConfirmNewPassword { get; set; } = default!;
     public string Email { get; set; } = default!;
+    public string Otp { get; set; } = default!;
 }

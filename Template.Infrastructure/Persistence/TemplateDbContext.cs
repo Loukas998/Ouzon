@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using Template.Domain.Entities;
 using Template.Domain.Entities.Materials;
 using Template.Domain.Entities.Notifications;
@@ -34,8 +35,9 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        modelBuilder.Ignore<BaseEntity>();
         //relationships between the tables
+        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
 
         //user has one or more clinics
         modelBuilder.Entity<User>()
@@ -170,5 +172,24 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
             .WithMany(u => u.RatingsReceived)
             .HasForeignKey(r => r.AssistantId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        //soft delete global query filter 
+
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                var method = typeof(TemplateDbContext)
+                    .GetMethod(nameof(SetGlobalQuery), BindingFlags.NonPublic | BindingFlags.Static)
+                    ?.MakeGenericMethod(entityType.ClrType);
+
+                method?.Invoke(null, new object[] { modelBuilder });
+            }
+        }
+    }
+    private static void SetGlobalQuery<TEntity>(ModelBuilder builder) where TEntity : BaseEntity
+    {
+        builder.Entity<TEntity>().HasQueryFilter(e => !e.IsDeleted);
     }
 }

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template.Domain.Entities.Materials;
+﻿using Template.Domain.Entities.Materials;
 
 namespace Template.Domain.Entities.ProcedureRelatedEntities
 {
-   public class ProcedureKit
+    public class ProcedureKit : BaseEntity
     {
         public int Id { get; set; }
         public int KitId { get; set; }

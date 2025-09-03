@@ -4,7 +4,7 @@ using Template.Domain.Enums;
 
 namespace Template.Domain.Entities.ProcedureRelatedEntities;
 
-public class Procedure
+public class Procedure : BaseEntity
 {
     public int Id { get; set; }
     public string? DoctorId { get; set; }

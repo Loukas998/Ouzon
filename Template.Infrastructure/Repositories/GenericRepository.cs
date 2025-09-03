@@ -20,8 +20,17 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task DeleteAsync(T entity)
     {
-        dbContext.Remove(entity);
-        await dbContext.SaveChangesAsync();
+        var property = entity.GetType().GetProperty("IsDeleted");
+        if (property != null && property.PropertyType == typeof(bool))
+        {
+            property.SetValue(entity, true);
+            await dbContext.SaveChangesAsync();
+        }
+
+        else
+        {
+            throw new InvalidOperationException($"Entity {typeof(T).Name} Does not Have IsDeleted as a property");
+        }
     }
 
     public async Task<T?> FindByIdAsync(int id)

@@ -4,7 +4,7 @@ using Template.Domain.Entities.ProcedureRelatedEntities;
 
 namespace Template.Domain.Entities.Materials;
 
-public class Tool
+public class Tool : BaseEntity
 {
     [Key]
     public int Id { get; set; }

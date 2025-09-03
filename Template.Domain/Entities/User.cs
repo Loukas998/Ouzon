@@ -25,5 +25,6 @@ namespace Template.Domain.Entities
         public List<Rating> RatingsReceived { get; set; } = [];
         public string? Otp { get; set; }
         public DateTime? ExpiryOtpDate { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

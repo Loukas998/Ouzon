@@ -1,6 +1,6 @@
 ﻿namespace Template.Domain.Entities.Notifications;
 
-public class Device
+public class Device : BaseEntity
 {
     public int Id { get; set; }
     public string? DeviceToken { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Template.Domain.Entities.Schedule;
 
-public class Holiday
+public class Holiday : BaseEntity
 {
     public int Id { get; set; }
     public DateTime? From { get; set; }
