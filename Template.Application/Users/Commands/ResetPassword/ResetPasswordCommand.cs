@@ -11,5 +11,5 @@ public class ResetPasswordCommand : IRequest<IEnumerable<IdentityError>>
     [Required]
     [Compare("NewPassword", ErrorMessage = "Password do not match")]
     public string ConfirmNewPassword { get; set; } = default!;
-    public string Email { get; set; } = default!;
+    public string Token { get; set; } = default!;
 }

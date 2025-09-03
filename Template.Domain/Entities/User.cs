@@ -26,5 +26,6 @@ namespace Template.Domain.Entities
         public string? Otp { get; set; }
         public DateTime? ExpiryOtpDate { get; set; }
         public bool IsDeleted { get; set; }
+        public string? ForgotPasswordToken { get; set; }
     }
 }

@@ -191,9 +191,9 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     [HttpPost("VerifyForgotPasswordOtp")]
     public async Task<IActionResult> VerifyForgotPasswordOtp([FromBody] VerifyForgotPasswordOtpCommand command)
     {
-        var success = await mediator.Send(command);
-        if (success) return Ok(new { Success = success });
-        return BadRequest(new { Success = success });
+        var response = await mediator.Send(command);
+        if (response.IsValid) return Ok(new { Success = response.IsValid, Token = response.Token });
+        return BadRequest(new { Success = response.IsValid });
     }
 
     [HttpPost("ResetPassword")]

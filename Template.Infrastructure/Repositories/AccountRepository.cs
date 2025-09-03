@@ -364,44 +364,44 @@ public class AccountRepository(UserManager<User> userManager,
         return false;
     }
 
-    public async Task<IEnumerable<IdentityError>> ResetPassword(string email, string newPassword)
+    public async Task<IEnumerable<IdentityError>> ResetPassword(string token, string newPassword)
     {
-        var existingUser = await userManager.FindByEmailAsync(email);
+        var existingUser = await dbcontext.Users.FirstOrDefaultAsync(u => u.ForgotPasswordToken.Equals(token));
 
-        if (existingUser != null)
+        var result = await userManager.ResetPasswordAsync(existingUser, token, newPassword);
+
+        if (result.Succeeded)
         {
-            var token = await userManager.GeneratePasswordResetTokenAsync(existingUser);
-            var result = await userManager.ResetPasswordAsync(existingUser, token, newPassword);
-
-            if (result.Succeeded)
-            {
-                existingUser.Otp = null;
-                existingUser.ExpiryOtpDate = null;
-                await userManager.UpdateAsync(existingUser);
-            }
-            return result.Errors;
+            existingUser.Otp = null;
+            existingUser.ExpiryOtpDate = null;
+            await userManager.UpdateAsync(existingUser);
         }
+        return result.Errors;
         var errorList = new List<IdentityError>()
         {
             new()
             {
-            Code = "User Doesnt't Exist",
-            Description = "Couldn't Find User by Email",
+                Code = "User Doesnt't Exist",
+                Description = "Couldn't Find User by Email",
             }
         };
         return errorList;
 
     }
 
-    public async Task<bool> VerifyForgotPasswordOtp(string code)
+    public async Task<(bool IsValid, string Token)> VerifyForgotPasswordOtp(string code)
     {
         var existingUser = await dbcontext.Users
             .FirstOrDefaultAsync(u => u.Otp == code);
 
         if (existingUser == null)
-            return false;
+            return (false, null);
 
-        return existingUser.ExpiryOtpDate > DateTime.UtcNow;
+        var forgotPasswordToken = await userManager.GeneratePasswordResetTokenAsync(existingUser);
+        existingUser.ForgotPasswordToken = forgotPasswordToken;
+
+        var isValid = existingUser.ExpiryOtpDate > DateTime.UtcNow;
+        return (isValid, forgotPasswordToken);
     }
     public async Task<IdentityResult> UpdateSecurityStampAsync(string userId)
     {
