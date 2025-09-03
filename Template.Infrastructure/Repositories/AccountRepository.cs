@@ -158,7 +158,9 @@ public class AccountRepository(UserManager<User> userManager,
             throw new NotFoundException(nameof(User), userId);
         }
 
-        await userManager.DeleteAsync(user);
+        user.IsDeleted = true;
+        await userManager.UpdateSecurityStampAsync(user);
+        await userManager.UpdateAsync(user);
         await dbcontext.SaveChangesAsync();
     }
     public async Task SendEmail(string userEmail, string code)
