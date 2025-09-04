@@ -40,14 +40,12 @@ namespace Template.Application.Users.Commands.RegisterValidation
 
 
             RuleFor(x => x.Longtitude)
-                .NotEmpty()
                 .Must(lon => lon == 0)
                 .When(x => x.Role != nameof(EnumRoleNames.User))
                 .WithMessage("Longtitude should be 0 unless registering a 'User'.");
 
 
             RuleFor(x => x.Latitude)
-                .NotEmpty()
                 .Must(lat => lat == 0)
                 .When(x => x.Role != nameof(EnumRoleNames.User))
                 .WithMessage("Latitude should be 0 unless registering a 'User'.");
