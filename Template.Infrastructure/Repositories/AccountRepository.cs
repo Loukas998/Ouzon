@@ -283,6 +283,7 @@ public class AccountRepository(UserManager<User> userManager,
     public async Task<User> GetUserDetails(string? id)
     {
         var user = userManager.Users
+            .Include(u => u.Clinic)
             .Include(u => u.InProcedure)
             .ThenInclude(prc => prc.Procedure)
             .Include(u => u.ProcedureFrom)

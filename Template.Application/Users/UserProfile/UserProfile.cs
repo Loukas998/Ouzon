@@ -20,6 +20,7 @@ public class UserProfile : Profile
 
 
         CreateMap<User, UserDetailedDto>()
+            .ForMember(dest => dest.Clinic, opt => opt.MapFrom(src => src.Clinic))
             .ForMember(dest => dest.Holidays, opt => opt.MapFrom(src => src.Holidays))
             .ForMember(dest => dest.InProcedure, opt => opt.MapFrom(src => src.InProcedure.Select(pro => pro.Procedure)))
             .ForMember(dest => dest.ProcedureFrom, opt => opt.MapFrom(src => src.ProcedureFrom))

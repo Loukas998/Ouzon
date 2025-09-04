@@ -21,6 +21,7 @@ public class RegisterUserCommandHandler(IMapper mapper,
         user.UserName = request.UserName;
         if (request.Role == EnumRoleNames.User.ToString())
         {
+
             user.Clinic = new Domain.Entities.Users.Clinic()
             {
                 Address = request.Address,
