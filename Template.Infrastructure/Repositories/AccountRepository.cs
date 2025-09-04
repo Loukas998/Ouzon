@@ -401,6 +401,7 @@ public class AccountRepository(UserManager<User> userManager,
 
         var forgotPasswordToken = await userManager.GeneratePasswordResetTokenAsync(existingUser);
         existingUser.ForgotPasswordToken = forgotPasswordToken;
+        await userManager.UpdateAsync(existingUser);
 
         var isValid = existingUser.ExpiryOtpDate > DateTime.UtcNow;
         await dbcontext.SaveChangesAsync();
