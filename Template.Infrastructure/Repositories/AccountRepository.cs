@@ -403,6 +403,7 @@ public class AccountRepository(UserManager<User> userManager,
         existingUser.ForgotPasswordToken = forgotPasswordToken;
 
         var isValid = existingUser.ExpiryOtpDate > DateTime.UtcNow;
+        await dbcontext.SaveChangesAsync();
         return (isValid, forgotPasswordToken);
     }
     public async Task<IdentityResult> UpdateSecurityStampAsync(string userId)
