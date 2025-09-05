@@ -45,7 +45,7 @@ public class EditProfileCommandHandler(IUserContext userContext, ILogger<EditPro
             user.Clinic.Address = request.Address ?? user.Clinic.Address;
             user.Clinic.Latitude = request.Latitude != 0 ? request.Latitude : user.Clinic.Latitude;
             user.Clinic.Longtitude = request.Longtitude != 0 ? request.Longtitude : user.Clinic.Longtitude;
-            user.Clinic.Name = request.Name ?? user.Clinic.Name;
+            user.Clinic.Name = request.ClinicName ?? user.Clinic.Name;
         }
         if (request.Image != null)
         {

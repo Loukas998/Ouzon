@@ -35,14 +35,14 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("GetTopFiveAssistantsByAssignments")]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetTopFiveAssistantsByAssignments()
+    public async Task<ActionResult<IEnumerable<UserProcedureCountDto>>> GetTopFiveAssistantsByAssignments()
     {
         var result = await mediator.Send(new GetTopFiveAssistantsByAssignmentsQuery());
         return Ok(result);
     }
 
     [HttpGet("GetTopFiveDoctors")]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetTopFiveDoctors()
+    public async Task<ActionResult<IEnumerable<UserProcedureCountDto>>> GetTopFiveDoctors()
     {
         var result = await mediator.Send(new GetTopFiveDoctorsQuery());
         return Ok(result);

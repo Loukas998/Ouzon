@@ -15,7 +15,6 @@ public class EditProfileCommand : ICommand<UserDto>
     public IFormFile? Image { get; set; }
 
     public string? Address { get; set; }
-    public string? Name { get; set; }
     public string? ClinicName { get; set; }
     public float Longtitude { get; set; }
     public float Latitude { get; set; }

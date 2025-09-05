@@ -38,6 +38,10 @@ public class UserProfile : Profile
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.user.PhoneNumber))
             .ForMember(dest => dest.Clinic, opt => opt.MapFrom(src => src.user.Clinic))
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.roleName));
+
+        CreateMap<(User user, int procCount), UserProcedureCountDto>()
+            .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.user))
+            .ForMember(dests => dests.ProcedureCount, opt => opt.MapFrom(src => src.procCount)).ReverseMap();
     }
 
 }

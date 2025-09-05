@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Template.Domain.Entities;
+using Template.Domain.Enums;
 using Template.Domain.Repositories;
 using Template.Infrastructure.Persistence;
 
@@ -37,13 +38,20 @@ public class StatisticsRepository(TemplateDbContext dbContext) : IStatisticsRepo
         return result;
     }
 
-    public async Task<List<User>> GetTopFiveAssistantsByAssignments()
+    public async Task<List<(User user, int procCount)>> GetTopFiveAssistantsByAssignments()
     {
-        return await dbContext.Users
-            .Where(u => u.InProcedure.Any())
-            .OrderByDescending(u => u.InProcedure.Count)
+        var query = await dbContext.Users
+            .Where(u => u.InProcedure.Where(ip => ip.Procedure.Status.Equals(EnumProcedureStatus.DONE)).Any())
+           .Select(u => new
+           {
+               User = u,
+               ProcCount = u.InProcedure.Count(ip => ip.Procedure.Status == EnumProcedureStatus.DONE)
+           })
+            .OrderByDescending(u => u.ProcCount)
             .Take(5)
-            .ToListAsync();
+            .ToListAsync()
+            ;
+        return query.Select(u => (u.User, u.ProcCount)).ToList();
     }
 
     public async Task<List<User>> GetTopFiveAssistantsByRatings()
@@ -55,12 +63,18 @@ public class StatisticsRepository(TemplateDbContext dbContext) : IStatisticsRepo
            .ToListAsync();
     }
 
-    public async Task<List<User>> GetTopFiveDoctors()
+    public async Task<List<(User user, int procCount)>> GetTopFiveDoctors()
     {
-        return await dbContext.Users
-            .Where(u => u.ProcedureFrom.Any())
-            .OrderByDescending(u => u.ProcedureFrom.Count)
+        var query = await dbContext.Users
+            .Where(u => u.ProcedureFrom.Where(fp => fp.Status.Equals(EnumProcedureStatus.DONE)).Any())
+            .Select(x => new
+            {
+                User = x,
+                ProcCount = x.ProcedureFrom.Where(fp => fp.Status.Equals(EnumProcedureStatus.DONE)).Count(),
+            })
+            .OrderByDescending(u => u.ProcCount)
             .Take(5)
             .ToListAsync();
+        return query.Select(x => (x.User, x.ProcCount)).ToList();
     }
 }

@@ -6,11 +6,11 @@ using Template.Domain.Repositories;
 namespace Template.Application.Statistics.Queries.GetTopFiveDoctors;
 
 public class GetTopFiveDoctorsQueryHandler(IStatisticsRepository statisticsRepository, IMapper mapper)
-    : IRequestHandler<GetTopFiveDoctorsQuery, IEnumerable<UserDto>>
+    : IRequestHandler<GetTopFiveDoctorsQuery, IEnumerable<UserProcedureCountDto>>
 {
-    public async Task<IEnumerable<UserDto>> Handle(GetTopFiveDoctorsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserProcedureCountDto>> Handle(GetTopFiveDoctorsQuery request, CancellationToken cancellationToken)
     {
         var doctors = await statisticsRepository.GetTopFiveDoctors();
-        return mapper.Map<IEnumerable<UserDto>>(doctors);
+        return mapper.Map<IEnumerable<UserProcedureCountDto>>(doctors);
     }
 }
