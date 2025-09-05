@@ -1,9 +1,9 @@
-﻿using MediatR;
-using System.ComponentModel.DataAnnotations;
-
+﻿using System.ComponentModel.DataAnnotations;
+using Template.Application.Abstraction.Commands;
+using Template.Domain.Entities.AuthEntities;
 namespace Template.Application.Users.Commands.ChangePassword;
 
-public class ChangePasswordCommand : IRequest<bool>
+public class ChangePasswordCommand : ICommand<AuthResponse>
 {
     [Required]
     public string NewPassword { get; set; } = default!;

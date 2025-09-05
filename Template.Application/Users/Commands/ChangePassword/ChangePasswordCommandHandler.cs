@@ -1,20 +1,29 @@
-﻿using MediatR;
+﻿using Template.Application.Abstraction.Commands;
+using Template.Domain.Entities.AuthEntities;
+using Template.Domain.Entities.ResponseEntity;
 using Template.Domain.Repositories;
 
 namespace Template.Application.Users.Commands.ChangePassword;
 
 public class ChangePasswordCommandHandler(IAccountRepository accountRepository, IUserContext userContext)
-    : IRequestHandler<ChangePasswordCommand, bool>
+    : ICommandHandler<ChangePasswordCommand, AuthResponse>
 {
-    public async Task<bool> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+    public async Task<Result<AuthResponse>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
         var user = userContext.GetCurrentUser();
         var existingUser = await accountRepository.GetUserDetails(user.Id);
-
-        if (existingUser != null)
+        if (existingUser == null)
         {
-            return await accountRepository.UpdatePassword(existingUser, request.OldPassword, request.NewPassword);
+            return Result.Failure<AuthResponse>(["User doesn't exist"]);
         }
-        return false;
+
+        var changeResult = await accountRepository.UpdatePassword(existingUser, request.OldPassword, request.NewPassword);
+        if (changeResult.Succeeded)
+        {
+            var token = await accountRepository.LoginUserWithoutDevice(existingUser.Email, request.NewPassword);
+            return Result.Success(token);
+        }
+        return Result.Failure<AuthResponse>(changeResult.Errors.Select(x => x.Code).ToList());
+
     }
 }

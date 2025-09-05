@@ -266,6 +266,23 @@ public class AccountRepository(UserManager<User> userManager,
         }
         return null;
     }
+    public async Task<AuthResponse>? LoginUserWithoutDevice(string email, string password)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+
+        if (user == null)
+        {
+            return null;
+        }
+
+        bool isValidCredentials = await userManager.CheckPasswordAsync(user, password);
+        if (!isValidCredentials)
+        {
+            return null;
+        }
+        var token = await tokenRepository.GenerateToken(user.Id);
+        return token;
+    }
     public async Task<bool> UserInRoleAsync(string id, string roleName)
     {
         var user = await userManager.FindByIdAsync(id);
@@ -355,14 +372,10 @@ public class AccountRepository(UserManager<User> userManager,
         return user;
     }
 
-    public async Task<bool> UpdatePassword(User user, string oldPassword, string newPassword)
+    public async Task<IdentityResult> UpdatePassword(User user, string oldPassword, string newPassword)
     {
         var result = await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
-        if (result.Succeeded)
-        {
-            return result.Succeeded;
-        }
-        return false;
+        return result;
     }
 
     public async Task<IEnumerable<IdentityError>> ResetPassword(string token, string newPassword)

@@ -24,11 +24,12 @@ public interface IAccountRepository
     public Task DeleteAccount(string userId);
     Task<User> UpdateUserAsync(User user);
     Task<List<(User user, string? roleName)>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);
-    Task<bool> UpdatePassword(User user, string oldPassword, string newPassword);
+    Task<IdentityResult> UpdatePassword(User user, string oldPassword, string newPassword);
     Task SendEmail(string userEmail, string code);
     Task<IEnumerable<IdentityError>> ResetPassword(string token, string newPassword);
     Task<(bool IsValid, string Token)> VerifyForgotPasswordOtp(string code);
     Task<IdentityResult> UpdateSecurityStampAsync(string userId);
     Task DeleteUser(User user);
     Task<User?> FindUserById(string userId);
+    Task<AuthResponse>? LoginUserWithoutDevice(string email, string password);
 }

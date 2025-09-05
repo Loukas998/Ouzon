@@ -166,8 +166,16 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     {
         try
         {
-            await mediator.Send(command);
-            return NoContent();
+            var response = await mediator.Send(command);
+            if (!response.SuccessStatus)
+            {
+                return BadRequest(response.Errors);
+            }
+            if (response.Data == null)
+            {
+                return BadRequest("something went wrong");
+            }
+            return Ok(response.Data);
         }
         catch (Exception ex)
         {
