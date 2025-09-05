@@ -29,4 +29,6 @@ public interface IAccountRepository
     Task<IEnumerable<IdentityError>> ResetPassword(string token, string newPassword);
     Task<(bool IsValid, string Token)> VerifyForgotPasswordOtp(string code);
     Task<IdentityResult> UpdateSecurityStampAsync(string userId);
+    Task DeleteUser(User user);
+    Task<User?> FindUserById(string userId);
 }

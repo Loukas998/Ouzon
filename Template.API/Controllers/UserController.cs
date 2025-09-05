@@ -10,6 +10,7 @@ using Template.Application.Users;
 using Template.Application.Users.Commands;
 using Template.Application.Users.Commands.ChangePassword;
 using Template.Application.Users.Commands.DeleteAccount;
+using Template.Application.Users.Commands.DeleteById;
 using Template.Application.Users.Commands.EditProfile;
 using Template.Application.Users.Commands.ForgotPassword;
 using Template.Application.Users.Commands.ResetPassword;
@@ -204,6 +205,13 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         {
             return BadRequest(errors);
         }
+        return Ok();
+    }
+
+    [HttpDelete("DeleteUserById")]
+    public async Task<IActionResult> DeleteUserAccount(DeleteUserAccountByIdCommand command)
+    {
+        await mediator.Send(command);
         return Ok();
     }
     //[HttpPost("logout")]

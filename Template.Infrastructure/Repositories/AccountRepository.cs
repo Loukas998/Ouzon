@@ -421,6 +421,17 @@ public class AccountRepository(UserManager<User> userManager,
             Description = "User Doesn't exist"
         });
     }
+
+    public async Task DeleteUser(User user)
+    {
+        user.IsDeleted = true;
+        await userManager.UpdateAsync(user);
+    }
+
+    public async Task<User?> FindUserById(string userId)
+    {
+        return await userManager.FindByIdAsync(userId);
+    }
 }
 
 //public async Task<bool> Verify(string verficationToken)
