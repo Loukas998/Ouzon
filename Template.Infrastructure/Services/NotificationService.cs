@@ -7,16 +7,19 @@ namespace Template.Infrastructure.Services;
 
 public class NotificationService(TemplateDbContext dbContext, IDeviceRepository deviceRepository) : INotificationService
 {
-    public async Task<List<GroupedNotification>> GetCurrentUserNotificationsAsync(string deviceToken)
+    public async Task<List<GroupedNotification>> GetCurrentUserNotificationsAsync(string userId)
     {
         var grouped = await dbContext.Notifications
             .Include(n => n.Device)
-            .Where(n => n.Device.DeviceToken == deviceToken)
+            .Where(n => n.Device.UserId == userId)
+            .ToListAsync();
+
+        var result = grouped
             .GroupBy(n => n.CreatedAt!.Value.Date)
             .Select(g => new GroupedNotification
             {
                 CreatedAt = g.Key,
-                Notifications = g.Select(n => new Template.Domain.Entities.Notifications.NotificationDto
+                Notifications = g.Select(n => new NotificationDto
                 {
                     Id = n.Id,
                     CreatedAt = n.CreatedAt,
@@ -26,9 +29,9 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
                     Read = true
                 }).ToList()
             })
-            .ToListAsync();
+            .ToList();
 
-        return grouped;
+        return result;
     }
 
     public async Task SaveNotificationAsync(Domain.Entities.Notifications.Notification entity)
@@ -89,7 +92,7 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
             Notification = new FirebaseAdmin.Messaging.Notification()
             {
                 Title = "Test notification",
-                Body = "غريس غليظة",
+                Body = "This body is for test notification",
             },
             Data = new Dictionary<string, string>()
             {

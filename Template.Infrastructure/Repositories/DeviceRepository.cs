@@ -24,8 +24,12 @@ public class DeviceRepository(TemplateDbContext dbContext) : GenericRepository<D
         var device = await query.ToListAsync();
         return device;
     }
-    public async Task<Device> GetDeviceByToken(string DeviceToken, string? userId)
+    public async Task<Device?> GetDeviceByToken(string DeviceToken, string? userId)
     {
-        return await dbContext.Devices.FirstOrDefaultAsync(d => d.DeviceToken == DeviceToken && d.UserId == userId);
+        var query = await dbContext.Devices
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.DeviceToken == DeviceToken);
+
+        return query;
     }
 }

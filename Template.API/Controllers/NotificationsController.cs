@@ -25,10 +25,10 @@ public class NotificationsController(IMediator mediator, INotificationService no
     }
 
     // 1- GetCurrentUserNotifications
-    [HttpPost("CurrnetUserNotifications")]
-    public async Task<IActionResult> GetCurrentUserNotifications([FromBody] GetCurrentUserNotificationsQuery query)
+    [HttpGet("CurrnetUserNotifications")]
+    public async Task<IActionResult> GetCurrentUserNotifications()
     {
-        return Ok(await mediator.Send(query));
+        return Ok(await mediator.Send(new GetCurrentUserNotificationsQuery()));
     }
 
     [HttpPost("SendNotification")]

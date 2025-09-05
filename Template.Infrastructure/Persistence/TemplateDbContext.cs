@@ -148,7 +148,7 @@ public class TemplateDbContext(DbContextOptions<TemplateDbContext> options) : Id
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Devices)
-            .WithOne()
+            .WithOne(d => d.User)
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
