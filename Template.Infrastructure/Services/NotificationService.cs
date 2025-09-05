@@ -41,7 +41,7 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
     {
         var device = await dbContext.Devices.FindAsync(entity.DeviceId);
 
-        if (device != null && device.DeviceToken != null && device.DeviceToken.Length > 0)
+        if (device != null && !string.IsNullOrEmpty(device.DeviceToken))
         {
             var message = new Message()
             {
@@ -50,19 +50,32 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
                     Title = entity.Title,
                     Body = entity.Body,
                 },
-                Token = device.DeviceToken
+                Data = new Dictionary<string, string>()
+                {
+                    { "title", entity.Title ?? "" },
+                    { "body", entity.Body ?? "" },
+                    { "createdAt", entity.CreatedAt.ToString() ?? "" },
+                    { "type", entity.Type ?? "general" }
+                },
+                Android = new AndroidConfig
+                {
+                    Priority = Priority.High,
+                    Notification = new AndroidNotification
+                    {
+                        Sound = "default",
+                        ChannelId = "high_importance_channel",
+                        ClickAction = "FLUTTER_NOTIFICATION_CLICK"
+                    }
+                },
+                Token = device.DeviceToken,
+
             };
 
             var messaging = FirebaseMessaging.DefaultInstance;
             var result = await messaging.SendAsync(message);
 
-            if (!string.IsNullOrEmpty(result))
+            if (string.IsNullOrEmpty(result))
             {
-                // Message was sent successfully
-            }
-            else
-            {
-                // There was an error sending the message
                 throw new Exception("Error sending the message.");
             }
         }
@@ -76,7 +89,24 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
             Notification = new FirebaseAdmin.Messaging.Notification()
             {
                 Title = "Test notification",
-                Body = "This is a test body for test notification",
+                Body = "غريس غليظة",
+            },
+            Data = new Dictionary<string, string>()
+            {
+                { "title", "Test notification" },
+                { "body", "Test notification" },
+                { "createdAt", DateTime.UtcNow.ToString() },
+                { "type", "general" }
+            },
+            Android = new AndroidConfig
+            {
+                Priority = Priority.High,
+                Notification = new AndroidNotification
+                {
+                    Sound = "default",
+                    ChannelId = "high_importance_channel",
+                    ClickAction = "FLUTTER_NOTIFICATION_CLICK"
+                }
             },
             Token = fcmToken
         };

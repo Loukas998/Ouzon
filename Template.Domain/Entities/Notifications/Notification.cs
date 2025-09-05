@@ -9,5 +9,6 @@ public class Notification : BaseEntity
     public Device Device { get; set; }
     public bool Read { get; set; }
     public DateTime? CreatedAt { get; set; }
+    public string Type { get; set; } = string.Empty;
 
 }

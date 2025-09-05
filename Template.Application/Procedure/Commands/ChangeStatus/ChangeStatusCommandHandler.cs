@@ -84,7 +84,8 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
                     Body = $"Procedure's status has been changed from: {procedure.Status}, to: {request.NewStatus}",
                     Read = false,
                     CreatedAt = DateTime.UtcNow,
-                    DeviceId = device.Id
+                    DeviceId = device.Id,
+                    Type = "assistants_assignment"
                 };
                 await notificationService.SendNotificationAsync(doctorNotification);
                 await notificationService.SaveNotificationAsync(doctorNotification);
