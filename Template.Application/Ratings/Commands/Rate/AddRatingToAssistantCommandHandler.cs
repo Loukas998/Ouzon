@@ -27,7 +27,7 @@ public class AddRatingToAssistantCommandHandler(IRatingsRepository ratingsReposi
                 var assistantNotification = new Domain.Entities.Notifications.Notification
                 {
                     Title = "Doctor Rate",
-                    Body = $"New rating has been added to your profile by: {currentUser.UserName}",
+                    Body = $"New rating has been added to your profile",
                     Read = false,
                     CreatedAt = DateTime.UtcNow,
                     DeviceId = device.Id,
