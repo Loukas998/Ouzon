@@ -134,7 +134,7 @@ namespace Template.Application.Procedure.Commands.Create
                         var adminNotification = new Domain.Entities.Notifications.Notification
                         {
                             Title = "New Procedure",
-                            Body = $"New procedure has been added by: {userId.UserName}",
+                            Body = $"New procedure has been added",
                             Read = false,
                             CreatedAt = DateTime.UtcNow,
                             DeviceId = device.Id,

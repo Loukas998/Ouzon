@@ -21,10 +21,10 @@ namespace Template.Application.Users
 
             var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;
-            var userName = user.FindFirst(c => c.Type == ClaimTypes.Name)!.Value;
+            //var userName = user.FindFirst(c => c.Type == ClaimTypes.Name)!.Value;
             var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
 
-            return new CurrentUser(userId, email, userName, roles);
+            return new CurrentUser(userId, email, roles);
         }
         public string? GetAccessToken()
         {
