@@ -299,18 +299,27 @@ public class AccountRepository(UserManager<User> userManager,
     }
     public async Task<User> GetUserDetails(string? id)
     {
-        var user = userManager.Users
+        var user = await userManager.Users
             .Include(u => u.Clinic)
             .Include(u => u.InProcedure)
             .ThenInclude(prc => prc.Procedure)
             .Include(u => u.ProcedureFrom)
-            .Include(u => u.Devices)
-            .Include(u => u.Holidays)
             .Include(u => u.RatingsReceived)
             .AsSplitQuery()
-            .AsQueryable();
-
-        return await user.FirstOrDefaultAsync(u => u.Id.Equals(id));
+           .FirstOrDefaultAsync(u => u.Id.Equals(id));
+        user.Holidays = await dbcontext.Holidays.Where(h => h.UserId == user.Id).ToListAsync();
+        user.Devices = await dbcontext.Devices.Where(d => d.UserId == user.Id)
+            .Select(d => new Device()
+            {
+                Id = d.Id,
+                DeviceToken = d.DeviceToken,
+                OptIn = d.OptIn,
+                LastLoggedInAt = d.LastLoggedInAt,
+                UserId = d.UserId,
+                Notifications = d.Notifications
+            })
+            .ToListAsync();
+        return user;
 
     }
     public async Task<List<(User user, string? roleName)>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName)

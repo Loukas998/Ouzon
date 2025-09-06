@@ -44,7 +44,7 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
     {
         var device = await dbContext.Devices.FindAsync(entity.DeviceId);
 
-        if (device != null && !string.IsNullOrEmpty(device.DeviceToken))
+        if (device != null && !string.IsNullOrEmpty(device.DeviceToken) && device.OptIn == true)
         {
             var message = new Message()
             {

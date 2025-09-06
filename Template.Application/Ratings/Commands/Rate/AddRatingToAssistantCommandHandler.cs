@@ -36,8 +36,11 @@ public class AddRatingToAssistantCommandHandler(IRatingsRepository ratingsReposi
 
                 if (!string.IsNullOrEmpty(device.DeviceToken))
                 {
-                    await notificationService.SendNotificationAsync(assistantNotification);
-                    await notificationService.SaveNotificationAsync(assistantNotification);
+                    if (device.OptIn == true)
+                    {
+                        await notificationService.SendNotificationAsync(assistantNotification);
+                        await notificationService.SaveNotificationAsync(assistantNotification);
+                    }
                 }
             }
         }

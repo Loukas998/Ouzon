@@ -43,6 +43,7 @@ public class ProceduresController(IMediator mediator) : ControllerBase
         return Ok(result.Data);
     }
     [HttpPost("FilteredProcedure")]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetAllProcedures([FromQuery] DateTime? from, DateTime? to, int? minNumberOfAssistants, int? maxNumberOfAssistants, string? doctorName,
         List<string>? assistantNames, string? clinicName, string? clinicAddress, EnumProcedureStatus? status)
     {
@@ -63,6 +64,7 @@ public class ProceduresController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("paged")]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<ProcedureDto>>> GetProceduresPaged([FromQuery] int pageSize, int pageNum, string? DoctorId, string? AssistantId)
     {
         var result = await mediator.Send(new GetProceduresPagedQuery(pageSize, pageNum, DoctorId, AssistantId));
@@ -95,6 +97,7 @@ public class ProceduresController(IMediator mediator) : ControllerBase
         return NoContent();
     }
     [HttpGet("{id}/kits")]
+    [Authorize]
     public async Task<ActionResult<ProcedureKitDetailsDto>> GetProcedureKits(int id)
     {
         var result = await mediator.Send(new GetProcedureWithKitsOnlyQuery(id));
@@ -105,6 +108,7 @@ public class ProceduresController(IMediator mediator) : ControllerBase
         return Ok(result.Data);
     }
     [HttpGet("{id}/assistants")]
+    [Authorize]
     public async Task<ActionResult<ProcedureKitDetailsDto>> GetProcedureAssistants(int id)
     {
         var result = await mediator.Send(new GetProcedureAssistantsQuery(id));
@@ -116,6 +120,7 @@ public class ProceduresController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("ChangeStatus")]
+    [Authorize]
     public async Task<ActionResult<ProcedureDetailedDto>> ChangeProcedureStatus([FromBody] ChangeStatusCommand command)
     {
         return await mediator.Send(command);

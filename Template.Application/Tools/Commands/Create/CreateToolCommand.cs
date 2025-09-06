@@ -11,6 +11,6 @@ public class CreateToolCommand : ICommand<int>
     public float Thickness { get; set; }
     public int Quantity { get; set; }
     public int? KitId { get; set; }
-    public int? CategoryId { get; set; }
+    public int CategoryId { get; set; }
     public IFormFile? Image { get; set; }
 }
