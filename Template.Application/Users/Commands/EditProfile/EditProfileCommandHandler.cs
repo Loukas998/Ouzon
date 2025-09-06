@@ -66,11 +66,11 @@ public class EditProfileCommandHandler(IUserContext userContext, ILogger<EditPro
         }
 
         var updated = await accountRepository.UpdateUserAsync(user);
-        if (!updated.Succeeded)
+        if (!updated.result.Succeeded)
         {
-            return Result.Failure<UserDto>(updated.Errors.Select(u => u.Code).ToList());
+            return Result.Failure<UserDto>(updated.result.Errors.Select(u => u.Code).ToList());
         }
-        var result = mapper.Map<UserDto>(updated);
+        var result = mapper.Map<UserDto>(updated.user);
         return Result.Success(result);
     }
 }
