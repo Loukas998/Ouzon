@@ -7,6 +7,7 @@ namespace Template.Application.Users.Commands.EditProfile;
 
 public class EditProfileCommand : ICommand<UserDto>
 {
+    [RegularExpression("^[a-zA-z0-9]*$", ErrorMessage = "UserName should only contain numbers and letters")]
     public string? UserName { get; set; }
     [EmailAddress]
     public string? Email { get; set; }
@@ -16,6 +17,6 @@ public class EditProfileCommand : ICommand<UserDto>
 
     public string? Address { get; set; }
     public string? ClinicName { get; set; }
-    public float Longtitude { get; set; }
-    public float Latitude { get; set; }
+    public float Longtitude { get; set; } = 0;
+    public float Latitude { get; set; } = 0;
 }

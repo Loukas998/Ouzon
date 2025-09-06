@@ -366,10 +366,10 @@ public class AccountRepository(UserManager<User> userManager,
         return role.First();
     }
 
-    public async Task<User> UpdateUserAsync(User user)
+    public async Task<IdentityResult> UpdateUserAsync(User user)
     {
-        await userManager.UpdateAsync(user);
-        return user;
+        var result = await userManager.UpdateAsync(user);
+        return result;
     }
 
     public async Task<IdentityResult> UpdatePassword(User user, string oldPassword, string newPassword)
