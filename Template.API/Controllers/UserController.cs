@@ -8,6 +8,7 @@ using Template.Application.Procedure.Queries.AssistantProcedures;
 using Template.Application.Tokens.Commands;
 using Template.Application.Users;
 using Template.Application.Users.Commands;
+using Template.Application.Users.Commands.AssistantRecovery;
 using Template.Application.Users.Commands.ChangePassword;
 using Template.Application.Users.Commands.DeleteAccount;
 using Template.Application.Users.Commands.DeleteById;
@@ -226,6 +227,18 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
     {
         await mediator.Send(command);
         return Ok();
+    }
+
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
+    [HttpPost("AssistantAccountRecovery")]
+    public async Task<IActionResult> AssistantAccountRecovery([FromBody] AssistantRecoveryCommand command)
+    {
+        var result = await mediator.Send(command);
+        if (result.Succeeded)
+        {
+            return Ok();
+        }
+        return BadRequest(result.Errors);
     }
     //[HttpPost("logout")]
     //[Authorize]

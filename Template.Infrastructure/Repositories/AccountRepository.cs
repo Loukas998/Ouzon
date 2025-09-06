@@ -458,6 +458,28 @@ public class AccountRepository(UserManager<User> userManager,
 
         return adminsWithDevices;
     }
+
+    public async Task<IdentityResult> AssistantRecoveryPassword(string userId, string newPassword)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return IdentityResult.Failed(new IdentityError()
+            {
+                Code = "UserNotFound",
+                Description = $"User with ID '{userId}' was not found."
+            });
+        }
+
+        var removeResult = await userManager.RemovePasswordAsync(user);
+        if (!removeResult.Succeeded)
+        {
+            return removeResult;
+        }
+
+        var addResult = await userManager.AddPasswordAsync(user, newPassword);
+        return addResult;
+    }
 }
 
 //public async Task<bool> Verify(string verficationToken)

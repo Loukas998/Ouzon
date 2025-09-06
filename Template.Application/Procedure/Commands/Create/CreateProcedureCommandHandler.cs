@@ -133,12 +133,12 @@ namespace Template.Application.Procedure.Commands.Create
                     {
                         var adminNotification = new Domain.Entities.Notifications.Notification
                         {
-                            Title = "Vacation request",
-                            Body = "New vacation request has been added",
+                            Title = "New Procedure",
+                            Body = $"New procedure has been added by: {userId.UserName}",
                             Read = false,
                             CreatedAt = DateTime.UtcNow,
                             DeviceId = device.Id,
-                            Type = "vacation_request_added"
+                            Type = "procedure_request_added"
                         };
 
                         if (!string.IsNullOrEmpty(device.DeviceToken))
