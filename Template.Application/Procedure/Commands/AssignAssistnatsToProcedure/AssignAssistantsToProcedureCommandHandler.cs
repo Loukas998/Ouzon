@@ -54,10 +54,11 @@ public class AssignAssistantsToProcedureCommandHandler(IProcedureRepository proc
                     Body = "New procedure has been assigned to you, please check the procedure's details",
                     Read = false,
                     CreatedAt = DateTime.UtcNow,
+                    DeviceId = device.Id,
                     Type = "assistants_assignment"
                 };
-                assistantNotification.DeviceId = device.Id;
-                if (device.DeviceToken != null && device.DeviceToken.Length > 0)
+
+                if (!string.IsNullOrEmpty(device.DeviceToken))
                 {
                     await notificationService.SendNotificationAsync(assistantNotification);
                     await notificationService.SaveNotificationAsync(assistantNotification);

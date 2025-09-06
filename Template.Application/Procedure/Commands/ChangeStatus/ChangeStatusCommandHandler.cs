@@ -62,15 +62,29 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
         //sending notification to admin 
         if (request.NewStatus == EnumProcedureStatus.DONE)
         {
-            var adminNotification = new Domain.Entities.Notifications.Notification
+            var admins = await accountRepository.GetAdmins();
+            foreach (var admin in admins)
             {
-                Title = "Done",
-                Body = "The procedure assist has been done",
-                Read = false,
-                DeviceId = null,
-                CreatedAt = DateTime.UtcNow,
-            };
-            await notificationService.SaveNotificationAsync(adminNotification);
+                var adminDevices = admin.Devices;
+                foreach (var device in adminDevices)
+                {
+                    var adminNotification = new Domain.Entities.Notifications.Notification
+                    {
+                        Title = "Vacation request",
+                        Body = "New vacation request has been added",
+                        Read = false,
+                        CreatedAt = DateTime.UtcNow,
+                        DeviceId = device.Id,
+                        Type = "vacation_request_added"
+                    };
+
+                    if (!string.IsNullOrEmpty(device.DeviceToken))
+                    {
+                        await notificationService.SendNotificationAsync(adminNotification);
+                        await notificationService.SaveNotificationAsync(adminNotification);
+                    }
+                }
+            }
         }
         else
         {
@@ -86,10 +100,13 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
                     Read = false,
                     CreatedAt = DateTime.UtcNow,
                     DeviceId = device.Id,
-                    Type = "assistants_assignment"
+                    Type = "procedure_status_changed"
                 };
-                await notificationService.SendNotificationAsync(doctorNotification);
-                await notificationService.SaveNotificationAsync(doctorNotification);
+                if (!string.IsNullOrEmpty(device.DeviceToken))
+                {
+                    await notificationService.SendNotificationAsync(doctorNotification);
+                    await notificationService.SaveNotificationAsync(doctorNotification);
+                }
             }
 
         }

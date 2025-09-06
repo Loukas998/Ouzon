@@ -18,9 +18,10 @@ namespace Template.Application.Procedure.Commands.Create
         private readonly IUserContext userContext;
         private readonly IImplantRepository implantRepository;
         private readonly INotificationService notificationService;
+        private readonly IAccountRepository accountRepository;
         public CreateProcedureCommandHandler(IProcedureRepository procedureRepository, IToolRepository toolRepository,
             IKitRepository kitRepository, ILogger<CreateProcedureCommandHandler> logger, IMapper mapper, IUserContext userContext,
-            IImplantRepository implantRepository, INotificationService notificationService)
+            IImplantRepository implantRepository, INotificationService notificationService, IAccountRepository accountRepository)
         {
             this.procedureRepository = procedureRepository;
             this.toolRepository = toolRepository;
@@ -30,6 +31,7 @@ namespace Template.Application.Procedure.Commands.Create
             this.userContext = userContext;
             this.implantRepository = implantRepository;
             this.notificationService = notificationService;
+            this.accountRepository = accountRepository;
         }
         public async Task<Result<int>> Handle(CreateProcedureCommand request, CancellationToken cancellationToken)
         {
@@ -122,16 +124,30 @@ namespace Template.Application.Procedure.Commands.Create
                 var procedureId = await procedureRepository.AddAsync(procedure);
 
                 //sending notification to the admin
-                var adminNotification = new Domain.Entities.Notifications.Notification
-                {
-                    Title = "New procedure",
-                    Body = $"New procedure has been submitted by Dr.{userId.Email}",
-                    Read = false,
-                    DeviceId = null,
-                    CreatedAt = DateTime.UtcNow
-                };
+                var admins = await accountRepository.GetAdmins();
 
-                await notificationService.SaveNotificationAsync(adminNotification);
+                foreach (var admin in admins)
+                {
+                    var adminDevices = admin.Devices.ToList();
+                    foreach (var device in adminDevices)
+                    {
+                        var adminNotification = new Domain.Entities.Notifications.Notification
+                        {
+                            Title = "Vacation request",
+                            Body = "New vacation request has been added",
+                            Read = false,
+                            CreatedAt = DateTime.UtcNow,
+                            DeviceId = device.Id,
+                            Type = "vacation_request_added"
+                        };
+
+                        if (!string.IsNullOrEmpty(device.DeviceToken))
+                        {
+                            await notificationService.SendNotificationAsync(adminNotification);
+                            await notificationService.SaveNotificationAsync(adminNotification);
+                        }
+                    }
+                }
 
                 return Result.Success(procedureId.Id);
             }

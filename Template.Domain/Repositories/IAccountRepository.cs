@@ -32,4 +32,5 @@ public interface IAccountRepository
     Task DeleteUser(User user);
     Task<User?> FindUserById(string userId);
     Task<AuthResponse>? LoginUserWithoutDevice(string email, string password);
+    Task<List<User>> GetAdmins();
 }

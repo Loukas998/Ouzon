@@ -71,18 +71,17 @@ public class NotificationService(TemplateDbContext dbContext, IDeviceRepository 
                     }
                 },
                 Token = device.DeviceToken,
-
             };
-
-            var messaging = FirebaseMessaging.DefaultInstance;
-            var result = await messaging.SendAsync(message);
-
-            if (string.IsNullOrEmpty(result))
+            try
             {
-                throw new Exception("Error sending the message.");
+                var messaging = FirebaseMessaging.DefaultInstance;
+                var result = await messaging.SendAsync(message);
+            }
+            catch (FirebaseAdmin.Messaging.FirebaseMessagingException ex)
+            {
+
             }
         }
-
     }
 
     public async Task SendTestNotificationAsync(string fcmToken)

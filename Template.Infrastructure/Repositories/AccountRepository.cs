@@ -446,6 +446,18 @@ public class AccountRepository(UserManager<User> userManager,
     {
         return await userManager.FindByIdAsync(userId);
     }
+
+    public async Task<List<User>> GetAdmins()
+    {
+        var adminsWithDevices = await dbcontext.Users
+            .Where(u => dbcontext.UserRoles
+                .Any(ur => ur.UserId == u.Id &&
+                           dbcontext.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Administrator")))
+            .Include(u => u.Devices)
+            .ToListAsync();
+
+        return adminsWithDevices;
+    }
 }
 
 //public async Task<bool> Verify(string verficationToken)
