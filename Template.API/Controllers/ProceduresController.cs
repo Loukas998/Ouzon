@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Procedure.Commands.AssignAssistnatsToProcedure;
 using Template.Application.Procedure.Commands.ChangeStatus;
@@ -20,6 +21,7 @@ namespace Template.API.Controllers;
 public class ProceduresController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
+    [Authorize(Roles = nameof(EnumRoleNames.User))]
     public async Task<IActionResult> AddProcedure(CreateProcedureCommand request)
     {
         var result = await mediator.Send(request);
@@ -71,6 +73,7 @@ public class ProceduresController(IMediator mediator) : ControllerBase
         return Ok(result.Data);
     }
     [HttpPatch]
+    [Authorize(Roles = $"{nameof(EnumRoleNames.Administrator)},{nameof(EnumRoleNames.User)}")]
     public async Task<IActionResult> UpdateProcedure(UpdateProcedureCommand request)
     {
         var result = await mediator.Send(request);
@@ -81,6 +84,7 @@ public class ProceduresController(IMediator mediator) : ControllerBase
         return NoContent();
     }
     [HttpPut]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<IActionResult> AssignAssistantToProcedure(AssignAssistantsToProcedureCommand request)
     {
         var result = await mediator.Send(request);

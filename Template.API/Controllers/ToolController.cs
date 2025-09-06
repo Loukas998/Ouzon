@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Tools.Commands.Create;
 using Template.Application.Tools.Commands.Delete;
@@ -7,6 +8,7 @@ using Template.Application.Tools.Dtos;
 using Template.Application.Tools.Queries.GetAll;
 using Template.Application.Tools.Queries.GetById;
 using Template.Application.Tools.Queries.GetWithFilter;
+using Template.Domain.Enums;
 
 namespace Template.API.Controllers
 {
@@ -15,6 +17,7 @@ namespace Template.API.Controllers
     public class ToolController(IMediator mediator) : ControllerBase
     {
         [HttpPost]
+        [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
         public async Task<ActionResult> CreateTool([FromForm] CreateToolCommand request)
         {
             var res = await mediator.Send(request);
@@ -38,6 +41,7 @@ namespace Template.API.Controllers
             return Ok(res.Data);
         }
         [HttpPatch]
+        [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
         public async Task<ActionResult> UpdateTool([FromForm] UpdateToolCommand request)
         {
             var res = await mediator.Send(request);
@@ -48,6 +52,7 @@ namespace Template.API.Controllers
             return NoContent();
         }
         [HttpDelete("{Id}")]
+        [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
         public async Task<ActionResult> DeleteTool([FromRoute] int Id)
         {
             var command = new DeleteToolCommand() { Id = Id };

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Implants.Commands.Create;
 using Template.Application.Implants.Commands.Delete;
@@ -7,6 +8,7 @@ using Template.Application.Implants.Dtos;
 using Template.Application.Implants.Queries.GetAll;
 using Template.Application.Implants.Queries.GetById;
 using Template.Application.Implants.Queries.GetWithFilter;
+using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
 
@@ -15,6 +17,7 @@ namespace Template.API.Controllers;
 public class ImplantsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<IActionResult> CreateImplant([FromForm] CreateImplantCommand command)
     {
         var res = await mediator.Send(command);
@@ -59,6 +62,7 @@ public class ImplantsController(IMediator mediator) : ControllerBase
     //   }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<IActionResult> DeleteImplant([FromRoute] int id)
     {
         var res = await mediator.Send(new DeleteImplantCommand(id));
@@ -70,6 +74,7 @@ public class ImplantsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{implantId}")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<IActionResult> UpdateImplant([FromRoute] int implantId, [FromForm] UpdateImplantCommand command)
     {
         command.ImplantId = implantId;

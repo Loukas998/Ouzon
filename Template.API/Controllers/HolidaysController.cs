@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Holidays.Commands.ChangeStatus;
 using Template.Application.Holidays.Commands.Create;
@@ -7,6 +8,7 @@ using Template.Application.Holidays.Dtos;
 using Template.Application.Holidays.Queries.GetAll;
 using Template.Application.Holidays.Queries.GetById;
 using Template.Application.Holidays.Queries.GetWithFilter;
+using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
 
@@ -15,6 +17,7 @@ namespace Template.API.Controllers;
 public class HolidaysController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
+    [Authorize(Roles = nameof(EnumRoleNames.AssistantDoctor))]
     public async Task<IActionResult> CreateHoliday([FromBody] CreateHolidayCommand command)
     {
         var result = await mediator.Send(command);
@@ -67,6 +70,7 @@ public class HolidaysController(IMediator mediator) : ControllerBase
         return Ok(holidays.Data);
     }
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = $"{nameof(EnumRoleNames.Administrator)},{nameof(EnumRoleNames.AssistantDoctor)}")]
     public async Task<IActionResult> DeleteHoliday([FromRoute] int id)
     {
         var res = await mediator.Send(new DeleteHolidayCommand(id));
@@ -78,6 +82,7 @@ public class HolidaysController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("ChangeStatus")]
+    [Authorize(Roles = $"{nameof(EnumRoleNames.Administrator)},{nameof(EnumRoleNames.AssistantDoctor)}")]
     public async Task<IActionResult> ChangeStatus([FromBody] ChangeHolidayStatusCommand command)
     {
         var result = await mediator.Send(command);

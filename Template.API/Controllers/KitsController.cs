@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Kits.Commands.Create;
 using Template.Application.Kits.Commands.Delete;
@@ -6,6 +7,7 @@ using Template.Application.Kits.Dtos;
 using Template.Application.Kits.Queries.Filter;
 using Template.Application.Kits.Queries.GetAll;
 using Template.Application.Kits.Queries.GetById;
+using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
 
@@ -14,6 +16,7 @@ namespace Template.API.Controllers;
 public class KitsController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<IActionResult> CreateKit([FromForm] CreateKitCommand command)
     {
         var res = await mediator.Send(command);
@@ -63,6 +66,7 @@ public class KitsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<IActionResult> DeleteKit([FromRoute] int id)
     {
         var res = await mediator.Send(new DeleteKitCommand(id));

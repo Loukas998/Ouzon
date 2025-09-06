@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Application.Statistics.Queries.GetNumberOfProcedures;
 using Template.Application.Statistics.Queries.GetNumberOfUsersInEachRole;
@@ -6,6 +7,7 @@ using Template.Application.Statistics.Queries.GetTopFiveAssistantsByAssignments;
 using Template.Application.Statistics.Queries.GetTopFiveAssistantsByRatings;
 using Template.Application.Statistics.Queries.GetTopFiveDoctors;
 using Template.Application.Users.Dtos;
+using Template.Domain.Enums;
 
 namespace Template.API.Controllers;
 
@@ -14,6 +16,7 @@ namespace Template.API.Controllers;
 public class StatisticsController(IMediator mediator) : ControllerBase
 {
     [HttpGet("GetNumberOfUsersInEachRole")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<ActionResult<Dictionary<string, int>>> GetNumberOfUsersInEachRole()
     {
         var result = await mediator.Send(new GetNumberOfUsersInEachRoleQuery());
@@ -21,6 +24,7 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("GetNumberOfProcedures")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<ActionResult<int>> GetNumberOfProcedures([FromQuery] GetNumberOfProceduresQuery query)
     {
         var result = await mediator.Send(query);
@@ -28,6 +32,7 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("GetTopFiveAssistantsByRatings")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetTopFiveAssistantsByRatings()
     {
         var result = await mediator.Send(new GetTopFiveAssistantsByRatingsQuery());
@@ -35,6 +40,7 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("GetTopFiveAssistantsByAssignments")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<ActionResult<IEnumerable<UserProcedureCountDto>>> GetTopFiveAssistantsByAssignments()
     {
         var result = await mediator.Send(new GetTopFiveAssistantsByAssignmentsQuery());
@@ -42,6 +48,7 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("GetTopFiveDoctors")]
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
     public async Task<ActionResult<IEnumerable<UserProcedureCountDto>>> GetTopFiveDoctors()
     {
         var result = await mediator.Send(new GetTopFiveDoctorsQuery());

@@ -51,6 +51,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         }
         return Ok(result.Data);
     }
+    [Authorize]
     [HttpPost]
     [Route("token/refresh")]
     public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequestCommand request)
@@ -92,6 +93,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         return Ok(user.Data);
     }
 
+    [Authorize(Roles = nameof(EnumRoleNames.AssistantDoctor))]
     [HttpGet("holidays")]
     public async Task<ActionResult<IEnumerable<HolidayDto>>> GetAssistantHolidays()
     {
@@ -117,6 +119,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         }
         return Ok(result.Data);
     }
+
     [HttpGet]
     public async Task<ActionResult> GetUsers([FromQuery] string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName)
     {
@@ -128,6 +131,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         return Ok(result.Data);
     }
 
+    [Authorize]
     [HttpDelete("DeleteCurrentUserAccount")]
     public async Task<IActionResult> DeleteCurrentUserAccount()
     {
@@ -215,6 +219,7 @@ public class UserController(IMediator mediator, IUserContext userContext) : Cont
         }
         return Ok();
     }
+    [Authorize(Roles = nameof(EnumRoleNames.Administrator))]
 
     [HttpDelete("DeleteUserById")]
     public async Task<IActionResult> DeleteUserAccount(DeleteUserAccountByIdCommand command)
