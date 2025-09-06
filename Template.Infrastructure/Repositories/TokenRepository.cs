@@ -35,6 +35,7 @@ public class TokenRepository(IConfiguration configuration, UserManager<User> use
                 new Claim(JwtRegisteredClaimNames.Sub,_user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email,_user.Email),
+                new Claim(JwtRegisteredClaimNames.Name, _user.UserName)
 
             }.Union(userClaims).Union(role_claims);
         var token = new JwtSecurityToken(
