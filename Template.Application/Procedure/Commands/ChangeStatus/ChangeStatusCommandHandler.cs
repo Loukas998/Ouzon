@@ -21,6 +21,7 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
             throw new NotFoundException(nameof(Procedure), request.ProcedureId.ToString());
         }
 
+        var oldStatus = procedure.Status;
         procedure.Status = request.NewStatus;
         //await procedureRepository.UpdateAsync(procedure);
         await procedureRepository.SaveChangesAsync();
@@ -81,7 +82,7 @@ public class ChangeStatusCommandHandler(IProcedureRepository procedureRepository
                 var doctorNotification = new Domain.Entities.Notifications.Notification
                 {
                     Title = "Status changed",
-                    Body = $"Procedure's status has been changed from: {procedure.Status}, to: {request.NewStatus}",
+                    Body = $"Procedure's status has been changed from: {oldStatus}, to: {request.NewStatus}",
                     Read = false,
                     CreatedAt = DateTime.UtcNow,
                     DeviceId = device.Id,

@@ -130,6 +130,7 @@ namespace Template.Application.Procedure.Commands.Create
                     DeviceId = null,
                     CreatedAt = DateTime.UtcNow
                 };
+
                 await notificationService.SaveNotificationAsync(adminNotification);
 
                 return Result.Success(procedureId.Id);
