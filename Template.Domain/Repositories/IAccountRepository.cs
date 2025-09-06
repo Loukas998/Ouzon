@@ -22,7 +22,7 @@ public interface IAccountRepository
     Task<bool> UserInRoleAsync(string id, string roleName);
     Task<List<User>> GetAssistants(string? sortByRating);
     public Task DeleteAccount(string userId);
-    Task<IdentityResult> UpdateUserAsync(User user);
+    Task<(User user, IdentityResult result)> UpdateUserAsync(User user);
     Task<List<(User user, string? roleName)>> GetUsersWithFilters(string? role, string? email, string? phoneNumber, string? clinicAddress, string? clinicName);
     Task<IdentityResult> UpdatePassword(User user, string oldPassword, string newPassword);
     Task SendEmail(string userEmail, string code);
