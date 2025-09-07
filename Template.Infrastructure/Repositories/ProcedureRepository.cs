@@ -20,6 +20,7 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
     public async Task<Procedure> GetDetailedWithId(int id)
     {
         var procedure = await dbContext.Procedures
+            .IgnoreQueryFilters()
             .Include(pro => pro.ToolsInProcedure)
                 .ThenInclude(tp => tp.Tool)
             .Include(pro => pro.KitsInProcedure)
@@ -63,6 +64,7 @@ public class ProcedureRepository : GenericRepository<Procedure>, IProcedureRepos
         string? clinicAddress, EnumProcedureStatus? status, string? isDoctorAuthenticated, string? isAssistantAuthenticated)
     {
         var query = dbContext.Procedures
+            .IgnoreQueryFilters()
             .AsQueryable();
         if (!string.IsNullOrEmpty(DoctorId))
         {

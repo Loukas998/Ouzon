@@ -28,7 +28,7 @@ namespace Template.Application.Procedure.Commands.Update
                 return Result.Failure(["Entity not Found"]);
             }
             mapper.Map(request, procedure);
-            if (request.AssistantIds != null)
+            if (request.AssistantIds != null && procedure.Status == EnumProcedureStatus.IN_PROGRESS)
             {
 
                 if (procedure.AssistantsInProcedure == null)
