@@ -37,10 +37,6 @@ public class KitsController(IMediator mediator) : ControllerBase
         {
             return BadRequest(kits.Errors);
         }
-        if (!kits.Data.Any())
-        {
-            return NotFound();
-        }
         return Ok(kits.Data);
     }
 

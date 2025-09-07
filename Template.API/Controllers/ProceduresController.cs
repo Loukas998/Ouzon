@@ -56,10 +56,6 @@ public class ProceduresController(IMediator mediator) : ControllerBase
         {
             return NotFound(result.Errors);
         }
-        if (!result.Data.Any())
-        {
-            return NotFound();
-        }
         return Ok(result.Data);
     }
 

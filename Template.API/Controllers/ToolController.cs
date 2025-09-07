@@ -71,10 +71,6 @@ namespace Template.API.Controllers
             {
                 return BadRequest(res.Errors);
             }
-            if (!res.Data.Any())
-            {
-                return NotFound();
-            }
             return Ok(res.Data);
         }
 
